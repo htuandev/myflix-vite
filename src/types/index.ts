@@ -9,3 +9,16 @@ export type User = {
   profileImage?: string;
   role: Role;
 };
+
+export type SuccessResponse = {
+  status: 'success';
+  message: string;
+};
+
+export type ErrorResponse = {
+  status: number;
+  data: {
+    status: 'error';
+    message: string;
+  };
+};
