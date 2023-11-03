@@ -1,10 +1,19 @@
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Dashboard from './pages/Dashboard';
+import Login from './pages/Login';
+
 function App() {
   return (
-    <section className=' flex-center min-h-screen'>
-      <div className=' animate-skeleton rounded-full p-8'>
-        <img src='/myflix.svg' width={120} height={120} alt='Logo' />
-      </div>
-    </section>
+    <BrowserRouter>
+      <ToastContainer position='top-right' autoClose={3000} newestOnTop theme='colored' />
+      <Routes>
+        <Route path='/auth/login' element={<Login />} />
+        <Route path='/' element={<Dashboard />} />
+        <Route path='*' element={<Navigate to='/' />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

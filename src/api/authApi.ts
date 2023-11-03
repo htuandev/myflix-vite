@@ -10,7 +10,7 @@ export const authApi = createApi({
   reducerPath: 'authApi',
   baseQuery: baseQuery('auth'),
   endpoints: (build) => ({
-    login: build.mutation<User, { email: string }>({
+    login: build.mutation<Prettify<User>, { email: string }>({
       query(body) {
         return {
           url: 'login-cms',
@@ -20,7 +20,7 @@ export const authApi = createApi({
       },
       transformResponse
     }),
-    auth: build.mutation<User, void>({
+    auth: build.mutation<Prettify<User>, void>({
       query() {
         return {
           url: 'refresh-cms',
