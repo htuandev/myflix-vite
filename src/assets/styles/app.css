@@ -1,0 +1,42 @@
+:root {
+    color-scheme: dark;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #ededed;
+    background-color: #18191a;
+}
+
+/* Load Image */
+.load-img {
+    position: relative;
+}
+
+.load-img::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+}
+
+.load-img.loaded::before {
+    animation: none;
+    content: none;
+}
+
+.load-img.loaded img {
+    opacity: 1;
+}
+
+/* Keyframes */
+@keyframes skeleton {
+    0% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0 50%;
+    }
+}
