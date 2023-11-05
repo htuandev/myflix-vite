@@ -27,6 +27,15 @@ const themeConfig: ThemeConfig = {
     colorBgBase: colors.body,
     colorBgContainer: colors.dark[950],
     colorBgElevated: colors.dark[925]
+  },
+  components: {
+    Layout: {
+      siderBg: colors.dark[950]
+    },
+    Tooltip: {
+      colorBgSpotlight: colors.dark[900],
+      controlHeight: 36
+    }
   }
 };
 
