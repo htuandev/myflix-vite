@@ -9,7 +9,7 @@ import { store } from './reducers/store.ts';
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <ConfigProvider
     theme={themeConfig}
-    renderEmpty={() => <Empty description={false} className=' d-center min-h-[50vh]' />}
+    renderEmpty={() => <Empty description={false} className=' flex-center min-h-[50vh]' />}
   >
     <Provider store={store}>
       <App />
