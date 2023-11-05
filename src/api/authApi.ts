@@ -1,6 +1,8 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import baseQuery from '@/constants/baseQuery';
-import { Prettify, SuccessResponse, User } from '@/types';
+import { Prettify } from '@/types';
+import { SuccessResponse } from '@/types/api';
+import { User } from '@/types/user';
+import { baseQuery } from '@/utils/api';
 
 type Response = Prettify<SuccessResponse & { data: User }>;
 
