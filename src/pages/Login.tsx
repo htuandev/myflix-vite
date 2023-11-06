@@ -9,8 +9,11 @@ import { setUser } from '@/reducers/auth';
 import { RootState } from '@/reducers/store';
 import { handleFetch } from '@/utils/api';
 import notify from '@/utils/notify';
+import useDocumentTitle from '@/hooks/useDocumentTitle';
 
 export default function Login() {
+  useDocumentTitle('Login')
+  
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const ref = useRef<InputRef>(null);
