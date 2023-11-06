@@ -16,9 +16,9 @@ export const baseQuery = (route: Routes) =>
     prepareHeaders: (headers, { getState }) => {
       const { user } = (getState() as RootState).auth;
 
-      if (user) {
-        headers.set(HeaderKey.clientId, user._id);
-      }
+      const clientId = localStorage.getItem(HeaderKey.clientId) || '';
+
+      headers.set(HeaderKey.clientId, user ? user._id : clientId);
 
       headers.set(HeaderKey.apiKey, apiKey);
       headers.set(HeaderKey.contentType, 'application/json');

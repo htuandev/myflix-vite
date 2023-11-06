@@ -6,42 +6,42 @@ import { twMerge } from 'tailwind-merge';
 
 const links = [
   {
-    href: '/preview',
+    href: '/',
     label: 'Myflix',
     icon: ({ className }: { className: string }) => <img src='/myflix.svg' className={twMerge(' h-6 w-6', className)} />
   },
   {
-    href: '/',
+    href: '/admin',
     label: 'Dashboard',
     icon: FaChartPie
   },
   {
-    href: '/user',
+    href: '/admin/user',
     label: 'User',
     icon: MdSupervisedUserCircle
   },
   {
-    href: '/movie',
+    href: '/admin/movie',
     label: 'Movie',
     icon: HiFilm
   },
   {
-    href: '/person',
+    href: '/admin/person',
     label: 'Person',
     icon: HiIdentification
   },
   {
-    href: '/genre',
+    href: '/admin/genre',
     label: 'Genre',
     icon: MdLabel
   },
   {
-    href: '/network',
+    href: '/admin/network',
     label: 'Network',
     icon: FaCubes
   },
   {
-    href: '/country',
+    href: '/admin/country',
     label: 'Country',
     icon: RiGlobalFill
   }
