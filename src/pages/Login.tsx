@@ -4,16 +4,16 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { Button, Input, InputRef } from 'antd';
 import { useLoginMutation } from '@/api/authApi';
 import { HeaderKey } from '@/constants/enum';
+import useDocumentTitle from '@/hooks/useDocumentTitle';
 import homeCinema from '@/images/home_cinema.svg';
 import { setUser } from '@/reducers/auth';
 import { RootState } from '@/reducers/store';
 import { handleFetch } from '@/utils/api';
 import notify from '@/utils/notify';
-import useDocumentTitle from '@/hooks/useDocumentTitle';
 
 export default function Login() {
-  useDocumentTitle('Login')
-  
+  useDocumentTitle('Login');
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const ref = useRef<InputRef>(null);
@@ -35,11 +35,11 @@ export default function Login() {
     dispatch(setUser(user));
     localStorage.setItem(HeaderKey.clientId, user._id);
 
-    navigate('/');
+    navigate('/admin');
   });
 
   return user ? (
-    <Navigate to='/' />
+    <Navigate to='/admin' />
   ) : (
     <section className=' container flex-center min-h-screen'>
       <div className=' flex w-full max-w-[800px]'>
