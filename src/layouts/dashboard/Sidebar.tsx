@@ -15,7 +15,7 @@ export default function Sidebar(props: Props) {
 
   return (
     <Sider {...props}>
-      <div className='text-heading w-full lg:fixed lg:flex lg:min-h-screen lg:w-auto lg:flex-col lg:justify-between'>
+      <div className=' w-full text-lg font-medium lg:fixed lg:flex lg:min-h-screen lg:w-auto lg:flex-col lg:justify-between'>
         <ul style={{ width: collapsed ? collapsedWidth : width - 16 }} className='p-2 '>
           {links.map(({ href, icon: Icon, label }, index) => (
             <Tooltip key={href} title={collapsed && label} zIndex={3333} placement='right'>
