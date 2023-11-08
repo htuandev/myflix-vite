@@ -26,7 +26,8 @@ const themeConfig: ThemeConfig = {
     colorTextBase: colors.dark[200],
     colorBgBase: colors.body,
     colorBgContainer: colors.dark[950],
-    colorBgElevated: colors.dark[925]
+    colorBgElevated: colors.dark[925],
+    colorPrimary: colors.primary
   },
   components: {
     Layout: {
@@ -35,6 +36,11 @@ const themeConfig: ThemeConfig = {
     Tooltip: {
       colorBgSpotlight: colors.dark[900],
       controlHeight: 36
+    },
+    Button: {
+      defaultShadow: 'none',
+      primaryShadow: 'none',
+      dangerShadow: 'none'
     }
   }
 };
