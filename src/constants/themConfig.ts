@@ -23,7 +23,7 @@ const themeConfig: ThemeConfig = {
     screenXLMin: 1280,
     screenXXL: 1536,
     screenXXLMin: 1536,
-    colorTextBase: colors.dark[200],
+    colorTextBase: colors.dark[100],
     colorBgBase: colors.body,
     colorBgContainer: colors.dark[950],
     colorBgElevated: colors.dark[925],

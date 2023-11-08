@@ -1,7 +1,8 @@
 import { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { Button, Input, InputRef } from 'antd';
+import { Input, InputRef } from 'antd';
+import Button from '@/antd/Button';
 import { useLoginMutation } from '@/api/authApi';
 import { HeaderKey } from '@/constants/enum';
 import useDocumentTitle from '@/hooks/useDocumentTitle';
@@ -48,7 +49,7 @@ export default function Login() {
           <div className=' flex-center flex-col gap-6 p-4'>
             <h1 className=' text-center text-5xl font-medium text-primary'>Myflix</h1>
             <Input ref={ref} placeholder='Email' allowClear />
-            <Button loading={isLoading} onClick={login}>
+            <Button isLoading={isLoading} onClick={login} type='primary'>
               Access
             </Button>
           </div>

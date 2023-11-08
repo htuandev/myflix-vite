@@ -36,8 +36,8 @@ body {
     font-family: 'Roboto', sans-serif;
     font-size: 16px;
     line-height: 1.5;
-    color: #ededed;
-    background-color: #18191a;
+    color: rgba(237, 237, 237, 0.85);
+    background-color: var(--body);
 }
 
 /* Load Image */
