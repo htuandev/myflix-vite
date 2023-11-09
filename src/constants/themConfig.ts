@@ -1,4 +1,5 @@
 import { ThemeConfig, theme } from 'antd';
+import { hexToRgb } from '@/utils';
 import colors from './colors';
 
 const themeConfig: ThemeConfig = {
@@ -27,7 +28,8 @@ const themeConfig: ThemeConfig = {
     colorBgBase: colors.body,
     colorBgContainer: colors.dark[950],
     colorBgElevated: colors.dark[925],
-    colorPrimary: colors.primary
+    colorPrimary: colors.primary,
+    colorLink: colors.primary
   },
   components: {
     Layout: {
@@ -44,8 +46,15 @@ const themeConfig: ThemeConfig = {
     },
     Table: {
       cellPaddingBlock: 8,
-      cellPaddingInline: 8,
-      colorLink: '#f0dae5'
+      cellPaddingInline: 8
+    },
+    Modal: {
+      colorBgElevated: colors.dark[950]
+    },
+    Select: {
+      optionSelectedBg: hexToRgb(colors.primary, 0.4).rgba,
+      optionActiveBg: hexToRgb(colors.primary, 0.1).rgba,
+      colorBgElevated: colors.dark[910]
     }
   }
 };

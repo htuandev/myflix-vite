@@ -14,4 +14,14 @@
   .myflix-modal-confirm-delete .ant-modal-confirm .ant-modal-confirm-btns .ant-btn-primary {
     @apply flex h-9 items-center border-transparent bg-primary/80 text-dark-100/[0.85] hover:border-transparent hover:bg-primary hover:text-dark-100 focus-visible:outline-none;
   }
+
+  .myflix-form .ant-input[disabled],
+  .myflix-form .ant-input-affix-wrapper-disabled,
+  .myflix-form .ant-select-disabled.ant-select .ant-select-selector {
+    @apply bg-dark-800 border-dark-800 hover:bg-dark-800 text-dark-100/[0.85]
+  }
+
+  .myflix-form .ant-select-disabled.ant-select .ant-select-arrow, .myflix-form .ant-input-affix-wrapper-disabled .ant-input-clear-icon {
+    @apply hidden
+  }
 }

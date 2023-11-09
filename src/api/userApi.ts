@@ -11,7 +11,7 @@ export const userApi = createApi({
   baseQuery: baseQuery('user'),
   tagTypes: ['Users'],
   endpoints: (build) => ({
-    getUsers: build.query<User[], void>({
+    getUsers: build.query<User[], null>({
       query: () => '',
       transformResponse: (res: Response<User[]>) => res.data,
       providesTags: (result) => {
@@ -36,7 +36,7 @@ export const userApi = createApi({
         method: 'POST',
         body
       }),
-      invalidatesTags: (result) => (result ? [{ type: 'Users', id: 'List' }] : [])
+      invalidatesTags: (result) => (result ? [{ type: 'Users', id: 'LIST' }] : [])
     }),
     updateUser: build.mutation<SuccessResponse, User>({
       query: (body) => ({
@@ -51,7 +51,7 @@ export const userApi = createApi({
         url: id,
         method: 'DELETE'
       }),
-      invalidatesTags: (result) => (result ? [{ type: 'Users', id: 'List' }] : [])
+      invalidatesTags: (result) => (result ? [{ type: 'Users', id: 'LIST' }] : [])
     })
   })
 });
