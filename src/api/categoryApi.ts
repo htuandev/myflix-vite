@@ -29,6 +29,11 @@ export const categoryApi = createApi({
         return [{ type, id: 'LIST' }];
       }
     }),
+    getCategoryById: build.query<Category, { type: CategoryType; id: number }>({
+      query: ({ type, id }) => `${pathname(type)}/${id}`,
+      transformResponse: (res: Response<Category>) => res.data,
+      providesTags: (result, _, { type, id }) => (result ? [{ type, id }] : [])
+    }),
     addCategory: build.mutation<SuccessResponse, { type: CategoryType; formData: Prettify<Omit<Category, '_id'>> }>({
       query({ type, formData }) {
         return {
@@ -61,7 +66,7 @@ export const categoryApi = createApi({
               { type: 'Categories', id: 'LIST' }
             ]
     }),
-    deleteCategory: build.mutation<SuccessResponse, { type: CategoryType; id: number | string }>({
+    deleteCategory: build.mutation<SuccessResponse, { type: CategoryType; id: number }>({
       query({ type, id }) {
         return {
           url: `${pathname(type)}/${id}`,
@@ -82,6 +87,7 @@ export const categoryApi = createApi({
 export const {
   useGetCategoriesQuery,
   useGetCategoryQuery,
+  useGetCategoryByIdQuery,
   useAddCategoryMutation,
   useUpdateCategoryMutation,
   useDeleteCategoryMutation

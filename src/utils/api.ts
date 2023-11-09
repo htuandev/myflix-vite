@@ -27,7 +27,8 @@ export const baseQuery = (route: Routes) =>
     }
   });
 
-export const handleFetch = (fn: (formData: unknown) => Promise<void>) => (formData: unknown) =>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const handleFetch = (fn: (formData: any) => Promise<void>) => (formData: any) =>
   fn(formData).catch((error) => {
     const { data, status } = error as ErrorResponse;
     if (!data) return;

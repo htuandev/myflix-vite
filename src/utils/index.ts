@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import slugify from 'slugify';
 import { ObjectType } from '@/types';
 
 export const detectFormChanged = (value: ObjectType, other: ObjectType) => {
@@ -12,3 +13,6 @@ export const detectFormChanged = (value: ObjectType, other: ObjectType) => {
       }
     };
 };
+
+export const handleSlug = (name: string) =>
+  slugify(name, { replacement: '-', remove: /[$*_+~.()'"!\-:@]/g, lower: true, strict: true, locale: 'vi' });
