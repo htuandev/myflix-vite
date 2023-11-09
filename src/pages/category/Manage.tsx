@@ -1,22 +1,56 @@
-import { useState } from 'react';
-import { FaPenToSquare } from 'react-icons/fa6';
+import { useState, useEffect } from 'react';
+import { FaPenToSquare, FaTrash } from 'react-icons/fa6';
 import { HiSquaresPlus } from 'react-icons/hi2';
-import { Table } from 'antd';
+import { Form, Input, Modal, Table } from 'antd';
 import { ColumnsType } from 'antd/es/table';
+import { twMerge } from 'tailwind-merge';
 import Button from '@/antd/Button';
-import { useGetCategoryQuery } from '@/api/categoryApi';
+import { useDeleteCategoryMutation, useGetCategoryQuery } from '@/api/categoryApi';
 import useDocumentTitle from '@/hooks/useDocumentTitle';
 import { Category, CategoryType } from '@/types/category';
+import { handleFetch } from '@/utils/api';
+import notify from '@/utils/notify';
 import CategoryInfo from './CategoryInfo';
 
 export default function ManageCategory({ type }: { type: CategoryType }) {
   const title = `Manage ${type}`;
   useDocumentTitle(title);
 
+  const categoryType = location.pathname.replace('/admin/', '');
+
   const [open, setOpen] = useState(false);
   const { data, isFetching } = useGetCategoryQuery(type, { skip: open });
 
+  const [categories, setCategories] = useState(data);
+  useEffect(() => {
+    setCategories(data);
+  }, [data]);
+
+  const [onDelete] = useDeleteCategoryMutation();
+
   const [categoryId, setCategoryId] = useState(-1);
+
+  const openModel = (id: number) => {
+    setCategoryId(id);
+    setOpen(true);
+  };
+
+  const handleDelete = handleFetch(async (id: number) => {
+    const res = await onDelete({ type, id }).unwrap();
+
+    notify.success(res.message);
+  });
+
+  const [modal, contextHolder] = Modal.useModal();
+
+  const confirmDeleteConfig = ({ _id, name }: Omit<Category, 'slug'>) => ({
+    title: `Delete ${categoryType}`,
+    content: `Do you want to delete ${name}?`,
+    onOk: () => handleDelete(_id),
+    okText: 'Delete',
+    wrapClassName: 'myflix-modal-confirm-delete',
+    maskClosable: false
+  });
 
   const columns: ColumnsType<Category> = [
     {
@@ -39,9 +73,13 @@ export default function ManageCategory({ type }: { type: CategoryType }) {
     {
       title: 'Action',
       key: 'action',
-      render: (_, { _id }) => (
-        <div className=' flex-center gap-2'>
+      render: (_, { _id, name }) => (
+        <div className=' flex-center gap-4'>
           <FaPenToSquare className=' cursor-pointer text-xl hover:text-dark-100' onClick={() => openModel(_id)} />
+          <FaTrash
+            className=' cursor-pointer text-xl hover:text-dark-100'
+            onClick={() => modal.confirm(confirmDeleteConfig({ _id, name }))}
+          />
         </div>
       ),
       align: 'center',
@@ -50,21 +88,32 @@ export default function ManageCategory({ type }: { type: CategoryType }) {
     }
   ];
 
-  const openModel = (id: number) => {
-    setCategoryId(id);
-    setOpen(true);
-  };
-
   return (
     <section className=' container'>
       <h1 className=' text-heading'>{title}</h1>
-      <div className=' mb-4 flex justify-end gap-8'>
+      <div
+        className={twMerge('flex-center mb-4 gap-8', data && data.length > 0 ? 'md:justify-between' : 'md:justify-end')}
+      >
+        {data && data.length > 0 && (
+          <Form className=' hidden md:block'>
+            <Input
+              placeholder={`Search ${data.length} ${data.length === 1 ? categoryType : type.toLowerCase()}`}
+              className=' w-full md:w-80'
+              onChange={(e) => {
+                const value = e.target.value;
+                const filtered = data.filter((category) => category.name.includes(value));
+                setCategories(filtered);
+              }}
+              allowClear
+            />
+          </Form>
+        )}
         <Button icon={<HiSquaresPlus />} onClick={() => openModel(-1)}>
-          Add {location.pathname.replace('/admin/', '')}
+          Add {categoryType}
         </Button>
       </div>
       <Table
-        dataSource={data ? data : []}
+        dataSource={categories}
         columns={columns}
         rowKey='_id'
         loading={{ size: 'large', spinning: isFetching }}
@@ -72,6 +121,7 @@ export default function ManageCategory({ type }: { type: CategoryType }) {
         pagination={{ hideOnSinglePage: true, pageSize: 25, showSizeChanger: false }}
       />
       {open && <CategoryInfo type={type} categoryId={categoryId} open={open} setOpen={setOpen} />}
+      {contextHolder}
     </section>
   );
 }
