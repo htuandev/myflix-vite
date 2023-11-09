@@ -1,8 +1,9 @@
 import { lazy } from 'react';
 import { CategoryType } from '@/types/category';
 
-const ManageCategory = lazy(() => import('@/pages/category/Manage'));
 const Dashboard = lazy(() => import('@/pages/Dashboard'));
+const ManageCategory = lazy(() => import('@/pages/category/Manage'));
+const ManageUser = lazy(() => import('@/pages/user/Manage'));
 
 const adminRoute = [
   {
@@ -23,6 +24,10 @@ const adminRoute = [
     path: '/country',
     element: ManageCategory,
     type: 'Countries' as CategoryType
+  },
+  {
+    path: '/user',
+    element: ManageUser
   }
 ];
 

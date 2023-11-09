@@ -41,6 +41,11 @@ const themeConfig: ThemeConfig = {
       defaultShadow: 'none',
       primaryShadow: 'none',
       dangerShadow: 'none'
+    },
+    Table: {
+      cellPaddingBlock: 8,
+      cellPaddingInline: 8,
+      colorLink: '#f0dae5'
     }
   }
 };
