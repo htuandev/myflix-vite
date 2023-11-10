@@ -7,7 +7,7 @@ import { twMerge } from 'tailwind-merge';
 import { useDeletePersonMutation, useGetPeopleQuery } from '@/api/personApi';
 import { Gender } from '@/constants/enum';
 import useDocumentTitle from '@/hooks/useDocumentTitle';
-import Avatar from '@/shared/Avatar';
+import ProfileImage from '@/shared/ProfileImage';
 import { Person } from '@/types/person';
 import { handleFetch } from '@/utils/api';
 import notify from '@/utils/notify';
@@ -44,9 +44,9 @@ export default function Manage() {
       title: 'Avatar',
       dataIndex: 'profileImage',
       key: 'profileImage',
-      render: (profileImage) => (
-        <div className=' flex-center'>
-          <Avatar src={profileImage} className=' w-16' />
+      render: (profileImage, { gender }) => (
+        <div className=' flex-center p-2'>
+          <ProfileImage src={profileImage} gender={gender} size='sm' type='circle' className=' w-12 ' />
         </div>
       ),
       align: 'center',
