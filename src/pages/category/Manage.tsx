@@ -120,7 +120,14 @@ export default function ManageCategory({ type }: { type: CategoryType }) {
         scroll={{ scrollToFirstRowOnChange: true, x: true }}
         pagination={{ hideOnSinglePage: true, pageSize: 25, showSizeChanger: false }}
       />
-      {open && <CategoryInfo type={type} categoryId={categoryId} open={open} setOpen={setOpen} />}
+      <CategoryInfo
+        type={type}
+        categoryId={categoryId}
+        open={open}
+        setOpen={setOpen}
+        categoryType={categoryType}
+        key={categoryId}
+      />
       {contextHolder}
     </section>
   );

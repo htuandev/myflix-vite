@@ -9,7 +9,7 @@ type Response<T> = Prettify<SuccessResponse & { data: T }>;
 export const userApi = createApi({
   reducerPath: 'userApi',
   baseQuery: baseQuery('user'),
-  tagTypes: ['Users'],
+  tagTypes: ['Users', 'User'],
   endpoints: (build) => ({
     getUsers: build.query<User[], null>({
       query: () => '',
@@ -28,7 +28,7 @@ export const userApi = createApi({
     getUserById: build.query<User, string>({
       query: (id) => id,
       transformResponse: (res: Response<User>) => res.data,
-      providesTags: (_, error, id) => (error ? [] : [{ type: 'Users', id }])
+      providesTags: (result) => (result ? [{ type: 'User', id: result._id }] : [])
     }),
     addUser: build.mutation<SuccessResponse, User>({
       query: (body) => ({
@@ -36,22 +36,28 @@ export const userApi = createApi({
         method: 'POST',
         body
       }),
-      invalidatesTags: (result) => (result ? [{ type: 'Users', id: 'LIST' }] : [])
+      invalidatesTags: [{ type: 'Users', id: 'LIST' }]
     }),
-    updateUser: build.mutation<SuccessResponse, User>({
+    updateUser: build.mutation<Response<User>, User>({
       query: (body) => ({
         url: '',
         method: 'PUT',
         body
       }),
-      invalidatesTags: (result, _error, { _id }) => (result ? [{ type: 'Users', id: _id }] : [])
+      invalidatesTags: (result) =>
+        result
+          ? [
+              { type: 'User', id: result.data._id },
+              { type: 'Users', id: 'LIST' }
+            ]
+          : []
     }),
     deleteUser: build.mutation<SuccessResponse, string>({
       query: (id) => ({
         url: id,
         method: 'DELETE'
       }),
-      invalidatesTags: (result) => (result ? [{ type: 'Users', id: 'LIST' }] : [])
+      invalidatesTags: [{ type: 'Users', id: 'LIST' }]
     })
   })
 });

@@ -2,11 +2,18 @@ import _ from 'lodash';
 import slugify from 'slugify';
 import { ObjectType } from '@/types';
 
-export const detectFormChanged = (formData: ObjectType, value: ObjectType) => {
+export const detectFormChanged = <T extends ObjectType>(formData: T, value: T, keys?: (keyof T)[]) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { createdAt, updatedAt, __v, ...rest } = value;
 
-  const isEqual = _.isEqual(formData, rest);
+  const updated: ObjectType = {};
+  if (_.isUndefined(keys)) keys = ['name'];
+
+  for (const [key, value] of Object.entries(formData)) {
+    updated[key] = keys.includes(key) && _.isString(value) ? value.trim() : value;
+  }
+
+  const isEqual = _.isEqual(updated, rest);
   if (isEqual)
     throw {
       status: 304,

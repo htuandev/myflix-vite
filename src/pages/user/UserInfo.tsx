@@ -39,10 +39,15 @@ export default function UserInfo({ userId, open, setOpen }: Props) {
       return;
     }
 
-    const res = await (isNew ? onAdd(formData).unwrap() : onUpdate(formData).unwrap());
+    if (isNew) {
+      const res = await onAdd(formData).unwrap();
+      notify.success(res.message);
+      return form.resetFields();
+    }
 
+    const res = await onUpdate(formData).unwrap();
     notify.success(res.message);
-    if (isNew) form.resetFields();
+    form.setFieldsValue(res.data);
   });
 
   const onCancel = () => setOpen(false);
@@ -65,11 +70,7 @@ export default function UserInfo({ userId, open, setOpen }: Props) {
   return (
     <Modal
       open={open}
-      title={
-        <p className=' pb-4 text-center'>
-          {isNew ? 'Add user' : user ? (user.name ? user.name : user.email) : 'Update'}
-        </p>
-      }
+      title={<p className=' pb-4 text-center'>{isNew ? 'Add user' : 'Update User'}</p>}
       footer={footer}
       classNames={{ footer: 'flex items-center justify-end' }}
       onCancel={onCancel}
@@ -106,7 +107,7 @@ export default function UserInfo({ userId, open, setOpen }: Props) {
               }
             ]}
           >
-            <Input type='email' />
+            <Input />
           </Form.Item>
           <Form.Item label='Profile Image' name='profileImage' rules={[]}>
             <Input allowClear />

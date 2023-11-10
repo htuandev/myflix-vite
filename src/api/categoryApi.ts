@@ -50,7 +50,7 @@ export const categoryApi = createApi({
               { type: 'Categories', id: 'LIST' }
             ]
     }),
-    updateCategory: build.mutation<SuccessResponse, { type: CategoryType; formData: Category }>({
+    updateCategory: build.mutation<Response<Category>, { type: CategoryType; formData: Category }>({
       query({ type, formData }) {
         return {
           url: pathname(type),
@@ -63,6 +63,7 @@ export const categoryApi = createApi({
           ? []
           : [
               { type, id },
+              { type, id: 'LIST' },
               { type: 'Categories', id: 'LIST' }
             ]
     }),

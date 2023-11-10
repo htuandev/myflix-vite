@@ -2,7 +2,6 @@ import { Dispatch, SetStateAction } from 'react';
 import { Form, Input, Modal, Skeleton } from 'antd';
 import Button from '@/antd/Button';
 import { useAddCategoryMutation, useGetCategoryByIdQuery, useUpdateCategoryMutation } from '@/api/categoryApi';
-import { Prettify } from '@/types';
 import { Category, CategoryType } from '@/types/category';
 import { detectFormChanged, handleSlug } from '@/utils';
 import { handleFetch } from '@/utils/api';
@@ -13,9 +12,10 @@ type Props = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   categoryId: number;
+  categoryType: string;
 };
 
-export default function CategoryInfo({ type, open, setOpen, categoryId }: Props) {
+export default function CategoryInfo({ type, open, setOpen, categoryId, categoryType }: Props) {
   const isNew = categoryId === -1;
   const [form] = Form.useForm<Category>();
 
@@ -24,17 +24,22 @@ export default function CategoryInfo({ type, open, setOpen, categoryId }: Props)
   const [onAdd, { isLoading: isAdding }] = useAddCategoryMutation();
   const [onUpdate, { isLoading: isUpdating }] = useUpdateCategoryMutation();
 
-  const onFinish = handleFetch(async ({ name }: Prettify<Pick<Category, 'name'>>) => {
-    if (!isNew) detectFormChanged({ name: category?.name }, { name: name.trim() });
+  const onFinish = handleFetch(async ({ name }: Pick<Category, 'name'>) => {
+    if (!isNew) detectFormChanged({ name }, { name: category?.name });
 
     const slug = handleSlug(name);
 
     const formData = { ...category, name, slug } as Category;
 
-    const res = await (isNew ? onAdd({ type, formData }).unwrap() : onUpdate({ type, formData }).unwrap());
+    if (isNew) {
+      const res = await onAdd({ type, formData }).unwrap();
+      notify.success(res.message);
+      return form.resetFields();
+    }
 
+    const res = await onUpdate({ type, formData }).unwrap();
     notify.success(res.message);
-    if (isNew) form.resetFields();
+    form.setFieldsValue(res.data);
   });
 
   const onCancel = () => setOpen(false);
@@ -57,11 +62,7 @@ export default function CategoryInfo({ type, open, setOpen, categoryId }: Props)
   return (
     <Modal
       open={open}
-      title={
-        <p className=' pb-4 text-center'>
-          {isNew ? `Add ${location.pathname.replace('/admin/', '')}` : category ? category.name : 'Update'}
-        </p>
-      }
+      title={<p className=' pb-4 text-center'>{isNew ? `Add ${categoryType}` : `Update ${categoryType}`}</p>}
       footer={footer}
       classNames={{ footer: 'flex items-center justify-end' }}
       onCancel={onCancel}
