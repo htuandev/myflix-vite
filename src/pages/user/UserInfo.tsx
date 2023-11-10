@@ -6,6 +6,7 @@ import { useAddUserMutation, useGetUserByIdQuery, useUpdateUserMutation } from '
 import { Role } from '@/constants/enum';
 import drinkCoffeeAvatar from '@/images/drink_coffee_male.svg';
 import { RootState } from '@/reducers/store';
+import Avatar from '@/shared/Avatar';
 import { User } from '@/types/user';
 import { detectFormChanged } from '@/utils';
 import { handleFetch } from '@/utils/api';
@@ -30,9 +31,9 @@ export default function UserInfo({ userId, open, setOpen }: Props) {
   const [onUpdate, { isLoading: isUpdating }] = useUpdateUserMutation();
 
   const onFinish = handleFetch(async (formData: User) => {
+    if (user) formData._id = user._id;
     if (!isNew) detectFormChanged(formData, user as User);
 
-    if (user) formData._id = user._id;
     if (currentUser._id === formData._id && currentUser.role !== formData.role) {
       notify.error('You can not change your role');
       return;
@@ -75,6 +76,9 @@ export default function UserInfo({ userId, open, setOpen }: Props) {
       maskClosable={false}
       centered
     >
+      <div className=' flex-center'>
+        <Avatar src={profileImage} className=' w-24' key={profileImage} />
+      </div>
       {isLoading ? (
         <Skeleton paragraph={{ rows: 8 }} />
       ) : (
@@ -87,13 +91,6 @@ export default function UserInfo({ userId, open, setOpen }: Props) {
           initialValues={user ? user : { role: Role.User }}
           className='myflix-form'
         >
-          <div className=' flex-center'>
-            <img
-              src={profileImage}
-              onError={(e) => (e.currentTarget.src = drinkCoffeeAvatar)}
-              className=' aspect-square w-24 rounded-full'
-            />
-          </div>
           <Form.Item label='Name' name='name'>
             <Input />
           </Form.Item>

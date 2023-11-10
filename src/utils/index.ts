@@ -2,8 +2,11 @@ import _ from 'lodash';
 import slugify from 'slugify';
 import { ObjectType } from '@/types';
 
-export const detectFormChanged = (value: ObjectType, other: ObjectType) => {
-  const isEqual = _.isEqual(value, other);
+export const detectFormChanged = (formData: ObjectType, value: ObjectType) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { createdAt, updatedAt, __v, ...rest } = value;
+
+  const isEqual = _.isEqual(formData, rest);
   if (isEqual)
     throw {
       status: 304,

@@ -10,7 +10,7 @@ import { useDeleteUserMutation, useGetUsersQuery } from '@/api/userApi';
 import colors from '@/constants/colors';
 import { Role } from '@/constants/enum';
 import useDocumentTitle from '@/hooks/useDocumentTitle';
-import drinkCoffeeAvatar from '@/images/drink_coffee_male.svg';
+import Avatar from '@/shared/Avatar';
 import { User } from '@/types/user';
 import { handleFetch } from '@/utils/api';
 import notify from '@/utils/notify';
@@ -60,12 +60,7 @@ export default function ManageUser() {
       key: 'profileImage',
       render: (profileImage) => (
         <div className=' flex-center'>
-          <img
-            loading='lazy'
-            src={profileImage || drinkCoffeeAvatar}
-            onError={(e) => (e.currentTarget.src = drinkCoffeeAvatar)}
-            className='aspect-square w-12 rounded-full'
-          />
+          <Avatar src={profileImage} className=' w-12' />
         </div>
       ),
       align: 'center',
@@ -171,7 +166,7 @@ export default function ManageUser() {
         scroll={{ scrollToFirstRowOnChange: true, x: true }}
         pagination={{ hideOnSinglePage: true, pageSize: 25, showSizeChanger: false }}
       />
-      {open && <UserInfo userId={userId} open={open} setOpen={setOpen} />}
+      <UserInfo userId={userId} open={open} setOpen={setOpen} key={userId} />
       {contextHolder}
     </section>
   );
