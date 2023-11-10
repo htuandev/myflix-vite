@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { Input, InputRef } from 'antd';
+import { Form, Input, InputRef } from 'antd';
 import Button from '@/antd/Button';
 import { useLoginMutation } from '@/api/authApi';
 import { HeaderKey } from '@/constants/enum';
@@ -46,13 +46,13 @@ export default function Login() {
       <div className=' flex w-full max-w-[800px]'>
         <img src={homeCinema} className='hidden w-1/2 md:block' />
         <div className=' grow md:pt-12'>
-          <div className=' flex-center flex-col gap-6 p-4'>
+          <Form onFinish={login} className=' flex-center flex-col gap-6 p-4'>
             <h1 className=' text-center text-5xl font-medium text-primary'>Myflix</h1>
             <Input ref={ref} placeholder='Email' allowClear />
             <Button isLoading={isLoading} onClick={login} type='primary'>
               Access
             </Button>
-          </div>
+          </Form>
         </div>
       </div>
     </section>

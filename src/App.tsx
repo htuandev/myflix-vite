@@ -15,8 +15,8 @@ function App() {
       <ToastContainer position='top-right' autoClose={3000} newestOnTop theme='colored' />
       <Routes>
         <Route path='/' element={<Preview />} />
+        <Route path='/auth/login' element={<Login />} />
         <Route element={<Authenticated />}>
-          <Route path='/auth/login' element={<Login />} />
           <Route element={<DashboardLayout />}>
             {adminRoute.map(({ path, element: Component, type }) => (
               <Route

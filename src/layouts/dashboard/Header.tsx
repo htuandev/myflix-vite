@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { AiOutlineMenuFold, AiOutlineMenuUnfold } from 'react-icons/ai';
 import { FaSignOutAlt } from 'react-icons/fa';
 import { FaBars, FaXmark } from 'react-icons/fa6';
@@ -20,11 +19,6 @@ export default function Header({ width, collapsed, onToggle }: Props) {
   const navigate = useNavigate();
 
   const defaultProfileImage = 'https://image.tmdb.org/t/p/w470_and_h470_face/Ar9aVa8LImtGfDLb0NO0glPDGTY.jpg';
-  useEffect(() => {
-    if (!user) {
-      navigate('/auth/login');
-    }
-  });
 
   return (
     <header className=' sticky top-0 z-10 h-16 bg-dark-950 pt-2'>
@@ -53,6 +47,7 @@ export default function Header({ width, collapsed, onToggle }: Props) {
                 onClick={() => {
                   localStorage.removeItem(HeaderKey.clientId);
                   dispatch(setUser(null));
+                  navigate('/auth/login');
                 }}
               />
             </>

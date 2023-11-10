@@ -1,11 +1,12 @@
 import { useEffect, useLayoutEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Outlet, useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useAuthMutation } from '@/api/authApi';
 import { HeaderKey } from '@/constants/enum';
 import useIsFirstRender from '@/hooks/useIsFirstRender';
 import { setUser } from '@/reducers/auth';
+import { RootState } from '@/reducers/store';
 import Hamster from './Hamster';
 
 export default function Authenticated() {
@@ -15,9 +16,11 @@ export default function Authenticated() {
   const location = useLocation();
   const { isFirstRender } = useIsFirstRender();
 
+  const { user } = useSelector((state: RootState) => state.auth);
+
   const clientId = localStorage.getItem(HeaderKey.clientId);
 
-  const [onAuth, { isLoading }] = useAuthMutation();
+  const [onAuth] = useAuthMutation();
 
   const handleAuth = async () => {
     try {
@@ -44,5 +47,5 @@ export default function Authenticated() {
     window.scrollTo(0, 0);
   }, [location.pathname]);
 
-  return isFirstRender || isLoading ? <Hamster /> : <Outlet />;
+  return user ? <Outlet /> : <Hamster />;
 }
