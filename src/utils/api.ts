@@ -1,7 +1,9 @@
 import { fetchBaseQuery } from '@reduxjs/toolkit/query';
+import _, { every } from 'lodash';
 import { HeaderKey } from '@/constants/enum';
 import { RootState } from '@/reducers/store';
-import { ErrorResponse } from '@/types/api';
+import { ObjectType } from '@/types';
+import { ErrorResponse, SearchParams } from '@/types/api';
 import notify from './notify';
 
 const baseUrl: string = import.meta.env.VITE_API_URL || 'http://localhost:8816';
@@ -41,3 +43,26 @@ export const handleFetch = (fn: (formData: any) => Promise<void>) => (formData: 
 
     return notify.error(message);
   });
+
+export const updateSearchParams = ({ page, pageSize, search }: SearchParams) => {
+  const params: ObjectType = {};
+
+  const numberCheck = (data: string | number | undefined) => {
+    // - page
+    if (_.isString(data)) {
+      const num = parseInt(data);
+      return num > 0 && num !== 1 ? data : undefined;
+    }
+
+    // - pageSize
+    if (_.isNumber(data)) return data > 0 && data !== 24 ? data : undefined;
+
+    return data;
+  };
+
+  params.page = numberCheck(page);
+  params.pageSize = numberCheck(pageSize);
+  params.search = search.trim() === '' ? undefined : search;
+
+  return every(params, (value) => _.isUndefined(value)) ? undefined : params;
+};

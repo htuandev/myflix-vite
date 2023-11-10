@@ -8,3 +8,8 @@ export enum HeaderKey {
   apiKey = 'x-api-key',
   contentType = 'content-type'
 }
+
+export enum Gender {
+  Female = 1,
+  Male = 2
+}
