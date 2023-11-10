@@ -10,7 +10,6 @@ type Props = {
 
 export default function Avatar({ src, alt, className }: Props) {
   const ref = useRef<HTMLDivElement>(null);
-  const imgRef = useRef<HTMLImageElement>(null);
 
   const onError = (e: SyntheticEvent<HTMLImageElement, Event>) => (e.currentTarget.src = defaultAvatar);
 
@@ -20,21 +19,17 @@ export default function Avatar({ src, alt, className }: Props) {
     }
   };
 
-  const imgProps = { src, alt, onError, onLoad };
+  const imgProps = { src: src || defaultAvatar, alt, onError, onLoad };
 
   return (
     <div
       ref={ref}
       className={twMerge(
-        ' load-img aspect-square select-none overflow-hidden rounded-full before:animate-skeleton',
+        ' load-img pointer-events-none aspect-square select-none overflow-hidden rounded-full before:animate-skeleton',
         className
       )}
     >
-      <img
-        {...imgProps}
-        loading='lazy'
-        className={twMerge('opacity-0 transition-opacity duration-[1.2s]', imgRef.current?.complete && 'opacity-100')}
-      />
+      <img {...imgProps} loading='lazy' className='opacity-0 transition-opacity duration-[1.2s]' />
     </div>
   );
 }
