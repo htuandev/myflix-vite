@@ -1,6 +1,7 @@
+import { useState } from 'react';
 import { FaPenToSquare, FaTrash } from 'react-icons/fa6';
 import { useSearchParams } from 'react-router-dom';
-import { Modal, Tag } from 'antd';
+import { Form, Input, Modal, Select, Tag } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import moment from 'moment';
 import { twMerge } from 'tailwind-merge';
@@ -8,6 +9,7 @@ import { useDeletePersonMutation, useGetPeopleQuery } from '@/api/personApi';
 import { Gender } from '@/constants/enum';
 import useDocumentTitle from '@/hooks/useDocumentTitle';
 import ProfileImage from '@/shared/ProfileImage';
+import { SearchParams } from '@/types/api';
 import { Person } from '@/types/person';
 import { handleFetch } from '@/utils/api';
 import notify from '@/utils/notify';
@@ -19,7 +21,13 @@ export default function Manage() {
   const [searchParams] = useSearchParams();
   const page = searchParams.get('page') || undefined;
 
-  const { data, isFetching } = useGetPeopleQuery({ search: '', page });
+  const [params, setParams] = useState<SearchParams>({
+    search: '',
+    page,
+    sorted: 'updatedAt'
+  });
+
+  const { data, isFetching } = useGetPeopleQuery(params);
   const [onDelete] = useDeletePersonMutation();
 
   const handleDelete = handleFetch(async (id: string) => {
@@ -38,6 +46,10 @@ export default function Manage() {
     wrapClassName: 'myflix-modal-confirm-delete',
     maskClosable: false
   });
+
+  const [form] = Form.useForm<SearchParams>();
+
+  const onFinish = (values: SearchParams) => setParams((params) => ({ ...params, ...values }));
 
   const columns: ColumnsType<Person> = [
     {
@@ -126,6 +138,36 @@ export default function Manage() {
   return (
     <section className=' container'>
       <h1 className=' text-heading'>{title}</h1>
+      <div className={twMerge('flex-center mb-4 gap-8', data ? 'md:justify-between' : 'md:justify-end')}>
+        {data && (
+          <Form
+            className='hidden md:flex'
+            form={form}
+            layout='inline'
+            onFinish={onFinish}
+            initialValues={params}
+            autoComplete='off'
+          >
+            <Form.Item name='search' className='myflix-search w-full md:w-80'>
+              <Input.Search
+                allowClear
+                enterButton='Search'
+                onSearch={() => form.submit()}
+                loading={isFetching && form.isFieldsTouched()}
+              />
+            </Form.Item>
+            <Form.Item name='sorted' className='w-28 '>
+              <Select
+                placeholder='Sort by'
+                options={[
+                  { value: 'credits', label: 'Credits' },
+                  { value: 'updatedAt', label: 'Updated' }
+                ]}
+              />
+            </Form.Item>
+          </Form>
+        )}
+      </div>
       <Table
         dataSource={data?.results}
         columns={columns}

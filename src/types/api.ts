@@ -20,12 +20,13 @@ export type Timestamps = {
 export type SearchParams = {
   page?: string;
   pageSize?: number;
+  sorted?: 'credits' | 'updatedAt';
   search: string;
 };
 
 export type List<T> = {
   totalPages: number;
+  totalData: number;
   totalResults: number;
-  totalFiltered: number;
   results: T[];
 };

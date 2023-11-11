@@ -24,4 +24,12 @@
   .myflix-form .ant-select-disabled.ant-select .ant-select-arrow, .myflix-form .ant-input-affix-wrapper-disabled .ant-input-clear-icon {
     @apply hidden
   }
+
+  .myflix-search .ant-input-affix-wrapper {
+    @apply border-primary
+  }
+
+  .myflix-search .ant-input-search-button {
+    @apply bg-primary
+  }
 }

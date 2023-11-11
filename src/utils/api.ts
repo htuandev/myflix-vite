@@ -44,7 +44,7 @@ export const handleFetch = (fn: (formData: any) => Promise<void>) => (formData: 
     return notify.error(message);
   });
 
-export const updateSearchParams = ({ page, pageSize, search }: SearchParams) => {
+export const updateSearchParams = ({ page, pageSize, search, sorted }: SearchParams) => {
   const params: ObjectType = {};
 
   const numberCheck = (data: string | number | undefined) => {
@@ -63,6 +63,7 @@ export const updateSearchParams = ({ page, pageSize, search }: SearchParams) => 
   params.page = numberCheck(page);
   params.pageSize = numberCheck(pageSize);
   params.search = search.trim() === '' ? undefined : search;
+  params.sorted = sorted;
 
   return every(params, (value) => _.isUndefined(value)) ? undefined : params;
 };
