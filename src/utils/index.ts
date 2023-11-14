@@ -1,5 +1,7 @@
+import dayjs from 'dayjs';
 import _ from 'lodash';
 import slugify from 'slugify';
+import { dateFormat } from '@/constants';
 import { ObjectType } from '@/types';
 
 export const detectFormChanged = <T extends ObjectType>(formData: T, value: T, keys?: (keyof T)[]) => {
@@ -41,3 +43,11 @@ export const hexToRgb = (hex = '#200b0b', alpha = 1) => {
 
   return { rgb, rgba };
 };
+
+const today = dayjs().format(dateFormat);
+
+export const transformDate = (dateString: string) => ({
+  toString: () => dayjs(dateString).format(dateFormat),
+  toDayjs: () => dayjs(dateString, dateFormat),
+  isPastDate: () => dayjs(dateString, dateFormat).unix() < dayjs(today, dateFormat).unix()
+});

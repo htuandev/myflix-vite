@@ -29,7 +29,8 @@ const themeConfig: ThemeConfig = {
     colorBgContainer: colors.dark[950],
     colorBgElevated: colors.dark[925],
     colorPrimary: colors.primary,
-    colorLink: colors.primary
+    colorLink: colors.primary,
+    colorTextPlaceholder: hexToRgb(colors.dark[100], 0.45).rgba
   },
   components: {
     Layout: {
@@ -54,7 +55,7 @@ const themeConfig: ThemeConfig = {
     Select: {
       optionSelectedBg: hexToRgb(colors.primary, 0.4).rgba,
       optionActiveBg: hexToRgb(colors.primary, 0.1).rgba,
-      colorBgElevated: colors.dark[910]
+      colorBgElevated: colors.dark[925]
     }
   }
 };

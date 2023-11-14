@@ -10,3 +10,5 @@ export const tmdbImageSizes = {
     lg: 'w470_and_h470_face'
   }
 };
+
+export const dateFormat = 'DD/MM/YYYY';

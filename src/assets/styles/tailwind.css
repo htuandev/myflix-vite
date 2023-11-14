@@ -32,4 +32,12 @@
   .myflix-search .ant-input-search-button {
     @apply bg-primary
   }
+
+  .myflix-select-tags.ant-select-dropdown .ant-select-item-option-selected {
+    @apply bg-transparent hover:bg-primary/10
+  }
+
+  .myflix-select-tags.ant-select-dropdown .ant-select-item-option-selected .anticon svg {
+    @apply hidden
+  }
 }

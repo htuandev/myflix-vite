@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { FaPenToSquare, FaTrash } from 'react-icons/fa6';
+import { HiSquaresPlus } from 'react-icons/hi2';
 import { useSearchParams } from 'react-router-dom';
 import { Form, Input, Modal, Select, Tag } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { twMerge } from 'tailwind-merge';
+import Button from '@/antd/Button';
 import { useDeletePersonMutation, useGetPeopleQuery } from '@/api/personApi';
 import { Gender } from '@/constants/enum';
 import useDocumentTitle from '@/hooks/useDocumentTitle';
@@ -13,6 +15,7 @@ import { SearchParams } from '@/types/api';
 import { Person } from '@/types/person';
 import { handleFetch } from '@/utils/api';
 import notify from '@/utils/notify';
+import PersonInfo from './PersonInfo';
 
 export default function Manage() {
   const title = 'Manage Person';
@@ -21,13 +24,21 @@ export default function Manage() {
   const [searchParams] = useSearchParams();
   const page = searchParams.get('page') || undefined;
 
+  const [open, setOpen] = useState(false);
+  const [personId, setPersonId] = useState('');
+
+  const openModal = (id: string) => {
+    setPersonId(id);
+    setOpen(true);
+  };
+
   const [params, setParams] = useState<SearchParams>({
     search: '',
     page,
     sorted: 'updatedAt'
   });
 
-  const { data, isFetching } = useGetPeopleQuery(params);
+  const { data, isFetching } = useGetPeopleQuery(params, { skip: open });
   const [onDelete] = useDeletePersonMutation();
 
   const handleDelete = handleFetch(async (id: string) => {
@@ -101,7 +112,6 @@ export default function Manage() {
       title: 'Birthday',
       dataIndex: 'birthday',
       key: 'birthday',
-      render: (birthday) => <span>{moment(birthday, 'DD/MM/YYYY').format('DD/MM/YYYY')}</span>,
       align: 'center',
       width: 150,
       responsive: ['md']
@@ -110,7 +120,7 @@ export default function Manage() {
       title: 'Update At',
       dataIndex: 'updatedAt',
       key: 'updatedAt',
-      render: (date) => <span>{moment(date).format('lll')}</span>,
+      render: (date: Date) => <span>{dayjs(date).format('lll')}</span>,
       align: 'center',
       width: 200,
       responsive: ['xl']
@@ -120,10 +130,7 @@ export default function Manage() {
       key: 'action',
       render: (_, { _id, name }) => (
         <div className=' flex-center gap-4'>
-          <FaPenToSquare
-            className=' cursor-pointer text-xl hover:text-dark-100'
-            onClick={() => console.log('Update')}
-          />
+          <FaPenToSquare className=' cursor-pointer text-xl hover:text-dark-100' onClick={() => openModal(_id)} />
           <FaTrash
             className=' cursor-pointer text-xl hover:text-dark-100'
             onClick={() => modal.confirm(confirmDeleteConfig({ _id, name }))}
@@ -167,6 +174,9 @@ export default function Manage() {
             </Form.Item>
           </Form>
         )}
+        <Button icon={<HiSquaresPlus />} onClick={() => openModal('')}>
+          Add person
+        </Button>
       </div>
       <Table
         dataSource={data?.results}
@@ -176,6 +186,7 @@ export default function Manage() {
         scroll={{ scrollToFirstRowOnChange: true, x: true }}
         pagination={false}
       />
+      <PersonInfo personId={personId} open={open} setOpen={setOpen} key={personId} />
       {contextHolder}
     </section>
   );
