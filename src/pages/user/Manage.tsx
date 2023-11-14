@@ -3,7 +3,7 @@ import { FaPenToSquare, FaTrash } from 'react-icons/fa6';
 import { HiSquaresPlus } from 'react-icons/hi2';
 import { Form, Input, Modal, Select, Table, Tag } from 'antd';
 import { ColumnsType } from 'antd/es/table';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { twMerge } from 'tailwind-merge';
 import Button from '@/antd/Button';
 import { useDeleteUserMutation, useGetUsersQuery } from '@/api/userApi';
@@ -29,7 +29,7 @@ export default function ManageUser() {
     setUsers(data);
   }, [data]);
 
-  const openModel = (id: string) => {
+  const openModal = (id: string) => {
     setUserId(id);
     setOpen(true);
   };
@@ -96,7 +96,7 @@ export default function ManageUser() {
       title: 'Update At',
       dataIndex: 'updatedAt',
       key: 'updatedAt',
-      render: (date) => <span>{moment(date).format('lll')}</span>,
+      render: (date) => <span>{dayjs(date).format('lll')}</span>,
       align: 'center',
       width: 200,
       responsive: ['xl']
@@ -106,7 +106,7 @@ export default function ManageUser() {
       key: 'action',
       render: (_, { _id, name, email }) => (
         <div className=' flex-center gap-4'>
-          <FaPenToSquare className=' cursor-pointer text-xl hover:text-dark-100' onClick={() => openModel(_id)} />
+          <FaPenToSquare className=' cursor-pointer text-xl hover:text-dark-100' onClick={() => openModal(_id)} />
           <FaTrash
             className=' cursor-pointer text-xl hover:text-dark-100'
             onClick={() => modal.confirm(confirmDeleteConfig({ _id, name, email }))}
@@ -154,7 +154,7 @@ export default function ManageUser() {
             />
           </div>
         )}
-        <Button icon={<HiSquaresPlus />} onClick={() => openModel('')}>
+        <Button icon={<HiSquaresPlus />} onClick={() => openModal('')}>
           Add user
         </Button>
       </div>
