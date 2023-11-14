@@ -42,7 +42,10 @@ export default function CategoryInfo({ type, open, setOpen, categoryId, category
     form.setFieldsValue(res.data);
   });
 
-  const onCancel = () => setOpen(false);
+  const onCancel = () => {
+    setOpen(false);
+    form.resetFields();
+  };
 
   const footer = [
     <Button key='back' className=' h-9' onClick={onCancel}>

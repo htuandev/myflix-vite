@@ -50,7 +50,10 @@ export default function UserInfo({ userId, open, setOpen }: Props) {
     form.setFieldsValue(res.data);
   });
 
-  const onCancel = () => setOpen(false);
+  const onCancel = () => {
+    setOpen(false);
+    form.resetFields();
+  };
 
   const footer = [
     <Button key='back' className=' h-9' onClick={onCancel}>
