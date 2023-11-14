@@ -105,35 +105,19 @@ export default function PersonInfo({ personId, open, setOpen }: Props) {
           <Form.Item label='Name' name='name' rules={[rules.required('Name')]} hasFeedback>
             <Input allowClear />
           </Form.Item>
-          <Form.Item label='As known as' name='aka'>
-            <Select
-              className='myflix-select'
-              mode='tags'
-              onChange={(values: string[]) =>
-                form.setFieldValue(
-                  'aka',
-                  values.map((value) => value.trim()).filter((value) => value !== '')
-                )
-              }
-              notFoundContent={null}
-              showSearch={false}
-              maxTagCount='responsive'
-              suffixIcon={null}
-              tokenSeparators={[',']}
-              popupClassName='myflix-select-tags'
-            />
-          </Form.Item>
           <Form.Item
             label='Profile Image'
             name='profileImage'
             rules={[rules.required('Profile image'), rules.imageTMDB]}
             hasFeedback
+            validateTrigger='onChange'
+            validateDebounce={100}
           >
             <Input
               allowClear
               onChange={(e) => {
                 form.setFieldValue('profileImage', handleImageUrl({ url: e.target.value }));
-                form.validateFields();
+                form.validateFields(['profileImage']);
               }}
             />
           </Form.Item>
