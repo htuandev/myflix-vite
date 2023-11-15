@@ -6,13 +6,13 @@ import { ObjectType } from '@/types';
 
 export const detectFormChanged = <T extends ObjectType>(formData: T, value: T, keys?: (keyof T)[]) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { createdAt, updatedAt, __v, ...rest } = value;
+  const { createdAt, updatedAt, __v, year, slug, _id, ...rest } = value;
 
   const updated: ObjectType = {};
   if (_.isUndefined(keys)) keys = ['name'];
 
   for (const [key, value] of Object.entries(formData)) {
-    updated[key] = keys.includes(key) && _.isString(value) ? value.trim() : value;
+    if (!_.isNil(value)) updated[key] = keys.includes(key) && _.isString(value) ? value.trim() : value;
   }
 
   const isEqual = _.isEqual(updated, rest);
@@ -49,5 +49,7 @@ const today = dayjs().format(dateFormat);
 export const transformDate = (dateString: string) => ({
   toString: () => dayjs(dateString).format(dateFormat),
   toDayjs: () => dayjs(dateString, dateFormat),
-  isPastDate: () => dayjs(dateString, dateFormat).unix() < dayjs(today, dateFormat).unix()
+  isPastDate: () => dayjs(today, dateFormat).unix() < dayjs(dateString, dateFormat).unix(),
+  isFutureDate: () => dayjs(today, dateFormat).unix() > dayjs(dateString, dateFormat).unix(),
+  isToday: () => dayjs(dateString, dateFormat).unix() === dayjs(today, dateFormat).unix()
 });
