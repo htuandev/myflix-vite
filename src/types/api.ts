@@ -24,7 +24,7 @@ export type SearchParams = {
   search: string;
 };
 
-export type List<T> = {
+export type DataList<T> = {
   totalPages: number;
   totalData: number;
   totalResults: number;

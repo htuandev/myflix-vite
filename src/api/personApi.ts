@@ -1,6 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { Prettify } from '@/types';
-import { List, SearchParams, SuccessResponse } from '@/types/api';
+import { DataList, SearchParams, SuccessResponse } from '@/types/api';
 import { Person } from '@/types/person';
 import { baseQuery, updateSearchParams } from '@/utils/api';
 
@@ -11,12 +11,12 @@ export const personApi = createApi({
   baseQuery: baseQuery('person'),
   tagTypes: ['People', 'Person'],
   endpoints: (build) => ({
-    getPeople: build.query<List<Person>, SearchParams>({
+    getPeople: build.query<DataList<Person>, SearchParams>({
       query: (params) => ({
         url: '',
         params: updateSearchParams(params)
       }),
-      transformResponse: (res: Response<List<Person>>) => res.data,
+      transformResponse: (res: Response<DataList<Person>>) => res.data,
       providesTags: (result) => {
         if (result) {
           const final = [
