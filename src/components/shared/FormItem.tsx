@@ -10,9 +10,9 @@ interface Props extends AntdFormItemProps {
 
 type FormItemProps = Prettify<Props>;
 
-export default function FormItem({ isLoading, children, isTextarea, ...props }: FormItemProps) {
+export default function FormItem({ isLoading, children, isTextarea, label, ...props }: FormItemProps) {
   return (
-    <Form.Item {...props}>
+    <Form.Item {...props} label={!isLoading && label}>
       {isLoading ? (
         <div className={twMerge('animate-skeleton h-10 w-full rounded-md', isTextarea && 'h-52')} />
       ) : (
