@@ -10,6 +10,7 @@ import { ContentType, Status, SubtitleType } from '@/constants/enum';
 import rules from '@/constants/rules';
 import useDocumentTitle from '@/hooks/useDocumentTitle';
 import useValidId from '@/hooks/useValidId';
+import noImage from '@/images/no-image.svg';
 import FormItem from '@/shared/FormItem';
 import Poster from '@/shared/Poster';
 import { Prettify } from '@/types';
@@ -37,7 +38,7 @@ export default function MovieInfo() {
 
   const { useWatch, useForm } = Form;
   const [form] = useForm<MovieForm>();
-  const poster = useWatch('poster', form);
+  const poster = useWatch('poster', form) || noImage;
   const type = useWatch('type', form);
   const status = useWatch('status', form);
 

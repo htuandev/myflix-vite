@@ -15,9 +15,11 @@ export default function Poster({ src, alt, className, size = 'sm' }: Props) {
 
   const imageSize = tmdbImageSizes.poster[size];
 
+  const noImagePadding = size === 'lg' ? '2rem' : size === 'md' ? '1rem' : '0.5rem';
+
   const onError = (e: SyntheticEvent<HTMLImageElement, Event>) => {
     e.currentTarget.src = noImage;
-    e.currentTarget.style.padding = size === 'lg' ? '2rem' : size === 'md' ? '1rem' : '0.5rem';
+    e.currentTarget.style.padding = noImagePadding;
   };
 
   const onLoad = () => {
@@ -38,7 +40,12 @@ export default function Poster({ src, alt, className, size = 'sm' }: Props) {
         className
       )}
     >
-      <img {...imgProps} loading='lazy' className='opacity-0 transition-opacity duration-[1.2s]' />
+      <img
+        {...imgProps}
+        style={{ padding: imgSrc === noImage ? noImagePadding : undefined }}
+        loading='lazy'
+        className='opacity-0 transition-opacity duration-[1.2s]'
+      />
     </div>
   );
 }
