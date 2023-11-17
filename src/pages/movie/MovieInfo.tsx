@@ -40,7 +40,6 @@ export default function MovieInfo() {
   const poster = useWatch('poster', form);
   const type = useWatch('type', form);
   const status = useWatch('status', form);
-  const countries = useWatch('countries', form);
 
   const statusOptions =
     type === ContentType.Movie
@@ -80,10 +79,7 @@ export default function MovieInfo() {
     if (error) {
       navigate('/admin/movie');
     }
-    if (movie) {
-      form.setFieldsValue(transformMovie(movie));
-    }
-  }, [error, form, movie, navigate]);
+  }, [error, navigate]);
 
   const [onAdd, { isLoading: isAdding }] = useAddMovieMutation();
   const [onUpdate, { isLoading: isUpdating }] = useUpdateMovieMutation();
@@ -97,26 +93,32 @@ export default function MovieInfo() {
       detectFormChanged(formData, movie as Movie, ['name', 'overview']);
       const res = await onUpdate({ ...formData, _id: movie._id }).unwrap();
       notify.success(res.message);
-      return form.setFieldsValue(transformMovie(res.data));
+    } else {
+      const res = await onAdd(formData).unwrap();
+      notify.success(res.message);
+      form.resetFields();
     }
 
-    const res = await onAdd(formData).unwrap();
-    notify.success(res.message);
-    form.resetFields();
+    window.scroll({ top: 0, behavior: 'smooth' });
   });
 
   return (
     <section className=' container'>
       <div className=' flex-center mb-4'>
-        <ProfileImage src={poster} gender={1} className=' w-24' size='md' key={poster} />
+        <ProfileImage src={poster} gender={1} className=' w-24' size='sm' key={poster} />
       </div>
       <Form
         layout='vertical'
         onFinish={onFinish}
         form={form}
         requiredMark={false}
+        key={movie?._id}
+        initialValues={
+          movie
+            ? transformMovie(movie)
+            : { backdropColor: '#200b0b', type: ContentType.TVSeries, subtitleType: SubtitleType.VietSub }
+        }
         autoComplete='off'
-        initialValues={{ backdropColor: '#200b0b', type: ContentType.TVSeries, subtitleType: SubtitleType.VietSub }}
         className='myflix-form grid grid-cols-1 gap-x-4 md:grid-cols-12'
       >
         <FormItem
@@ -266,6 +268,8 @@ export default function MovieInfo() {
             className='myflix-select'
             options={transformCategory(categories?.genres)}
             mode='multiple'
+            notFoundContent={null}
+            showSearch={false}
             maxTagCount='responsive'
           />
         </FormItem>
@@ -302,7 +306,8 @@ export default function MovieInfo() {
             className='myflix-select'
             options={transformCategory(categories?.countries)}
             mode='multiple'
-            value={countries}
+            notFoundContent={null}
+            showSearch={false}
             maxTagCount='responsive'
           />
         </FormItem>
@@ -312,6 +317,8 @@ export default function MovieInfo() {
             className='myflix-select'
             options={transformCategory(categories?.networks)}
             mode='multiple'
+            notFoundContent={null}
+            showSearch={false}
             maxTagCount='responsive'
           />
         </FormItem>

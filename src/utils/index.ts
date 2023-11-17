@@ -49,7 +49,7 @@ const today = dayjs().format(dateFormat);
 export const transformDate = (dateString: string) => ({
   toString: () => dayjs(dateString).format(dateFormat),
   toDayjs: () => dayjs(dateString, dateFormat),
-  isPastDate: () => dayjs(today, dateFormat).unix() < dayjs(dateString, dateFormat).unix(),
-  isFutureDate: () => dayjs(today, dateFormat).unix() > dayjs(dateString, dateFormat).unix(),
+  isPastDate: () => dayjs(today, dateFormat).unix() > dayjs(dateString, dateFormat).unix(),
+  isFutureDate: () => dayjs(today, dateFormat).unix() < dayjs(dateString, dateFormat).unix(),
   isToday: () => dayjs(dateString, dateFormat).unix() === dayjs(today, dateFormat).unix()
 });

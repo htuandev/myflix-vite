@@ -1,7 +1,7 @@
 export const tmdbImageSizes = {
   poster: {
-    sm: 'w440_and_h660_bestv2',
-    md: 'w300_and_h450_bestv2',
+    sm: 'w300_and_h450_bestv2',
+    md: 'w440_and_h660_bestv2',
     lg: 'w600_and_h900_bestv2'
   },
   face: {

@@ -41,7 +41,7 @@ const adminRoute = [
     element: ManageMovie
   },
   {
-    path: '/person/:slug',
+    path: '/movie/:slug',
     element: MovieInfo
   }
 ];

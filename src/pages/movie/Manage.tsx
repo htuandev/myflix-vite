@@ -31,8 +31,8 @@ export default function Manage() {
             loading={isFetching}
           />
         )}
-        <Link to='/admin/person/add'>
-          <Button icon={<HiSquaresPlus />}>Add person</Button>
+        <Link to='/admin/movie/add'>
+          <Button icon={<HiSquaresPlus />}>Add movie</Button>
         </Link>
       </div>
     </section>

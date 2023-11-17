@@ -124,7 +124,7 @@ export default function PersonInfo({ personId, open, setOpen }: Props) {
           <Form.Item label='Birthday' name='birthday' rules={[rules.birthday]} hasFeedback>
             <DatePicker className=' w-full' showToday={false} />
           </Form.Item>
-          <Form.Item label='Gender' name='gender' rules={[rules.required('Gender')]} hasFeedback>
+          <Form.Item label='Gender' name='gender' rules={[rules.selectRequired('Gender')]} hasFeedback>
             <Select
               options={[
                 { value: Gender.Female, label: 'Female' },

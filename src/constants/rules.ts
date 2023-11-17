@@ -1,4 +1,5 @@
 import { Rule } from 'antd/es/form';
+import dayjs from 'dayjs';
 import _ from 'lodash';
 import { transformDate } from '@/utils';
 import { ContentType, Status } from './enum';
@@ -30,9 +31,9 @@ const isPastDate = (record: string): Rule => ({
 const birthday: Rule = {
   validator(_, value) {
     if (!value) return Promise.reject(new Error('Date of birth is required'));
-    return transformDate(value).isPastDate()
-      ? Promise.resolve()
-      : Promise.reject(new Error('Date of birth must be a date in the past'));
+    return dayjs().isBefore(value, 'D')
+      ? Promise.reject(new Error('Date of birth must be a date in the past'))
+      : Promise.resolve();
   }
 };
 
@@ -53,14 +54,13 @@ const runtime = (type: ContentType): Rule => ({
 const releaseDate = (status: Status): Rule => ({
   validator(_rule, value) {
     if (status) {
-      const date = transformDate(value);
-
       if (status !== Status.Upcoming) {
         if (_.isNil(value)) return Promise.reject(new Error('Release date is required'));
-        if (date.isFutureDate()) return Promise.reject(new Error('Release date must be a date in the past'));
+        if (dayjs().isBefore(value, 'D')) return Promise.reject(new Error('Release date must be a date in the past'));
+        return Promise.resolve();
       }
 
-      if (date.isPastDate()) return Promise.reject(new Error('Release date must be a date in the future'));
+      if (dayjs().isAfter(value, 'D')) return Promise.reject(new Error('Release date must be a date in the future'));
 
       Promise.resolve();
     }
