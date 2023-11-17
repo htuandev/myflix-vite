@@ -30,5 +30,6 @@ export enum Status {
   Upcoming = 1,
   OnGoing = 2,
   Ended = 3,
-  Released = 4
+  Released = 4,
+  Trailer = 5
 }

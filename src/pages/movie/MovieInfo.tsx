@@ -38,6 +38,17 @@ export default function MovieInfo() {
   const transformCategory = (category: Category[] | undefined) =>
     category?.map(({ _id, name }) => ({ value: _id, label: name }));
 
+  const transformMovie = (movie: Movie) => ({
+    ...movie,
+    releaseDate: _.isEmpty(movie.releaseDate) ? movie.releaseDate : transformDate(movie.releaseDate as string).toDayjs()
+  });
+
+  const initialValues = isNew
+    ? { backdropColor: '#200b0b', type: ContentType.TVSeries, subtitleType: SubtitleType.VietSub }
+    : movie
+    ? transformMovie(movie)
+    : undefined;
+
   const { useWatch, useForm } = Form;
   const [form] = useForm<MovieForm>();
   const poster = useWatch('poster', form) || noImage;
@@ -49,12 +60,8 @@ export default function MovieInfo() {
 
   const statusOptions =
     type === ContentType.Movie
-      ? [
-          { label: 'Upcoming', value: Status.Upcoming },
-          { label: 'Released', value: Status.Released }
-        ]
+      ? [{ label: 'Released', value: Status.Released }]
       : [
-          { label: 'Upcoming', value: Status.Upcoming },
           { label: 'OnGoing', value: Status.OnGoing },
           { label: 'Ended', value: Status.Ended }
         ];
@@ -73,11 +80,6 @@ export default function MovieInfo() {
     setValue(key, handleImageUrl({ url: e.target.value, isLogo }));
     validate(key);
   };
-
-  const transformMovie = (movie: Movie) => ({
-    ...movie,
-    releaseDate: _.isEmpty(movie.releaseDate) ? movie.releaseDate : transformDate(movie.releaseDate as string).toDayjs()
-  });
 
   const navigate = useNavigate();
 
@@ -119,11 +121,7 @@ export default function MovieInfo() {
         form={form}
         requiredMark={false}
         key={movie?._id}
-        initialValues={
-          movie
-            ? transformMovie(movie)
-            : { backdropColor: '#200b0b', type: ContentType.TVSeries, subtitleType: SubtitleType.VietSub }
-        }
+        initialValues={initialValues}
         autoComplete='off'
         className='myflix-form grid grid-cols-1 gap-x-4 md:grid-cols-12'
       >
@@ -231,6 +229,7 @@ export default function MovieInfo() {
             disabledAlpha
             className=' w-full justify-start pl-2'
             onChange={(_, hex) => setValue('backdropColor', hex)}
+            key={movie?._id}
           />
         </FormItem>
 
@@ -241,7 +240,7 @@ export default function MovieInfo() {
           rules={[rules.toTalEpisodes(type)]}
           isLoading={isLoading}
         >
-          <InputNumber className='w-full' min={0} controls={false} disabled={type === ContentType.Movie} />
+          <InputNumber className='w-full' min={0} controls={false} disabled={type === ContentType.Movie} key={type} />
         </FormItem>
 
         <FormItem
@@ -312,7 +311,11 @@ export default function MovieInfo() {
           <Select
             className='myflix-select'
             notFoundContent={null}
-            options={statusOptions}
+            options={[
+              { label: 'Trailer', value: Status.Trailer },
+              { label: 'Upcoming', value: Status.Upcoming },
+              ...statusOptions
+            ]}
             onChange={() => validate('releaseDate')}
           />
         </FormItem>
