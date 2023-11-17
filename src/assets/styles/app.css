@@ -19,6 +19,7 @@
     --dark-910: #292929;
     --dark-925: #202122;
     --dark-950: #242526;
+    --plyr-color-main: var(--primary);
     --toastify-color-dark: var(--dark-900);
     --toastify-color-info: var(--info);
     --toastify-color-success: var(--success);

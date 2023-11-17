@@ -1,4 +1,5 @@
 import { ChangeEvent, useEffect } from 'react';
+import { FaEye } from 'react-icons/fa6';
 import { useNavigate } from 'react-router-dom';
 import { ColorPicker, DatePicker, Form, Input, InputNumber, Select } from 'antd';
 import dayjs from 'dayjs';
@@ -9,6 +10,7 @@ import { useAddMovieMutation, useGetMovieByIdQuery, useUpdateMovieMutation } fro
 import { ContentType, Status, SubtitleType } from '@/constants/enum';
 import rules from '@/constants/rules';
 import useDocumentTitle from '@/hooks/useDocumentTitle';
+import useGlightbox from '@/hooks/useGlightbox';
 import useValidId from '@/hooks/useValidId';
 import noImage from '@/images/no-image.svg';
 import FormItem from '@/shared/FormItem';
@@ -16,7 +18,7 @@ import Poster from '@/shared/Poster';
 import { Prettify } from '@/types';
 import { Category } from '@/types/category';
 import { Movie } from '@/types/movie';
-import { detectFormChanged, transformDate } from '@/utils';
+import { detectFormChanged, handleYoutubeId, transformDate } from '@/utils';
 import { handleFetch } from '@/utils/api';
 import notify from '@/utils/notify';
 import { handleImageUrl } from '@/utils/tmdb';
@@ -41,6 +43,9 @@ export default function MovieInfo() {
   const poster = useWatch('poster', form) || noImage;
   const type = useWatch('type', form);
   const status = useWatch('status', form);
+  const trailer = useWatch('trailer', form) || '';
+
+  useGlightbox(trailer);
 
   const statusOptions =
     type === ContentType.Movie
@@ -207,7 +212,17 @@ export default function MovieInfo() {
         </FormItem>
 
         <FormItem label='Trailer' className='md:col-span-6' name='trailer' isLoading={isLoading}>
-          <Input allowClear />
+          <Input
+            allowClear
+            onChange={(e) => setValue('trailer', handleYoutubeId(e.target.value))}
+            suffix={
+              trailer ? (
+                <span className='glightbox cursor-pointer' onClick={(e) => e.stopPropagation()} children={<FaEye />} />
+              ) : (
+                <span />
+              )
+            }
+          />
         </FormItem>
 
         <FormItem label='Backdrop Color' className='md:col-span-4' name='backdropColor' isLoading={isLoading}>

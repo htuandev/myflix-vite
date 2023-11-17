@@ -53,3 +53,9 @@ export const transformDate = (dateString: string) => ({
   isFutureDate: () => dayjs(today, dateFormat).unix() < dayjs(dateString, dateFormat).unix(),
   isToday: () => dayjs(dateString, dateFormat).unix() === dayjs(today, dateFormat).unix()
 });
+
+export const handleYoutubeId = (url: string) => {
+  const regex = /(?:https?:\/\/)?(?:www\.)?youtu(?:be\.com|\.be)\/(?:watch\?v=|embed\/|v\/)?([a-zA-Z0-9\-_]+)/;
+  const match = url.match(regex);
+  return match && match[1] ? match[1] : '';
+};
