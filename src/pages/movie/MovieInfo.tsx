@@ -11,7 +11,7 @@ import rules from '@/constants/rules';
 import useDocumentTitle from '@/hooks/useDocumentTitle';
 import useValidId from '@/hooks/useValidId';
 import FormItem from '@/shared/FormItem';
-import ProfileImage from '@/shared/ProfileImage';
+import Poster from '@/shared/Poster';
 import { Prettify } from '@/types';
 import { Category } from '@/types/category';
 import { Movie } from '@/types/movie';
@@ -105,7 +105,7 @@ export default function MovieInfo() {
   return (
     <section className=' container'>
       <div className=' flex-center mb-4'>
-        <ProfileImage src={poster} gender={1} className=' w-24' size='sm' key={poster} />
+        <Poster src={poster} className=' w-24' key={poster} />
       </div>
       <Form
         layout='vertical'
