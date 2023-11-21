@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { FaPenToSquare, FaTrash } from 'react-icons/fa6';
 import { HiSquaresPlus } from 'react-icons/hi2';
+import { IoPersonAdd } from 'react-icons/io5';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Input, Modal, Tag } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
@@ -118,8 +119,10 @@ export default function Manage() {
       render: (_, { _id, name, slug }) => (
         <div className=' flex-center gap-4'>
           <Link to={`/admin/movie/${slug}-${_id}`}>
-            {' '}
             <FaPenToSquare className=' cursor-pointer text-xl hover:text-dark-100' />
+          </Link>
+          <Link to={`/admin/cast/${slug}-${_id}`}>
+            <IoPersonAdd className=' cursor-pointer text-xl hover:text-dark-100' />
           </Link>
           <FaTrash
             className=' cursor-pointer text-xl hover:text-dark-100'
@@ -129,7 +132,7 @@ export default function Manage() {
       ),
       align: 'center',
       responsive: ['md'],
-      width: 120
+      width: 150
     }
   ];
 

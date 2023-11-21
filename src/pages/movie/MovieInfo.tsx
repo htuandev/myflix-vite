@@ -64,7 +64,7 @@ export default function MovieInfo() {
 
   const backdropUrl = () => {
     const url = backdrop || thumbnail;
-    return url?.replace('/original/', '/w1920_and_h600_multi_faces/');
+    return url?.replace('/original/', '/w1920_and_h427_multi_faces/');
   };
 
   useGlightbox(trailer);
@@ -147,7 +147,7 @@ export default function MovieInfo() {
   });
 
   return (
-    <section className=''>
+    <section>
       <div className=' mb-4 bg-cover bg-center bg-no-repeat' style={{ backgroundImage: `url(${backdropUrl()})` }}>
         <div style={{ backgroundColor: hexToRgba(backdropColor, 0.8) }} className='p-2 pl-8 lg:p-4 lg:pl-12'>
           <div className='flex items-center gap-4'>
