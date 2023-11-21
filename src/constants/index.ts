@@ -12,3 +12,5 @@ export const tmdbImageSizes = {
 };
 
 export const dateFormat = 'DD/MM/YYYY';
+
+export const BACKDROP_COLOR = '#200b0b';

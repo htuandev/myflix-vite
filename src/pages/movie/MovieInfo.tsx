@@ -7,6 +7,7 @@ import _ from 'lodash';
 import Button from '@/antd/Button';
 import { useGetCategoriesQuery } from '@/api/categoryApi';
 import { useAddMovieMutation, useGetMovieByIdQuery, useUpdateMovieMutation } from '@/api/movieApi';
+import { BACKDROP_COLOR } from '@/constants';
 import { ContentType, Status, SubtitleType } from '@/constants/enum';
 import rules from '@/constants/rules';
 import useDocumentTitle from '@/hooks/useDocumentTitle';
@@ -18,7 +19,7 @@ import Poster from '@/shared/Poster';
 import { Prettify } from '@/types';
 import { Category } from '@/types/category';
 import { Movie } from '@/types/movie';
-import { detectFormChanged, handleYoutubeId, hexToRgb, transformDate } from '@/utils';
+import { detectFormChanged, handleYoutubeId, hexToRgba, transformDate } from '@/utils';
 import { handleFetch } from '@/utils/api';
 import notify from '@/utils/notify';
 import { handleImageUrl } from '@/utils/tmdb';
@@ -44,7 +45,7 @@ export default function MovieInfo() {
   });
 
   const initialValues = isNew
-    ? { backdropColor: '#200b0b', type: ContentType.TVSeries, subtitleType: SubtitleType.VietSub }
+    ? { backdropColor: BACKDROP_COLOR, type: ContentType.TVSeries, subtitleType: SubtitleType.VietSub }
     : movie
     ? transformMovie(movie)
     : undefined;
@@ -148,7 +149,7 @@ export default function MovieInfo() {
   return (
     <section className=''>
       <div className=' mb-4 bg-cover bg-center bg-no-repeat' style={{ backgroundImage: `url(${backdropUrl()})` }}>
-        <div style={{ backgroundColor: hexToRgb(backdropColor, 0.8).rgba }} className='p-2 pl-8 lg:p-4 lg:pl-12'>
+        <div style={{ backgroundColor: hexToRgba(backdropColor, 0.8) }} className='p-2 pl-8 lg:p-4 lg:pl-12'>
           <div className='flex items-center gap-4'>
             <Poster src={poster} className=' w-20 md:w-28 lg:w-32' size='md' key={poster} />
             <h1 className=' text-heading'>{name}</h1>

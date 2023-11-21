@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import _ from 'lodash';
 import slugify from 'slugify';
-import { dateFormat } from '@/constants';
+import { BACKDROP_COLOR, dateFormat } from '@/constants';
 import { ObjectType } from '@/types';
 
 export const detectFormChanged = <T extends ObjectType>(formData: T, value: T, keys?: (keyof T)[]) => {
@@ -29,7 +29,7 @@ export const detectFormChanged = <T extends ObjectType>(formData: T, value: T, k
 export const handleSlug = (name: string) =>
   slugify(name, { replacement: '-', remove: /[$*_+~.()'"!\-:@]/g, lower: true, strict: true, locale: 'vi' });
 
-export const hexToRgb = (hex = '#200b0b', alpha = 1) => {
+export const hexToRgba = (hex = BACKDROP_COLOR, alpha = 1) => {
   hex = hex.replace('#', '');
   alpha = alpha < 0 ? 1 : alpha > 1 ? alpha / 100 : alpha;
 
@@ -38,10 +38,7 @@ export const hexToRgb = (hex = '#200b0b', alpha = 1) => {
   const g = (bigint >> 8) & 255;
   const b = bigint & 255;
 
-  const rgb = `rgb(${r} ${g} ${b})`;
-  const rgba = `rgba(${r} ${g} ${b} / ${alpha})`;
-
-  return { rgb, rgba };
+  return `rgba(${r} ${g} ${b} / ${alpha})`;
 };
 
 const today = dayjs().format(dateFormat);

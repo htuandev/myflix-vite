@@ -1,5 +1,5 @@
 import { ThemeConfig, theme } from 'antd';
-import { hexToRgb } from '@/utils';
+import { hexToRgba } from '@/utils';
 import colors from './colors';
 
 const themeConfig: ThemeConfig = {
@@ -30,7 +30,7 @@ const themeConfig: ThemeConfig = {
     colorBgElevated: colors.dark[925],
     colorPrimary: colors.primary,
     colorLink: colors.primary,
-    colorTextPlaceholder: hexToRgb(colors.dark[100], 0.45).rgba
+    colorTextPlaceholder: hexToRgba(colors.dark[100], 0.45)
   },
   components: {
     Layout: {
@@ -53,8 +53,8 @@ const themeConfig: ThemeConfig = {
       colorBgElevated: colors.dark[950]
     },
     Select: {
-      optionSelectedBg: hexToRgb(colors.primary, 0.4).rgba,
-      optionActiveBg: hexToRgb(colors.primary, 0.1).rgba,
+      optionSelectedBg: hexToRgba(colors.primary, 0.4),
+      optionActiveBg: hexToRgba(colors.primary, 0.1),
       colorBgElevated: colors.dark[925]
     },
     ColorPicker: {
