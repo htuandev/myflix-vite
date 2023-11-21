@@ -56,6 +56,9 @@ const themeConfig: ThemeConfig = {
       optionSelectedBg: hexToRgb(colors.primary, 0.4).rgba,
       optionActiveBg: hexToRgb(colors.primary, 0.1).rgba,
       colorBgElevated: colors.dark[925]
+    },
+    ColorPicker: {
+      zIndexPopupBase: 6000
     }
   }
 };

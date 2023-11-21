@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect } from 'react';
 import { FaEye } from 'react-icons/fa6';
 import { useNavigate } from 'react-router-dom';
-import { ColorPicker, DatePicker, Form, Input, InputNumber, Select } from 'antd';
+import { ColorPicker, DatePicker, Form, Input, InputNumber, Modal, Select } from 'antd';
 import dayjs from 'dayjs';
 import _ from 'lodash';
 import Button from '@/antd/Button';
@@ -18,7 +18,7 @@ import Poster from '@/shared/Poster';
 import { Prettify } from '@/types';
 import { Category } from '@/types/category';
 import { Movie } from '@/types/movie';
-import { detectFormChanged, handleYoutubeId, transformDate } from '@/utils';
+import { detectFormChanged, handleYoutubeId, hexToRgb, transformDate } from '@/utils';
 import { handleFetch } from '@/utils/api';
 import notify from '@/utils/notify';
 import { handleImageUrl } from '@/utils/tmdb';
@@ -51,10 +51,20 @@ export default function MovieInfo() {
 
   const { useWatch, useForm } = Form;
   const [form] = useForm<MovieForm>();
+  const name = useWatch('name', form);
   const poster = useWatch('poster', form) || noImage;
   const type = useWatch('type', form);
   const status = useWatch('status', form);
   const trailer = useWatch('trailer', form) || '';
+  const logo = useWatch('logo', form);
+  const thumbnail = useWatch('thumbnail', form);
+  const backdrop = useWatch('backdrop', form);
+  const backdropColor = useWatch('backdropColor', form);
+
+  const backdropUrl = () => {
+    const url = backdrop || thumbnail;
+    return url?.replace('/original/', '/w1920_and_h600_multi_faces/');
+  };
 
   useGlightbox(trailer);
 
@@ -66,19 +76,20 @@ export default function MovieInfo() {
           { label: 'Ended', value: Status.Ended }
         ];
 
-  const setValue = (key: keyof Movie, value?: unknown) => form.setFieldValue(key, value);
-  const validate = (key: keyof Movie) => form.validateFields([key]);
+  const setFieldValue = (key: keyof Movie, value?: unknown) => form.setFieldValue(key, value);
+  // const getFieldValue = (key: keyof Movie) => form.getFieldValue(key);
+  const validateField = (key: keyof Movie) => form.validateFields([key]);
 
   const typeOnChange = (value: ContentType) => {
-    if (status !== Status.Upcoming) setValue('status');
+    if (status !== Status.Upcoming) setFieldValue('status');
     const key = value === ContentType.Movie ? 'episodes' : 'runtime';
-    setValue(key);
-    validate(key);
+    setFieldValue(key);
+    validateField(key);
   };
 
   const imageChange = (e: ChangeEvent<HTMLInputElement>, key: keyof Movie, isLogo?: boolean) => {
-    setValue(key, handleImageUrl({ url: e.target.value, isLogo }));
-    validate(key);
+    setFieldValue(key, handleImageUrl({ url: e.target.value, isLogo }));
+    validateField(key);
   };
 
   const navigate = useNavigate();
@@ -110,10 +121,39 @@ export default function MovieInfo() {
     window.scroll({ top: 0, behavior: 'smooth' });
   });
 
+  const [modal, contextHolder] = Modal.useModal();
+
+  const previewImageConfig = (type?: 'poster' | 'logo' | 'thumbnail') => ({
+    title: <span className=' flex-center'>Preview Image</span>,
+    content: (
+      <div className=' flex-center'>
+        {type === 'poster' ? (
+          <Poster src={poster} size='lg' className=' w-[300px]' />
+        ) : type === 'logo' ? (
+          <img src={logo} className=' aspect-video h-40' />
+        ) : type === 'thumbnail' ? (
+          <img src={thumbnail} className=' aspect-video w-full' />
+        ) : (
+          <img src={backdrop} className=' aspect-video w-full' />
+        )}
+      </div>
+    ),
+    maskClosable: false,
+    wrapClassName: 'myflix-modal-confirm preview-image',
+    centered: true,
+    width: 1000,
+    zIndex: 5000
+  });
+
   return (
-    <section className=' container'>
-      <div className=' flex-center mb-4'>
-        <Poster src={poster} className=' w-24' key={poster} />
+    <section className=''>
+      <div className=' mb-4 bg-cover bg-center bg-no-repeat' style={{ backgroundImage: `url(${backdropUrl()})` }}>
+        <div style={{ backgroundColor: hexToRgb(backdropColor, 0.8).rgba }} className='p-2 pl-8 lg:p-4 lg:pl-12'>
+          <div className='flex items-center gap-4'>
+            <Poster src={poster} className=' w-20 md:w-28 lg:w-32' size='md' key={poster} />
+            <h1 className=' text-heading'>{name}</h1>
+          </div>
+        </div>
       </div>
       <Form
         layout='vertical'
@@ -123,7 +163,7 @@ export default function MovieInfo() {
         key={movie?._id}
         initialValues={initialValues}
         autoComplete='off'
-        className='myflix-form grid grid-cols-1 gap-x-4 md:grid-cols-12'
+        className='myflix-form grid grid-cols-1 gap-x-4 p-4 md:grid-cols-12 lg:p-8'
       >
         <FormItem
           label='Name'
@@ -141,7 +181,7 @@ export default function MovieInfo() {
             className='myflix-select'
             mode='tags'
             onChange={(values: string[]) =>
-              setValue(
+              setFieldValue(
                 'aka',
                 values.map((value) => value.trim()).filter((value) => value !== '')
               )
@@ -155,81 +195,12 @@ export default function MovieInfo() {
           />
         </FormItem>
 
-        <FormItem
-          label='Poster'
-          name='poster'
-          className='md:col-span-6'
-          rules={[rules.required('Poster'), rules.imageTMDB]}
-          hasFeedback
-          isLoading={isLoading}
-        >
-          <Input allowClear onChange={(e) => imageChange(e, 'poster')} />
-        </FormItem>
-
-        <FormItem
-          label='Thumbnail'
-          name='thumbnail'
-          className='md:col-span-6'
-          rules={[rules.required('Thumbnail'), rules.imageTMDB]}
-          hasFeedback
-          isLoading={isLoading}
-        >
-          <Input allowClear onChange={(e) => imageChange(e, 'thumbnail')} />
-        </FormItem>
-
-        <FormItem
-          label='Logo'
-          name='logo'
-          className='md:col-span-6'
-          rules={[rules.imageTMDB]}
-          hasFeedback
-          isLoading={isLoading}
-        >
-          <Input allowClear onChange={(e) => imageChange(e, 'logo', true)} />
-        </FormItem>
-
-        <FormItem
-          label='Backdrop'
-          name='backdrop'
-          className='md:col-span-6'
-          rules={[rules.imageTMDB]}
-          hasFeedback
-          isLoading={isLoading}
-        >
-          <Input allowClear onChange={(e) => imageChange(e, 'backdrop')} />
-        </FormItem>
-
-        <FormItem
-          label='Release Date'
-          className='md:col-span-6'
-          name='releaseDate'
-          rules={[rules.releaseDate(status)]}
-          isLoading={isLoading}
-        >
-          <DatePicker className=' w-full' showToday={false} />
-        </FormItem>
-
-        <FormItem label='Trailer' className='md:col-span-6' name='trailer' isLoading={isLoading}>
-          <Input
-            allowClear
-            onChange={(e) => setValue('trailer', handleYoutubeId(e.target.value))}
-            suffix={
-              trailer ? (
-                <span className='glightbox cursor-pointer' onClick={(e) => e.stopPropagation()} children={<FaEye />} />
-              ) : (
-                <span />
-              )
-            }
-          />
-        </FormItem>
-
         <FormItem label='Backdrop Color' className='md:col-span-4' name='backdropColor' isLoading={isLoading}>
           <ColorPicker
             showText
             disabledAlpha
             className=' w-full justify-start pl-2'
-            onChange={(_, hex) => setValue('backdropColor', hex)}
-            key={movie?._id}
+            onChange={(_, hex) => setFieldValue('backdropColor', hex)}
           />
         </FormItem>
 
@@ -254,6 +225,142 @@ export default function MovieInfo() {
         </FormItem>
 
         <FormItem
+          label='Poster'
+          name='poster'
+          className='md:col-span-6'
+          rules={[rules.required('Poster'), rules.imageTMDB]}
+          hasFeedback
+          isLoading={isLoading}
+        >
+          <Input
+            allowClear
+            onChange={(e) => imageChange(e, 'poster')}
+            suffix={
+              poster ? (
+                <span
+                  className=' cursor-pointer'
+                  children={<FaEye />}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    modal.info(previewImageConfig('poster'));
+                  }}
+                />
+              ) : (
+                <span />
+              )
+            }
+          />
+        </FormItem>
+
+        <FormItem
+          label='Thumbnail'
+          name='thumbnail'
+          className='md:col-span-6'
+          rules={[rules.required('Thumbnail'), rules.imageTMDB]}
+          hasFeedback
+          isLoading={isLoading}
+        >
+          <Input
+            allowClear
+            onChange={(e) => imageChange(e, 'thumbnail')}
+            suffix={
+              thumbnail ? (
+                <span
+                  className=' cursor-pointer'
+                  children={<FaEye />}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    modal.info(previewImageConfig('thumbnail'));
+                  }}
+                />
+              ) : (
+                <span />
+              )
+            }
+          />
+        </FormItem>
+
+        <FormItem
+          label='Logo'
+          name='logo'
+          className='md:col-span-6'
+          rules={[rules.imageTMDB]}
+          hasFeedback
+          isLoading={isLoading}
+        >
+          <Input
+            allowClear
+            onChange={(e) => imageChange(e, 'logo', true)}
+            suffix={
+              logo ? (
+                <span
+                  className=' cursor-pointer'
+                  children={<FaEye />}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    modal.info(previewImageConfig('logo'));
+                  }}
+                />
+              ) : (
+                <span />
+              )
+            }
+          />
+        </FormItem>
+
+        <FormItem
+          label='Backdrop'
+          name='backdrop'
+          className='md:col-span-6'
+          rules={[rules.imageTMDB]}
+          hasFeedback
+          isLoading={isLoading}
+        >
+          <Input
+            allowClear
+            onChange={(e) => imageChange(e, 'backdrop')}
+            suffix={
+              backdrop ? (
+                <span
+                  className=' cursor-pointer'
+                  children={<FaEye />}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    modal.info(previewImageConfig());
+                  }}
+                />
+              ) : (
+                <span />
+              )
+            }
+          />
+        </FormItem>
+
+        <FormItem
+          label='Release Date'
+          className='md:col-span-6'
+          name='releaseDate'
+          rules={[rules.releaseDate(status)]}
+          isLoading={isLoading}
+        >
+          <DatePicker className=' w-full' showToday={false} />
+        </FormItem>
+
+        <FormItem label='Trailer' className='md:col-span-6' name='trailer' isLoading={isLoading}>
+          <Input
+            allowClear
+            onChange={(e) => setFieldValue('trailer', handleYoutubeId(e.target.value))}
+            suffix={
+              trailer ? (
+                <span className='glightbox cursor-pointer' onClick={(e) => e.stopPropagation()} children={<FaEye />} />
+              ) : (
+                <span />
+              )
+            }
+          />
+        </FormItem>
+
+        <FormItem
           label='Overview'
           className='md:col-span-12'
           name='overview'
@@ -270,8 +377,7 @@ export default function MovieInfo() {
             notFoundContent={null}
             options={[
               { value: ContentType.Movie, label: 'Movie' },
-              { value: ContentType.TVSeries, label: 'TV Series' },
-              { value: ContentType.TVShow, label: 'TV Show' }
+              { value: ContentType.TVSeries, label: 'TV Series' }
             ]}
             onChange={typeOnChange}
             disabled={!isNew}
@@ -316,7 +422,7 @@ export default function MovieInfo() {
               { label: 'Upcoming', value: Status.Upcoming },
               ...statusOptions
             ]}
-            onChange={() => validate('releaseDate')}
+            onChange={() => validateField('releaseDate')}
           />
         </FormItem>
 
@@ -353,6 +459,7 @@ export default function MovieInfo() {
           />
         </div>
       </Form>
+      {contextHolder}
     </section>
   );
 }

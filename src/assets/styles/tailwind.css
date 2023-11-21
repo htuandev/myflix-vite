@@ -3,16 +3,24 @@
 @tailwind utilities;
 
 @layer components {
-  .myflix-modal-confirm-delete .ant-modal-confirm .ant-modal-confirm-btns {
+  .myflix-modal-confirm .ant-modal-confirm .ant-modal-confirm-btns {
     @apply flex items-center justify-end;
   }
 
-  .myflix-modal-confirm-delete .ant-modal-confirm .ant-modal-confirm-btns .ant-btn-default {
+  .myflix-modal-confirm .ant-modal-confirm .ant-modal-confirm-btns .ant-btn-default {
     @apply flex h-9 items-center border-transparent bg-dark-800/80 text-dark-100/[0.85] hover:border-transparent hover:bg-dark-800 hover:text-dark-100 focus-visible:outline-none;
   }
 
-  .myflix-modal-confirm-delete .ant-modal-confirm .ant-modal-confirm-btns .ant-btn-primary {
+  .myflix-modal-confirm .ant-modal-confirm .ant-modal-confirm-btns .ant-btn-primary {
     @apply flex h-9 items-center border-transparent bg-primary/80 text-dark-100/[0.85] hover:border-transparent hover:bg-primary hover:text-dark-100 focus-visible:outline-none;
+  }
+
+  .myflix-modal-confirm.preview-image .ant-modal-confirm-paragraph {
+    @apply max-w-full
+  }
+
+  .myflix-modal-confirm.preview-image .anticon.anticon-info-circle {
+    @apply hidden
   }
 
   .myflix-form .ant-input[disabled],

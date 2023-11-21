@@ -49,7 +49,7 @@ export default function ManageUser() {
     content: `Do you want to delete ${name ? name : email}?`,
     onOk: () => handleDelete(_id),
     okText: 'Delete',
-    wrapClassName: 'myflix-modal-confirm-delete',
+    wrapClassName: 'myflix-modal-confirm',
     maskClosable: false
   });
 

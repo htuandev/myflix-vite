@@ -23,7 +23,6 @@ export enum SubtitleType {
 export enum ContentType {
   Movie = 1,
   TVSeries = 2,
-  TVShow = 3
 }
 
 export enum Status {

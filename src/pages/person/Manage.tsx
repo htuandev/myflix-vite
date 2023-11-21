@@ -54,7 +54,7 @@ export default function Manage() {
     content: `Do you want to delete ${name}?`,
     onOk: () => handleDelete(_id),
     okText: 'Delete',
-    wrapClassName: 'myflix-modal-confirm-delete',
+    wrapClassName: 'myflix-modal-confirm',
     maskClosable: false
   });
 
