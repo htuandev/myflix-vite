@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { FaTrash } from 'react-icons/fa6';
 import { HiSquaresPlus } from 'react-icons/hi2';
 import { useNavigate } from 'react-router-dom';
@@ -18,10 +18,13 @@ import { Cast } from '@/types/type';
 import { hexToRgba } from '@/utils';
 import { handleFetch } from '@/utils/api';
 import notify from '@/utils/notify';
+import AddCast from './AddCast';
 
 export default function ManageCast() {
   const { id } = useValidId('/admin/movie');
-  const { data, error } = useGetCastsQuery(id);
+
+  const [open, setOpen] = useState(false);
+  const { data, error } = useGetCastsQuery(id, { skip: open });
 
   const backdropUrl = data?.movie.backdrop
     ? data?.movie.backdrop.replace('/original/', '/w1920_and_h427_multi_faces/')
@@ -141,7 +144,7 @@ export default function ManageCast() {
               <h1 className=' text-heading'>
                 {data.movie.name} {data.movie.year}
               </h1>
-              <Button icon={<HiSquaresPlus />} type='primary'>
+              <Button icon={<HiSquaresPlus />} type='primary' onClick={() => setOpen(true)}>
                 Add Cast
               </Button>
             </div>
@@ -149,7 +152,7 @@ export default function ManageCast() {
         </div>
       </div>
       <div className=' p-4 lg:p-8'>
-        <ConfigProvider renderEmpty={() => <Empty  image={Empty.PRESENTED_IMAGE_SIMPLE} />}>
+        <ConfigProvider renderEmpty={() => <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}>
           <Table
             dataSource={data.casts}
             columns={columns}
@@ -160,6 +163,7 @@ export default function ManageCast() {
         </ConfigProvider>
       </div>
       {contextHolder}
+      {open && <AddCast movieId={id} open={open} setOpen={setOpen} />}
     </section>
   ) : (
     <Hamster />
