@@ -9,7 +9,7 @@ import notify from './notify';
 const baseUrl: string = import.meta.env.VITE_API_URL || 'http://localhost:8816';
 const apiKey: string = import.meta.env.VITE_API_KEY;
 
-type Routes = 'auth' | 'user' | 'category' | 'person' | 'movie' | 'credit' | 'episode';
+type Routes = 'auth' | 'user' | 'category' | 'person' | 'movie' | 'cast' | 'episode';
 
 export const baseQuery = (route: Routes) =>
   fetchBaseQuery({

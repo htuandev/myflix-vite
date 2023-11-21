@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { authApi } from '@/api/authApi';
+import { castApi } from '@/api/castApi';
 import { categoryApi } from '@/api/categoryApi';
 import { movieApi } from '@/api/movieApi';
 import { personApi } from '@/api/personApi';
@@ -13,7 +14,8 @@ export const store = configureStore({
     [categoryApi.reducerPath]: categoryApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
     [personApi.reducerPath]: personApi.reducer,
-    [movieApi.reducerPath]: movieApi.reducer
+    [movieApi.reducerPath]: movieApi.reducer,
+    [castApi.reducerPath]: castApi.reducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -21,7 +23,8 @@ export const store = configureStore({
       categoryApi.middleware,
       userApi.middleware,
       personApi.middleware,
-      movieApi.middleware
+      movieApi.middleware,
+      castApi.middleware
     )
 });
 
