@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FaPenToSquare, FaTrash } from 'react-icons/fa6';
 import { HiSquaresPlus } from 'react-icons/hi2';
-import { Form, Input, Modal, Table } from 'antd';
+import { Input, Modal, Table } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { twMerge } from 'tailwind-merge';
 import Button from '@/antd/Button';
@@ -95,18 +95,17 @@ export default function ManageCategory({ type }: { type: CategoryType }) {
         className={twMerge('flex-center mb-4 gap-8', data && data.length > 0 ? 'md:justify-between' : 'md:justify-end')}
       >
         {data && data.length > 0 && (
-          <Form className=' hidden md:block'>
-            <Input
-              placeholder={`Search ${data.length} ${data.length === 1 ? categoryType : type.toLowerCase()}`}
-              className=' w-full md:w-80'
-              onChange={(e) => {
-                const value = e.target.value;
-                const filtered = data.filter((category) => category.name.includes(value));
-                setCategories(filtered);
-              }}
-              allowClear
-            />
-          </Form>
+          <Input
+            placeholder={`Search ${data.length} ${data.length === 1 ? categoryType : type.toLowerCase()}`}
+            className=' hidden w-full md:flex md:w-80'
+            name='search'
+            onChange={(e) => {
+              const value = e.target.value;
+              const filtered = data.filter((category) => category.name.includes(value));
+              setCategories(filtered);
+            }}
+            allowClear
+          />
         )}
         <Button icon={<HiSquaresPlus />} onClick={() => openModel(-1)}>
           Add {categoryType}
@@ -120,14 +119,9 @@ export default function ManageCategory({ type }: { type: CategoryType }) {
         scroll={{ scrollToFirstRowOnChange: true, x: true }}
         pagination={{ hideOnSinglePage: true, pageSize: 25, showSizeChanger: false }}
       />
-      <CategoryInfo
-        type={type}
-        categoryId={categoryId}
-        open={open}
-        setOpen={setOpen}
-        categoryType={categoryType}
-        key={categoryId}
-      />
+      {open && (
+        <CategoryInfo type={type} categoryId={categoryId} open={open} setOpen={setOpen} categoryType={categoryType} />
+      )}
       {contextHolder}
     </section>
   );

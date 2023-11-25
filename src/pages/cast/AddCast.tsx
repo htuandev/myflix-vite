@@ -23,7 +23,7 @@ export default function AddCast({ movieId, open, setOpen }: Props) {
 
   const debouncedSetState = _.debounce((value: string) => {
     setSearch(value);
-  }, 400);
+  }, 300);
 
   const { data } = useGetPeopleQuery({ search, pageSize: 5, sorted: 'credits' }, { skip: search.trim() === '' });
 

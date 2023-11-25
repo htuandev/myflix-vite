@@ -24,7 +24,7 @@ export default function ManageCast() {
   const { id } = useValidId('/admin/movie');
 
   const [open, setOpen] = useState(false);
-  const { data, error } = useGetCastsQuery(id, { skip: open });
+  const { data, error, isFetching } = useGetCastsQuery(id, { skip: open });
 
   const backdropUrl = data?.movie.backdrop
     ? data?.movie.backdrop.replace('/original/', '/w1920_and_h427_multi_faces/')
@@ -159,6 +159,7 @@ export default function ManageCast() {
             rowKey='_id'
             scroll={{ scrollToFirstRowOnChange: true, x: true }}
             pagination={{ hideOnSinglePage: true, pageSize: 5, showSizeChanger: false }}
+            loading={{ size: 'large', spinning: isFetching }}
           />
         </ConfigProvider>
       </div>

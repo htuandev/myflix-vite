@@ -150,7 +150,7 @@ export default function MovieInfo() {
     <section>
       <div className=' mb-4 bg-cover bg-center bg-no-repeat' style={{ backgroundImage: `url(${backdropUrl()})` }}>
         <div style={{ backgroundColor: hexToRgba(backdropColor, 0.8) }} className='p-2 pl-8 lg:p-4 lg:pl-12'>
-          <div className='flex items-center gap-4'>
+          <div className='mx-auto flex max-w-7xl  items-center gap-4'>
             <Poster src={poster} className=' w-20 md:w-28 lg:w-32' size='md' key={poster} />
             <h1 className=' text-heading'>{name}</h1>
           </div>
@@ -164,20 +164,13 @@ export default function MovieInfo() {
         key={movie?._id}
         initialValues={initialValues}
         autoComplete='off'
-        className='myflix-form grid grid-cols-1 gap-x-4 p-4 md:grid-cols-12 lg:p-8'
+        className='myflix-form mx-auto grid max-w-7xl grid-cols-1 gap-x-4 p-4 md:grid-cols-2 lg:p-8'
       >
-        <FormItem
-          label='Name'
-          name='name'
-          className='md:col-span-6'
-          rules={[rules.required('Name')]}
-          hasFeedback
-          isLoading={isLoading}
-        >
+        <FormItem label='Name' name='name' rules={[rules.required('Name')]} isLoading={isLoading}>
           <Input allowClear />
         </FormItem>
 
-        <FormItem label='As known as' name='aka' className='md:col-span-6' isLoading={isLoading}>
+        <FormItem label='As known as' name='aka' isLoading={isLoading}>
           <Select
             className='myflix-select'
             mode='tags'
@@ -196,41 +189,10 @@ export default function MovieInfo() {
           />
         </FormItem>
 
-        <FormItem label='Backdrop Color' className='md:col-span-4' name='backdropColor' isLoading={isLoading}>
-          <ColorPicker
-            showText
-            disabledAlpha
-            className=' w-full justify-start pl-2'
-            onChange={(_, hex) => setFieldValue('backdropColor', hex)}
-          />
-        </FormItem>
-
-        <FormItem
-          label='Total Episodes'
-          className='md:col-span-4'
-          name='episodes'
-          rules={[rules.toTalEpisodes(type)]}
-          isLoading={isLoading}
-        >
-          <InputNumber className='w-full' min={0} controls={false} disabled={type === ContentType.Movie} key={type} />
-        </FormItem>
-
-        <FormItem
-          label='Runtime'
-          className='md:col-span-4'
-          name='runtime'
-          rules={[rules.runtime(type)]}
-          isLoading={isLoading}
-        >
-          <InputNumber className='w-full' min={0} controls={false} disabled={type !== ContentType.Movie} />
-        </FormItem>
-
         <FormItem
           label='Poster'
           name='poster'
-          className='md:col-span-6'
           rules={[rules.required('Poster'), rules.imageTMDB]}
-          hasFeedback
           isLoading={isLoading}
         >
           <Input
@@ -253,12 +215,29 @@ export default function MovieInfo() {
           />
         </FormItem>
 
+        <FormItem label='Backdrop Color' name='backdropColor' isLoading={isLoading}>
+          <ColorPicker
+            showText
+            disabledAlpha
+            className=' w-full justify-start pl-2'
+            onChange={(_, hex) => setFieldValue('backdropColor', hex)}
+          />
+        </FormItem>
+
+        {type === ContentType.Movie ? (
+          <FormItem label='Runtime' name='runtime' rules={[rules.runtime(type)]} isLoading={isLoading}>
+            <InputNumber className='w-full' min={0} controls={false} />
+          </FormItem>
+        ) : (
+          <FormItem label='Total Episodes' name='episodes' rules={[rules.toTalEpisodes(type)]} isLoading={isLoading}>
+            <InputNumber className='w-full' min={0} controls={false} key={type} />
+          </FormItem>
+        )}
+
         <FormItem
           label='Thumbnail'
           name='thumbnail'
-          className='md:col-span-6'
           rules={[rules.required('Thumbnail'), rules.imageTMDB]}
-          hasFeedback
           isLoading={isLoading}
         >
           <Input
@@ -281,14 +260,7 @@ export default function MovieInfo() {
           />
         </FormItem>
 
-        <FormItem
-          label='Logo'
-          name='logo'
-          className='md:col-span-6'
-          rules={[rules.imageTMDB]}
-          hasFeedback
-          isLoading={isLoading}
-        >
+        <FormItem label='Logo' name='logo' rules={[rules.imageTMDB]} isLoading={isLoading}>
           <Input
             allowClear
             onChange={(e) => imageChange(e, 'logo', true)}
@@ -309,14 +281,7 @@ export default function MovieInfo() {
           />
         </FormItem>
 
-        <FormItem
-          label='Backdrop'
-          name='backdrop'
-          className='md:col-span-6'
-          rules={[rules.imageTMDB]}
-          hasFeedback
-          isLoading={isLoading}
-        >
+        <FormItem label='Backdrop' name='backdrop' rules={[rules.imageTMDB]} isLoading={isLoading}>
           <Input
             allowClear
             onChange={(e) => imageChange(e, 'backdrop')}
@@ -337,17 +302,11 @@ export default function MovieInfo() {
           />
         </FormItem>
 
-        <FormItem
-          label='Release Date'
-          className='md:col-span-6'
-          name='releaseDate'
-          rules={[rules.releaseDate(status)]}
-          isLoading={isLoading}
-        >
+        <FormItem label='Release Date' name='releaseDate' rules={[rules.releaseDate(status)]} isLoading={isLoading}>
           <DatePicker className=' w-full' showToday={false} />
         </FormItem>
 
-        <FormItem label='Trailer' className='md:col-span-6' name='trailer' isLoading={isLoading}>
+        <FormItem label='Trailer' name='trailer' isLoading={isLoading}>
           <Input
             allowClear
             onChange={(e) => setFieldValue('trailer', handleYoutubeId(e.target.value))}
@@ -363,7 +322,7 @@ export default function MovieInfo() {
 
         <FormItem
           label='Overview'
-          className='md:col-span-12'
+          className='md:col-span-2'
           name='overview'
           rules={[{ required: true, min: 200, message: 'Overview must be at least 200 characters.' }]}
           isLoading={isLoading}
@@ -372,7 +331,7 @@ export default function MovieInfo() {
           <Input.TextArea showCount maxLength={1000} rows={8} />
         </FormItem>
 
-        <FormItem label='Content Type' className='md:col-span-6' name='type' isLoading={isLoading}>
+        <FormItem label='Content Type' name='type' isLoading={isLoading}>
           <Select
             className='myflix-select'
             notFoundContent={null}
@@ -381,11 +340,10 @@ export default function MovieInfo() {
               { value: ContentType.TVSeries, label: 'TV Series' }
             ]}
             onChange={typeOnChange}
-            disabled={!isNew}
           />
         </FormItem>
 
-        <FormItem label='Genres' className='md:col-span-6' name='genres' isLoading={isLoading}>
+        <FormItem label='Genres' name='genres' isLoading={isLoading}>
           <Select
             className='myflix-select'
             options={transformCategory(categories?.genres)}
@@ -396,7 +354,7 @@ export default function MovieInfo() {
           />
         </FormItem>
 
-        <FormItem label='Subtitle Type' className='md:col-span-6' name='subtitleType' isLoading={isLoading}>
+        <FormItem label='Subtitle Type' name='subtitleType' isLoading={isLoading}>
           <Select
             className='myflix-select'
             notFoundContent={null}
@@ -408,13 +366,7 @@ export default function MovieInfo() {
           />
         </FormItem>
 
-        <FormItem
-          label='Status'
-          className='md:col-span-6'
-          name='status'
-          isLoading={isLoading}
-          rules={[rules.selectRequired('Status')]}
-        >
+        <FormItem label='Status' name='status' isLoading={isLoading} rules={[rules.selectRequired('Status')]}>
           <Select
             className='myflix-select'
             notFoundContent={null}
@@ -427,7 +379,7 @@ export default function MovieInfo() {
           />
         </FormItem>
 
-        <FormItem label='Countries' className='md:col-span-6' name='countries' isLoading={isLoading}>
+        <FormItem label='Countries' name='countries' isLoading={isLoading}>
           <Select
             className='myflix-select'
             options={transformCategory(categories?.countries)}
@@ -438,7 +390,7 @@ export default function MovieInfo() {
           />
         </FormItem>
 
-        <FormItem label='Networks' className='md:col-span-6' name='networks' isLoading={isLoading}>
+        <FormItem label='Networks' name='networks' isLoading={isLoading}>
           <Select
             className='myflix-select'
             options={transformCategory(categories?.networks)}
@@ -449,7 +401,7 @@ export default function MovieInfo() {
           />
         </FormItem>
 
-        <div className=' flex-center gap-4 md:col-span-12'>
+        <div className=' flex-center gap-4 md:col-span-2'>
           <Button children='Reset' htmlType='reset' className=' w-32 text-center' />
           <Button
             children={isNew ? 'Add' : 'Update'}

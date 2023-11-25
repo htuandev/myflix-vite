@@ -156,12 +156,7 @@ export default function Manage() {
             autoComplete='off'
           >
             <Form.Item name='search' className='myflix-search w-full md:w-80'>
-              <Input.Search
-                allowClear
-                enterButton='Search'
-                onSearch={() => form.submit()}
-                loading={isFetching && form.isFieldsTouched()}
-              />
+              <Input.Search allowClear enterButton='Search' onSearch={() => form.submit()} loading={isFetching} />
             </Form.Item>
             <Form.Item name='sorted' className='w-28 '>
               <Select
@@ -186,7 +181,7 @@ export default function Manage() {
         scroll={{ scrollToFirstRowOnChange: true, x: true }}
         pagination={false}
       />
-      <PersonInfo personId={personId} open={open} setOpen={setOpen} key={personId} />
+      {open && <PersonInfo personId={personId} open={open} setOpen={setOpen} key={personId} />}
       {contextHolder}
     </section>
   );

@@ -131,6 +131,7 @@ export default function ManageUser() {
               <Input
                 placeholder={`Search ${data.length} ${data.length === 1 ? 'user' : 'users'} by email`}
                 className=' w-full md:w-80'
+                name='search'
                 onChange={(e) => {
                   const value = e.target.value;
                   const filtered = data.filter((user) => user.email.includes(value));
@@ -166,7 +167,7 @@ export default function ManageUser() {
         scroll={{ scrollToFirstRowOnChange: true, x: true }}
         pagination={{ hideOnSinglePage: true, pageSize: 25, showSizeChanger: false }}
       />
-      <UserInfo userId={userId} open={open} setOpen={setOpen} key={userId} />
+      {open && <UserInfo userId={userId} open={open} setOpen={setOpen} />}
       {contextHolder}
     </section>
   );

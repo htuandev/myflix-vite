@@ -1,12 +1,13 @@
 import { Dispatch, SetStateAction } from 'react';
 import { useSelector } from 'react-redux';
-import { Form, Input, Modal, Select, Skeleton } from 'antd';
+import { Form, Input, Modal, Select } from 'antd';
 import Button from '@/antd/Button';
 import { useAddUserMutation, useGetUserByIdQuery, useUpdateUserMutation } from '@/api/userApi';
 import { Role } from '@/constants/enum';
 import drinkCoffeeAvatar from '@/images/drink_coffee_male.svg';
 import { RootState } from '@/reducers/store';
 import Avatar from '@/shared/Avatar';
+import FormItem from '@/shared/FormItem';
 import { User } from '@/types/user';
 import { detectFormChanged } from '@/utils';
 import { handleFetch } from '@/utils/api';
@@ -24,6 +25,8 @@ export default function UserInfo({ userId, open, setOpen }: Props) {
 
   const { data: user, isLoading } = useGetUserByIdQuery(userId, { skip: isNew });
   const { user: currentUser } = useSelector((state: RootState) => state.auth) as { user: User };
+
+  const initialValues = isNew ? { role: Role.User } : user ? user : undefined;
 
   const profileImage = Form.useWatch('profileImage', form) || drinkCoffeeAvatar;
 
@@ -83,48 +86,45 @@ export default function UserInfo({ userId, open, setOpen }: Props) {
       <div className=' flex-center'>
         <Avatar src={profileImage} className=' w-24' key={profileImage} />
       </div>
-      {isLoading ? (
-        <Skeleton paragraph={{ rows: 8 }} />
-      ) : (
-        <Form
-          layout='vertical'
-          onFinish={onFinish}
-          form={form}
-          requiredMark={false}
-          autoComplete='off'
-          initialValues={user ? user : { role: Role.User }}
-          className='myflix-form'
+      <Form
+        layout='vertical'
+        onFinish={onFinish}
+        form={form}
+        requiredMark={false}
+        autoComplete='off'
+        initialValues={initialValues}
+        className='myflix-form'
+        key={user?._id}
+      >
+        <FormItem label='Name' name='name' isLoading={isLoading}>
+          <Input />
+        </FormItem>
+        <FormItem
+          label='Email'
+          name='email'
+          isLoading={isLoading}
+          rules={[
+            { required: true, message: 'Email is required' },
+            {
+              type: 'email',
+              message: 'Invalid email'
+            }
+          ]}
         >
-          <Form.Item label='Name' name='name'>
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label='Email'
-            name='email'
-            hasFeedback
-            rules={[
-              { required: true, message: 'Email is required' },
-              {
-                type: 'email',
-                message: 'Invalid email'
-              }
+          <Input />
+        </FormItem>
+        <FormItem label='Profile Image' name='profileImage' isLoading={isLoading}>
+          <Input allowClear />
+        </FormItem>
+        <FormItem label='Role' name='role' isLoading={isLoading}>
+          <Select
+            options={[
+              { value: Role.Admin, label: 'Admin' },
+              { value: Role.User, label: 'User' }
             ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item label='Profile Image' name='profileImage' rules={[]}>
-            <Input allowClear />
-          </Form.Item>
-          <Form.Item label='Role' name='role'>
-            <Select
-              options={[
-                { value: Role.Admin, label: 'Admin' },
-                { value: Role.User, label: 'User' }
-              ]}
-            />
-          </Form.Item>
-        </Form>
-      )}
+          />
+        </FormItem>
+      </Form>
     </Modal>
   );
 }

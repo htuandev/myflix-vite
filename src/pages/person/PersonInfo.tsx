@@ -1,10 +1,11 @@
 import { Dispatch, SetStateAction } from 'react';
-import { DatePicker, Form, Input, Modal, Select, Skeleton } from 'antd';
+import { DatePicker, Form, Input, Modal, Select } from 'antd';
 import dayjs from 'dayjs';
 import Button from '@/antd/Button';
 import { useAddPersonMutation, useGetPersonByIdQuery, useUpdatePersonMutation } from '@/api/personApi';
 import { Gender } from '@/constants/enum';
 import rules from '@/constants/rules';
+import FormItem from '@/shared/FormItem';
 import ProfileImage from '@/shared/ProfileImage';
 import { Prettify } from '@/types';
 import { Person } from '@/types/person';
@@ -56,6 +57,7 @@ export default function PersonInfo({ personId, open, setOpen }: Props) {
   });
 
   const transformPerson = (person: Person) => ({ ...person, birthday: transformDate(person.birthday).toDayjs() });
+  const initialValues = person && transformPerson(person);
 
   const onCancel = () => {
     setOpen(false);
@@ -90,51 +92,47 @@ export default function PersonInfo({ personId, open, setOpen }: Props) {
       <div className=' flex-center'>
         <ProfileImage src={profileImage} gender={gender} className=' w-24' size='sm' type='circle' key={profileImage} />
       </div>
-      {isLoading ? (
-        <Skeleton paragraph={{ rows: 8 }} />
-      ) : (
-        <Form
-          layout='vertical'
-          onFinish={onFinish}
-          form={form}
-          requiredMark={false}
-          autoComplete='off'
-          initialValues={person && transformPerson(person)}
-          className='myflix-form'
+      <Form
+        layout='vertical'
+        onFinish={onFinish}
+        form={form}
+        requiredMark={false}
+        autoComplete='off'
+        initialValues={initialValues}
+        className='myflix-form'
+        key={person?._id}
+      >
+        <FormItem label='Name' name='name' isLoading={isLoading} rules={[rules.required('Name')]}>
+          <Input allowClear />
+        </FormItem>
+        <FormItem
+          label='Profile Image'
+          name='profileImage'
+          isLoading={isLoading}
+          rules={[rules.required('Profile image'), rules.imageTMDB]}
+          validateTrigger='onChange'
+          validateDebounce={100}
         >
-          <Form.Item label='Name' name='name' rules={[rules.required('Name')]} hasFeedback>
-            <Input allowClear />
-          </Form.Item>
-          <Form.Item
-            label='Profile Image'
-            name='profileImage'
-            rules={[rules.required('Profile image'), rules.imageTMDB]}
-            hasFeedback
-            validateTrigger='onChange'
-            validateDebounce={100}
-          >
-            <Input
-              allowClear
-              onChange={(e) => {
-                form.setFieldValue('profileImage', handleImageUrl({ url: e.target.value }));
-                form.validateFields(['profileImage']);
-              }}
-            />
-          </Form.Item>
-          <Form.Item label='Birthday' name='birthday' rules={[rules.birthday]} hasFeedback>
-            <DatePicker className=' w-full' showToday={false} />
-          </Form.Item>
-          <Form.Item label='Gender' name='gender' rules={[rules.selectRequired('Gender')]} hasFeedback>
-            <Select
-              options={[
-                { value: Gender.Female, label: 'Female' },
-                { value: Gender.Male, label: 'Male' }
-              ]}
-              disabled={!isNew}
-            />
-          </Form.Item>
-        </Form>
-      )}
+          <Input
+            allowClear
+            onChange={(e) => {
+              form.setFieldValue('profileImage', handleImageUrl({ url: e.target.value }));
+              form.validateFields(['profileImage']);
+            }}
+          />
+        </FormItem>
+        <FormItem label='Birthday' name='birthday' isLoading={isLoading} rules={[rules.birthday]}>
+          <DatePicker className=' w-full' showToday={false} />
+        </FormItem>
+        <FormItem label='Gender' name='gender' isLoading={isLoading} rules={[rules.selectRequired('Gender')]}>
+          <Select
+            options={[
+              { value: Gender.Female, label: 'Female' },
+              { value: Gender.Male, label: 'Male' }
+            ]}
+          />
+        </FormItem>
+      </Form>
     </Modal>
   );
 }

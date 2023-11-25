@@ -1,7 +1,8 @@
 import { Dispatch, SetStateAction } from 'react';
-import { Form, Input, Modal, Skeleton } from 'antd';
+import { Form, Input, Modal } from 'antd';
 import Button from '@/antd/Button';
 import { useAddCategoryMutation, useGetCategoryByIdQuery, useUpdateCategoryMutation } from '@/api/categoryApi';
+import FormItem from '@/shared/FormItem';
 import { Category, CategoryType } from '@/types/category';
 import { detectFormChanged, handleSlug } from '@/utils';
 import { handleFetch } from '@/utils/api';
@@ -71,32 +72,27 @@ export default function CategoryInfo({ type, open, setOpen, categoryId, category
       onCancel={onCancel}
       maskClosable={false}
     >
-      {isLoading ? (
-        <>
-          <Skeleton paragraph={{ rows: 2 }} />
-        </>
-      ) : (
-        <Form
-          layout='vertical'
-          onFinish={onFinish}
-          form={form}
-          requiredMark={false}
-          autoComplete='off'
-          initialValues={category}
+      <Form
+        layout='vertical'
+        onFinish={onFinish}
+        form={form}
+        requiredMark={false}
+        autoComplete='off'
+        initialValues={category}
+        key={category?._id}
+      >
+        <FormItem
+          label='Name'
+          name='name'
+          isLoading={isLoading}
+          rules={[
+            { required: true, message: 'Name is required' },
+            { max: 30, message: 'Too long. Maximum length is 30 characters' }
+          ]}
         >
-          <Form.Item
-            label='Name'
-            name='name'
-            hasFeedback
-            rules={[
-              { required: true, message: 'Name is required' },
-              { max: 30, message: 'Too long. Maximum length is 30 characters' }
-            ]}
-          >
-            <Input />
-          </Form.Item>
-        </Form>
-      )}
+          <Input />
+        </FormItem>
+      </Form>
     </Modal>
   );
 }
