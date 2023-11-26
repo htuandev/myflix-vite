@@ -61,10 +61,10 @@ export default function Manage() {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
-      render: (name, { aka }) => (
+      render: (name, { knownAs }) => (
         <>
           <p>{name}</p>
-          <p className=' text-sm text-dark-100/60'>{aka[0]}</p>
+          <p className=' text-sm text-dark-100/60'>{knownAs[0]}</p>
         </>
       )
     },

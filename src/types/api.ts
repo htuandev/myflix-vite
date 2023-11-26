@@ -20,7 +20,6 @@ export type Timestamps = {
 export type SearchParams = {
   page?: string;
   pageSize?: number;
-  sorted?: 'credits' | 'updatedAt';
   search: string;
 };
 

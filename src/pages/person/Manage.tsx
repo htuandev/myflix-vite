@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { FaPenToSquare, FaTrash } from 'react-icons/fa6';
 import { HiSquaresPlus } from 'react-icons/hi2';
 import { useSearchParams } from 'react-router-dom';
-import { Form, Input, Modal, Select, Tag } from 'antd';
+import { Form, Input, Modal, Tag } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import { twMerge } from 'tailwind-merge';
@@ -32,11 +32,7 @@ export default function Manage() {
     setOpen(true);
   };
 
-  const [params, setParams] = useState<SearchParams>({
-    search: '',
-    page,
-    sorted: 'updatedAt'
-  });
+  const [params, setParams] = useState<SearchParams>({ search: '', page });
 
   const { data, isFetching } = useGetPeopleQuery(params, { skip: open });
   const [onDelete] = useDeletePersonMutation();
@@ -157,15 +153,6 @@ export default function Manage() {
           >
             <Form.Item name='search' className='myflix-search w-full md:w-80'>
               <Input.Search allowClear enterButton='Search' onSearch={() => form.submit()} loading={isFetching} />
-            </Form.Item>
-            <Form.Item name='sorted' className='w-28 '>
-              <Select
-                placeholder='Sort by'
-                options={[
-                  { value: 'credits', label: 'Credits' },
-                  { value: 'updatedAt', label: 'Updated' }
-                ]}
-              />
             </Form.Item>
           </Form>
         )}

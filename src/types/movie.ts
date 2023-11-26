@@ -4,7 +4,7 @@ export type Movie = {
   _id: string;
   name: string;
   slug: string;
-  aka: string[];
+  knownAs: string[];
   poster: string;
   thumbnail: string;
   backdrop?: string;

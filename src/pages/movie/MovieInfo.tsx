@@ -164,13 +164,13 @@ export default function MovieInfo() {
           <Input allowClear />
         </FormItem>
 
-        <FormItem label='As known as' name='aka' isLoading={isLoading}>
+        <FormItem label='As known as' name='knownAs' isLoading={isLoading}>
           <Select
             className='myflix-select'
             mode='tags'
             onChange={(values: string[]) =>
               setFieldValue(
-                'aka',
+                'knownAs',
                 values.map((value) => value.trim()).filter((value) => value !== '')
               )
             }

@@ -121,6 +121,25 @@ export default function PersonInfo({ personId, open, setOpen }: Props) {
             }}
           />
         </FormItem>
+
+        <FormItem label='As known as' name='knownAs' isLoading={isLoading}>
+          <Select
+            className='myflix-select'
+            mode='tags'
+            onChange={(values: string[]) =>
+              form.setFieldValue(
+                'knownAs',
+                values.map((value) => value.trim()).filter((value) => value !== '')
+              )
+            }
+            notFoundContent={null}
+            showSearch={false}
+            maxTagCount='responsive'
+            suffixIcon={null}
+            tokenSeparators={[',']}
+            popupClassName='myflix-select-tags'
+          />
+        </FormItem>
         <FormItem label='Birthday' name='birthday' isLoading={isLoading} rules={[rules.birthday]}>
           <DatePicker className=' w-full' showToday={false} />
         </FormItem>
