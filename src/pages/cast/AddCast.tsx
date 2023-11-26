@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useState } from 'react';
-import { Form, Modal, Select } from 'antd';
+import { Form, Input, Modal, Select } from 'antd';
 import _ from 'lodash';
 import Button from '@/antd/Button';
 import { useAddCastMutation } from '@/api/castApi';
@@ -14,7 +14,7 @@ type Props = {
   setOpen: Dispatch<SetStateAction<boolean>>;
 };
 
-type DataForm = { personId: string };
+type DataForm = { personId: string; character?: string };
 
 export default function AddCast({ movieId, open, setOpen }: Props) {
   const [form] = Form.useForm<DataForm>();
@@ -25,12 +25,12 @@ export default function AddCast({ movieId, open, setOpen }: Props) {
     setSearch(value);
   }, 300);
 
-  const { data } = useGetPeopleQuery({ search, pageSize: 5, sorted: 'credits' }, { skip: search.trim() === '' });
+  const { data } = useGetPeopleQuery({ search, pageSize: 10 });
 
   const [onAdd, { isLoading }] = useAddCastMutation();
 
-  const onFinish = handleFetch(async ({ personId }: DataForm) => {
-    const res = await onAdd({ id: movieId, personId }).unwrap();
+  const onFinish = handleFetch(async (formData: DataForm) => {
+    const res = await onAdd({ id: movieId, formData }).unwrap();
     notify.success(res.message);
     form.resetFields();
     setSearch('');
@@ -68,6 +68,9 @@ export default function AddCast({ movieId, open, setOpen }: Props) {
             }}
             filterOption={false}
           />
+        </FormItem>
+        <FormItem label='Character' name='character'>
+          <Input allowClear />
         </FormItem>
       </Form>
     </Modal>

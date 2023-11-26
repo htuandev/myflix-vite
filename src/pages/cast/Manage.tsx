@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { FaTrash } from 'react-icons/fa6';
+import { FaPenToSquare, FaTrash } from 'react-icons/fa6';
 import { HiSquaresPlus } from 'react-icons/hi2';
 import { useNavigate } from 'react-router-dom';
 import { Tag, Table, Modal, ConfigProvider, Empty } from 'antd';
@@ -14,17 +14,20 @@ import useValidId from '@/hooks/useValidId';
 import Hamster from '@/layouts/Hamster';
 import Poster from '@/shared/Poster';
 import ProfileImage from '@/shared/ProfileImage';
-import { Cast } from '@/types/type';
+import { Cast } from '@/types/cast';
 import { hexToRgba } from '@/utils';
 import { handleFetch } from '@/utils/api';
 import notify from '@/utils/notify';
 import AddCast from './AddCast';
+import EditCast from './EditCast';
 
 export default function ManageCast() {
   const { id } = useValidId('/admin/movie');
 
   const [open, setOpen] = useState(false);
-  const { data, error, isFetching } = useGetCastsQuery(id, { skip: open });
+  const [openEdit, setOpenEdit] = useState(false);
+  const [castId, setCastId] = useState('');
+  const { data, error, isFetching } = useGetCastsQuery(id, { skip: open || openEdit });
 
   const backdropUrl = data?.movie.backdrop
     ? data?.movie.backdrop.replace('/original/', '/w1920_and_h427_multi_faces/')
@@ -78,9 +81,9 @@ export default function ManageCast() {
       key: 'name'
     },
     {
-      title: 'Slug',
-      dataIndex: 'slug',
-      key: 'slug',
+      title: 'Character',
+      dataIndex: 'character',
+      key: 'character',
       responsive: ['lg']
     },
     {
@@ -119,6 +122,13 @@ export default function ManageCast() {
       key: 'action',
       render: (_, { _id, name }) => (
         <div className=' flex-center gap-4'>
+          <FaPenToSquare
+            className=' cursor-pointer text-xl hover:text-dark-100'
+            onClick={() => {
+              setCastId(_id);
+              setOpenEdit(true);
+            }}
+          />
           <FaTrash
             className=' cursor-pointer text-xl hover:text-dark-100'
             onClick={() => modal.confirm(confirmDeleteConfig({ _id, name }))}
@@ -144,7 +154,7 @@ export default function ManageCast() {
               <h1 className=' text-heading'>
                 {data.movie.name} {data.movie.year}
               </h1>
-              <Button icon={<HiSquaresPlus />} type='primary' onClick={() => setOpen(true)}>
+              <Button icon={<HiSquaresPlus />} type='primary' onClick={() => setOpen(true)} className=' hidden md:flex'>
                 Add Cast
               </Button>
             </div>
@@ -158,13 +168,14 @@ export default function ManageCast() {
             columns={columns}
             rowKey='_id'
             scroll={{ scrollToFirstRowOnChange: true, x: true }}
-            pagination={{ hideOnSinglePage: true, pageSize: 5, showSizeChanger: false }}
+            pagination={{ hideOnSinglePage: true, pageSize: 10, showSizeChanger: false }}
             loading={{ size: 'large', spinning: isFetching }}
           />
         </ConfigProvider>
       </div>
       {contextHolder}
       {open && <AddCast movieId={id} open={open} setOpen={setOpen} />}
+      {openEdit && <EditCast castId={castId} open={openEdit} setOpen={setOpenEdit} />}
     </section>
   ) : (
     <Hamster />
