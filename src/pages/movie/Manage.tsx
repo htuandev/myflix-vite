@@ -8,6 +8,7 @@ import Table, { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import { twMerge } from 'tailwind-merge';
 import Button from '@/antd/Button';
+import Pagination from '@/antd/Pagination';
 import { useDeleteMovieMutation, useGetMoviesQuery } from '@/api/movieApi';
 import { ContentType } from '@/constants/enum';
 import useDocumentTitle from '@/hooks/useDocumentTitle';
@@ -21,7 +22,7 @@ export default function Manage() {
   useDocumentTitle(title);
 
   const [searchParams] = useSearchParams();
-  const page = searchParams.get('page') || undefined;
+  const page = searchParams.get('page') || '1';
   const [search, setSearch] = useState('');
 
   const { data, isFetching } = useGetMoviesQuery({ page, search });
@@ -139,17 +140,17 @@ export default function Manage() {
   return (
     <section className=' container'>
       <h1 className=' text-heading'>{title}</h1>
-      <div className={twMerge('flex-center mb-4 gap-8', data ? 'md:justify-between' : 'md:justify-end')}>
+      <div className='flex-center mb-4 gap-8 md:justify-between'>
         {data && (
           <Input.Search
             className='myflix-search w-full md:w-80'
             allowClear
             enterButton='Search'
-            onSearch={(value) => setSearch(value)}
-            loading={isFetching}
+            onSearch={(value) => setSearch(value.trim())}
+            disabled={isFetching}
           />
         )}
-        <Link to='/admin/movie/add'>
+        <Link to='/admin/movie/add' className='hidden md:block'>
           <Button icon={<HiSquaresPlus />}>Add movie</Button>
         </Link>
       </div>
@@ -161,6 +162,7 @@ export default function Manage() {
         scroll={{ scrollToFirstRowOnChange: true, x: true }}
         pagination={false}
       />
+      {data && data.totalPages > 1 && <Pagination page={page} totalResults={data.totalResults} pathname='movie' />}
       {contextHolder}
     </section>
   );

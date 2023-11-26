@@ -25,7 +25,7 @@ export type SearchParams = {
 
 export type DataList<T> = {
   totalPages: number;
-  totalData: number;
+  totalRecords: number;
   totalResults: number;
   results: T[];
 };

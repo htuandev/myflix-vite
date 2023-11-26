@@ -1,17 +1,17 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaPenToSquare, FaTrash } from 'react-icons/fa6';
 import { HiSquaresPlus } from 'react-icons/hi2';
-import { useSearchParams } from 'react-router-dom';
-import { Form, Input, Modal, Tag } from 'antd';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Input, Modal, Tag } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import { twMerge } from 'tailwind-merge';
 import Button from '@/antd/Button';
+import Pagination from '@/antd/Pagination';
 import { useDeletePersonMutation, useGetPeopleQuery } from '@/api/personApi';
 import { Gender } from '@/constants/enum';
 import useDocumentTitle from '@/hooks/useDocumentTitle';
 import ProfileImage from '@/shared/ProfileImage';
-import { SearchParams } from '@/types/api';
 import { Person } from '@/types/person';
 import { handleFetch } from '@/utils/api';
 import notify from '@/utils/notify';
@@ -21,8 +21,10 @@ export default function Manage() {
   const title = 'Manage Person';
   useDocumentTitle(title);
 
+  const navigate = useNavigate();
+
   const [searchParams] = useSearchParams();
-  const page = searchParams.get('page') || undefined;
+  const page = searchParams.get('page') || '1';
 
   const [open, setOpen] = useState(false);
   const [personId, setPersonId] = useState('');
@@ -32,10 +34,16 @@ export default function Manage() {
     setOpen(true);
   };
 
-  const [params, setParams] = useState<SearchParams>({ search: '', page });
+  const [search, setSearch] = useState('');
 
-  const { data, isFetching } = useGetPeopleQuery(params, { skip: open });
+  const { data, isFetching, error } = useGetPeopleQuery({ search, page }, { skip: open });
   const [onDelete] = useDeletePersonMutation();
+
+  useEffect(() => {
+    if (error) {
+      navigate('/admin/person');
+    }
+  }, [error, navigate]);
 
   const handleDelete = handleFetch(async (id: string) => {
     const res = await onDelete(id).unwrap();
@@ -53,10 +61,6 @@ export default function Manage() {
     wrapClassName: 'myflix-modal-confirm',
     maskClosable: false
   });
-
-  const [form] = Form.useForm<SearchParams>();
-
-  const onFinish = (values: SearchParams) => setParams((params) => ({ ...params, ...values }));
 
   const columns: ColumnsType<Person> = [
     {
@@ -141,22 +145,17 @@ export default function Manage() {
   return (
     <section className=' container'>
       <h1 className=' text-heading'>{title}</h1>
-      <div className={twMerge('flex-center mb-4 gap-8', data ? 'md:justify-between' : 'md:justify-end')}>
+      <div className='flex-center mb-4 gap-8 md:justify-between'>
         {data && (
-          <Form
-            className='hidden md:flex'
-            form={form}
-            layout='inline'
-            onFinish={onFinish}
-            initialValues={params}
-            autoComplete='off'
-          >
-            <Form.Item name='search' className='myflix-search w-full md:w-80'>
-              <Input.Search allowClear enterButton='Search' onSearch={() => form.submit()} loading={isFetching} />
-            </Form.Item>
-          </Form>
+          <Input.Search
+            className='myflix-search w-full md:w-80'
+            allowClear
+            enterButton='Search'
+            onSearch={(value) => setSearch(value.trim())}
+            disabled={isFetching}
+          />
         )}
-        <Button icon={<HiSquaresPlus />} onClick={() => openModal('')}>
+        <Button icon={<HiSquaresPlus />} onClick={() => openModal('')} className='hidden md:block'>
           Add person
         </Button>
       </div>
@@ -168,6 +167,7 @@ export default function Manage() {
         scroll={{ scrollToFirstRowOnChange: true, x: true }}
         pagination={false}
       />
+      {data && data.totalPages > 1 && <Pagination page={page} totalResults={data.totalResults} pathname='person' />}
       {open && <PersonInfo personId={personId} open={open} setOpen={setOpen} key={personId} />}
       {contextHolder}
     </section>

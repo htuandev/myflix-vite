@@ -57,8 +57,8 @@ const themeConfig: ThemeConfig = {
       optionActiveBg: hexToRgba(colors.primary, 0.1),
       colorBgElevated: colors.dark[925]
     },
-    ColorPicker: {
-      zIndexPopupBase: 6000
+    Pagination: {
+      controlHeight: 32
     }
   }
 };

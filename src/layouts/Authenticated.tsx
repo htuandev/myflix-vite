@@ -45,7 +45,7 @@ export default function Authenticated() {
 
   useLayoutEffect(() => {
     window.scrollTo(0, 0);
-  }, [location.pathname]);
+  }, [location.pathname, location.search]);
 
   return user ? <Outlet /> : <Hamster />;
 }

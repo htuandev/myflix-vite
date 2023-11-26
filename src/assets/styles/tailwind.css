@@ -39,7 +39,7 @@
   }
 
   .myflix-search .ant-input-search-button {
-    @apply bg-primary
+    @apply bg-primary border-transparent text-white
   }
 
   .myflix-select-tags.ant-select-dropdown .ant-select-item-option-selected {
