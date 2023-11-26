@@ -14,12 +14,13 @@ import useDocumentTitle from '@/hooks/useDocumentTitle';
 import useGlightbox from '@/hooks/useGlightbox';
 import useValidId from '@/hooks/useValidId';
 import noImage from '@/images/no-image.svg';
+import Backdrop from '@/shared/Backdrop';
 import FormItem from '@/shared/FormItem';
 import Poster from '@/shared/Poster';
 import { Prettify } from '@/types';
 import { Category } from '@/types/category';
 import { Movie } from '@/types/movie';
-import { detectFormChanged, handleYoutubeId, hexToRgba, transformDate } from '@/utils';
+import { detectFormChanged, handleYoutubeId, transformDate } from '@/utils';
 import { handleFetch } from '@/utils/api';
 import notify from '@/utils/notify';
 import { handleImageUrl } from '@/utils/tmdb';
@@ -61,11 +62,6 @@ export default function MovieInfo() {
   const thumbnail = useWatch('thumbnail', form);
   const backdrop = useWatch('backdrop', form);
   const backdropColor = useWatch('backdropColor', form);
-
-  const backdropUrl = () => {
-    const url = backdrop || thumbnail;
-    return url?.replace('/original/', '/w1920_and_h427_multi_faces/');
-  };
 
   useGlightbox(trailer);
 
@@ -148,14 +144,12 @@ export default function MovieInfo() {
 
   return (
     <section>
-      <div className=' mb-4 bg-cover bg-center bg-no-repeat' style={{ backgroundImage: `url(${backdropUrl()})` }}>
-        <div style={{ backgroundColor: hexToRgba(backdropColor, 0.8) }} className='p-2 pl-8 lg:p-4 lg:pl-12'>
-          <div className='mx-auto flex max-w-7xl  items-center gap-4'>
-            <Poster src={poster} className=' w-20 md:w-28 lg:w-32' size='md' key={poster} />
-            <h1 className=' text-heading'>{name}</h1>
-          </div>
+      <Backdrop backdropUrl={backdrop || thumbnail} backdropColor={backdropColor}>
+        <div className='mx-auto flex max-w-7xl  items-center gap-4'>
+          <Poster src={poster} className=' w-20 md:w-28 lg:w-32' size='md' key={poster} />
+          <h1 className=' text-heading'>{name}</h1>
         </div>
-      </div>
+      </Backdrop>
       <Form
         layout='vertical'
         onFinish={onFinish}

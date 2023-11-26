@@ -12,10 +12,10 @@ import { Gender } from '@/constants/enum';
 import useDocumentTitle from '@/hooks/useDocumentTitle';
 import useValidId from '@/hooks/useValidId';
 import Hamster from '@/layouts/Hamster';
+import Backdrop from '@/shared/Backdrop';
 import Poster from '@/shared/Poster';
 import ProfileImage from '@/shared/ProfileImage';
 import { Cast } from '@/types/cast';
-import { hexToRgba } from '@/utils';
 import { handleFetch } from '@/utils/api';
 import notify from '@/utils/notify';
 import AddCast from './AddCast';
@@ -28,10 +28,6 @@ export default function ManageCast() {
   const [openEdit, setOpenEdit] = useState(false);
   const [castId, setCastId] = useState('');
   const { data, error, isFetching } = useGetCastsQuery(id, { skip: open || openEdit });
-
-  const backdropUrl = data?.movie.backdrop
-    ? data?.movie.backdrop.replace('/original/', '/w1920_and_h427_multi_faces/')
-    : data?.movie.thumbnail.replace('/original/', '/w1920_and_h427_multi_faces/');
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -143,24 +139,22 @@ export default function ManageCast() {
 
   return data ? (
     <section className=' min-h-[calc(100vh-64px)]'>
-      <div className=' mb-4 bg-cover bg-center bg-no-repeat' style={{ backgroundImage: `url(${backdropUrl})` }}>
-        <div
-          style={{ backgroundColor: hexToRgba(data.movie.backdropColor, 0.8) }}
-          className='p-4 pl-12 lg:p-8 lg:pl-16'
-        >
-          <div className='flex items-center gap-4'>
-            <Poster src={data.movie.poster} className=' w-20 rounded-md md:w-32 lg:w-44' size='lg' />
-            <div>
-              <h1 className=' text-heading'>
-                {data.movie.name} {data.movie.year}
-              </h1>
-              <Button icon={<HiSquaresPlus />} type='primary' onClick={() => setOpen(true)} className=' hidden md:flex'>
-                Add Cast
-              </Button>
-            </div>
+      <Backdrop
+        backdropUrl={data && (data.movie.backdrop || data.movie.thumbnail)}
+        backdropColor={data && data.movie.backdropColor}
+      >
+        <div className='flex items-center gap-4'>
+          <Poster src={data.movie.poster} className=' w-20 rounded-md md:w-32 lg:w-44' size='lg' />
+          <div>
+            <h1 className=' text-heading'>
+              {data.movie.name} {data.movie.year}
+            </h1>
+            <Button icon={<HiSquaresPlus />} type='primary' onClick={() => setOpen(true)} className=' hidden md:flex'>
+              Add Cast
+            </Button>
           </div>
         </div>
-      </div>
+      </Backdrop>
       <div className=' p-4 lg:p-8'>
         <ConfigProvider renderEmpty={() => <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}>
           <Table
