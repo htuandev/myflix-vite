@@ -8,6 +8,7 @@ const ManagePerson = lazy(() => import('@/pages/person/Manage'));
 const ManageMovie = lazy(() => import('@/pages/movie/Manage'));
 const MovieInfo = lazy(() => import('@/pages/movie/MovieInfo'));
 const ManageCast = lazy(() => import('@/pages/cast/Manage'));
+const ManageEpisode = lazy(() => import('@/pages/episode/ManageEpisode'));
 
 const adminRoute = [
   {
@@ -48,6 +49,10 @@ const adminRoute = [
   {
     path: '/cast/:slug',
     element: ManageCast
+  },
+  {
+    path: '/episode/:slug',
+    element: ManageEpisode
   }
 ];
 

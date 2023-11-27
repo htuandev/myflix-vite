@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FaPenToSquare, FaTrash } from 'react-icons/fa6';
+import { FaFileCirclePlus, FaPenToSquare, FaTrash } from 'react-icons/fa6';
 import { HiSquaresPlus } from 'react-icons/hi2';
 import { IoPersonAdd } from 'react-icons/io5';
 import { Link, useSearchParams } from 'react-router-dom';
@@ -124,6 +124,9 @@ export default function Manage() {
           </Link>
           <Link to={`/admin/cast/${slug}-${_id}`}>
             <IoPersonAdd className=' cursor-pointer text-xl hover:text-dark-100' />
+          </Link>
+          <Link to={`/admin/episode/${slug}-${_id}`}>
+            <FaFileCirclePlus className=' cursor-pointer text-xl hover:text-dark-100' />
           </Link>
           <FaTrash
             className=' cursor-pointer text-xl hover:text-dark-100'

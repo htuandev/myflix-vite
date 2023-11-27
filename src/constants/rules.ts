@@ -22,7 +22,7 @@ const imageTMDB: Rule = {
 
 const isPastDate = (record: string): Rule => ({
   validator(_rule, value) {
-    transformDate(value).isPastDate()
+    return transformDate(value).isPastDate()
       ? Promise.resolve()
       : Promise.reject(new Error(`${record} must be a date in the past`));
   }
@@ -67,9 +67,30 @@ const releaseDate = (status: Status): Rule => ({
       return Promise.resolve();
     }
 
-    Promise.resolve();
+    return Promise.resolve();
   }
 });
 
-const rules = { required, selectRequired, imageTMDB, isPastDate, birthday, toTalEpisodes, releaseDate, runtime };
+const m3u8: Rule = {
+  validator(_, value) {
+    if (!value) return Promise.reject(new Error('Link is required'));
+
+    const regex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*\.m3u8$/i;
+    if (!regex.test(value)) return Promise.reject(new Error('Only accept m3u8 file'));
+
+    return Promise.resolve();
+  }
+};
+
+const rules = {
+  required,
+  selectRequired,
+  imageTMDB,
+  isPastDate,
+  birthday,
+  toTalEpisodes,
+  releaseDate,
+  runtime,
+  m3u8
+};
 export default rules;
