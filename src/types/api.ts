@@ -1,3 +1,5 @@
+import { Prettify } from '.';
+
 export type SuccessResponse = {
   status: 'success';
   message: string;
@@ -10,6 +12,8 @@ export type ErrorResponse = {
     message: string;
   };
 };
+
+export type Response<T> = Prettify<SuccessResponse & { data: Prettify<T> }>;
 
 export type Timestamps = {
   createdAt: string;
