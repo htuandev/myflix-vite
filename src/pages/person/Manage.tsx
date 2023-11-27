@@ -167,7 +167,7 @@ export default function Manage() {
         scroll={{ scrollToFirstRowOnChange: true, x: true }}
         pagination={false}
       />
-      {data && data.totalPages > 1 && <Pagination page={page} totalResults={data.totalResults} pathname='person' />}
+      {data && data.totalPages > 1 && <Pagination page={page} totalResults={data.totalResults} />}
       {open && <PersonInfo personId={personId} open={open} setOpen={setOpen} key={personId} />}
       {contextHolder}
     </section>

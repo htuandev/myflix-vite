@@ -1,14 +1,15 @@
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Pagination as AntdPagination } from 'antd';
 
 type Props = {
   page: string;
   totalResults: number;
-  pathname: string;
 };
 
-export default function Pagination({ page, totalResults, pathname }: Props) {
+export default function Pagination({ page, totalResults }: Props) {
+  const { pathname } = useLocation();
   const navigate = useNavigate();
+
   return (
     <AntdPagination
       className='myflix-pagination mt-4 flex flex-wrap items-center justify-end gap-y-4'
@@ -18,7 +19,7 @@ export default function Pagination({ page, totalResults, pathname }: Props) {
       showSizeChanger={false}
       responsive
       hideOnSinglePage
-      onChange={(page) => navigate(`/admin/${pathname}?page=${page}`)}
+      onChange={(page) => navigate(`${pathname}?page=${page}`)}
     />
   );
 }

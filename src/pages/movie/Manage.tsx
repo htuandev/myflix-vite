@@ -165,7 +165,7 @@ export default function Manage() {
         scroll={{ scrollToFirstRowOnChange: true, x: true }}
         pagination={false}
       />
-      {data && data.totalPages > 1 && <Pagination page={page} totalResults={data.totalResults} pathname='movie' />}
+      {data && data.totalPages > 1 && <Pagination page={page} totalResults={data.totalResults} />}
       {contextHolder}
     </section>
   );
