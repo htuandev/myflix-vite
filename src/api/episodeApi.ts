@@ -1,4 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
+import { Prettify } from '@/types';
 import { Response, SuccessResponse } from '@/types/api';
 import { IEpisodeInfo, IEpisodes } from '@/types/episode';
 import { baseQuery } from '@/utils/api';
@@ -15,9 +16,20 @@ export const episodeApi = createApi({
     }),
     addEpisode: build.mutation<SuccessResponse, { id: string; formData: IEpisodeInfo }>({
       query: ({ id, formData }) => ({
-        url: `movie/${id}`,
+        url: `movie/add/${id}`,
         method: 'POST',
         body: formData
+      }),
+      invalidatesTags: (result) => (result ? [{ type: 'Episodes', id: 'LIST' }] : [])
+    }),
+    addEpisodes: build.mutation<
+      SuccessResponse,
+      { id: string; episodes: Prettify<Pick<IEpisodeInfo, 'name' | 'link' | 'thumbnail'>>[] }
+    >({
+      query: ({ id, episodes }) => ({
+        url: `movie/${id}`,
+        method: 'POST',
+        body: { episodes }
       }),
       invalidatesTags: (result) => (result ? [{ type: 'Episodes', id: 'LIST' }] : [])
     }),
@@ -53,6 +65,7 @@ export const episodeApi = createApi({
 export const {
   useGetEpisodesQuery,
   useAddEpisodeMutation,
+  useAddEpisodesMutation,
   useDeleteEpisodeMutation,
   useGetEpisodeByIdQuery,
   useUpdateEpisodeMutation

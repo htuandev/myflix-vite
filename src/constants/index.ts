@@ -19,3 +19,6 @@ export const tmdbImageSizes = {
 export const dateFormat = 'DD/MM/YYYY';
 
 export const BACKDROP_COLOR = '#200b0b';
+
+export const m3u8Pattern = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*\.m3u8$/i;
+export const onlyNumbersPattern = /^\d+$/;

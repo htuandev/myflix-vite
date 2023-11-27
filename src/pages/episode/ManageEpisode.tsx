@@ -10,18 +10,21 @@ import { useDeleteEpisodeMutation, useGetEpisodesQuery } from '@/api/episodeApi'
 import { ContentType } from '@/constants/enum';
 import useDocumentTitle from '@/hooks/useDocumentTitle';
 import useValidId from '@/hooks/useValidId';
+import noImage from '@/images/no-image.svg';
 import Backdrop from '@/shared/Backdrop';
 import Poster from '@/shared/Poster';
 import Thumbnail from '@/shared/Thumbnail';
 import { IEpisodeInfo } from '@/types/episode';
 import { handleFetch } from '@/utils/api';
 import notify from '@/utils/notify';
+import AddEpisodes from './AddEpisodes';
 import Episode from './EpisodeInfo';
 
 export default function ManageEpisode() {
   const { id } = useValidId('/admin/movie');
 
   const [open, setOpen] = useState(false);
+  const [openAdd, setOpenAdd] = useState(false);
   const [episodeId, setEpisodeId] = useState('');
 
   const openModel = (id = '') => {
@@ -67,7 +70,7 @@ export default function ManageEpisode() {
       render: (thumbnail) => (
         <div className=' flex-center p-2'>
           <Thumbnail
-            src={data?.movie.type === ContentType.Movie ? data?.movie.thumbnail : thumbnail}
+            src={data?.movie.type === ContentType.Movie ? data?.movie.thumbnail : thumbnail || noImage}
             className=' w-full'
           />
         </div>
@@ -127,14 +130,26 @@ export default function ManageEpisode() {
                 {data.movie.name} {data.movie.year}
               </h1>
             )}
-            {data &&
-              (data.movie.type === ContentType.Movie
-                ? data.episodes.length === 0
-                : data.episodes.length < (data.movie.episodes as number)) && (
-                <Button icon={<HiSquaresPlus />} type='primary' onClick={() => openModel()} className=' hidden md:flex'>
-                  Add Episode
+            <div className=' flex gap-4'>
+              {data &&
+                (data.movie.type === ContentType.Movie
+                  ? data.episodes.length === 0
+                  : data.episodes.length < (data.movie.episodes as number)) && (
+                  <Button
+                    icon={<HiSquaresPlus />}
+                    type='primary'
+                    onClick={() => openModel()}
+                    className=' hidden md:flex'
+                  >
+                    Add Episode
+                  </Button>
+                )}
+              {data && data.movie.type === ContentType.TVSeries && data.episodes.length === 0 && (
+                <Button icon={<HiSquaresPlus />} onClick={() => setOpenAdd(true)} className=' hidden md:flex'>
+                  Add Episodes
                 </Button>
               )}
+            </div>
           </div>
         </div>
       </Backdrop>
@@ -162,6 +177,7 @@ export default function ManageEpisode() {
           setOpen={setOpen}
         />
       )}
+      {openAdd && <AddEpisodes movieId={id} open={openAdd} setOpen={setOpenAdd} />}
     </section>
   );
 }
