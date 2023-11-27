@@ -12,6 +12,7 @@ import useDocumentTitle from '@/hooks/useDocumentTitle';
 import useValidId from '@/hooks/useValidId';
 import Backdrop from '@/shared/Backdrop';
 import Poster from '@/shared/Poster';
+import Thumbnail from '@/shared/Thumbnail';
 import { IEpisodeInfo } from '@/types/episode';
 import { handleFetch } from '@/utils/api';
 import notify from '@/utils/notify';
@@ -65,9 +66,9 @@ export default function ManageEpisode() {
       key: 'thumbnail',
       render: (thumbnail) => (
         <div className=' flex-center p-2'>
-          <img
+          <Thumbnail
             src={data?.movie.type === ContentType.Movie ? data?.movie.thumbnail : thumbnail}
-            className=' aspect-video w-full'
+            className=' w-full'
           />
         </div>
       ),

@@ -8,6 +8,11 @@ export const tmdbImageSizes = {
     sm: 'w235_and_h235_face',
     md: 'w375_and_h375_face',
     lg: 'w470_and_h470_face'
+  },
+  thumbnail: {
+    sm: 'w320_and_h180_bestv2',
+    md: 'w640_and_h360_bestv2',
+    lg: 'w1280_and_h720_bestv2'
   }
 };
 

@@ -17,6 +17,7 @@ import noImage from '@/images/no-image.svg';
 import Backdrop from '@/shared/Backdrop';
 import FormItem from '@/shared/FormItem';
 import Poster from '@/shared/Poster';
+import Thumbnail from '@/shared/Thumbnail';
 import { Prettify } from '@/types';
 import { Category } from '@/types/category';
 import { Movie } from '@/types/movie';
@@ -74,7 +75,6 @@ export default function MovieInfo() {
         ];
 
   const setFieldValue = (key: keyof Movie, value?: unknown) => form.setFieldValue(key, value);
-  // const getFieldValue = (key: keyof Movie) => form.getFieldValue(key);
   const validateField = (key: keyof Movie) => form.validateFields([key]);
 
   const typeOnChange = (value: ContentType) => {
@@ -120,27 +120,28 @@ export default function MovieInfo() {
 
   const [modal, contextHolder] = Modal.useModal();
 
-  const previewImageConfig = (type?: 'poster' | 'logo' | 'thumbnail') => ({
-    title: <span className=' flex-center'>Preview Image</span>,
-    content: (
-      <div className=' flex-center'>
-        {type === 'poster' ? (
-          <Poster src={poster} size='lg' className=' w-[300px]' />
-        ) : type === 'logo' ? (
-          <img src={logo} className=' aspect-video h-40' />
-        ) : type === 'thumbnail' ? (
-          <img src={thumbnail} className=' aspect-video w-full' />
-        ) : (
-          <img src={backdrop} className=' aspect-video w-full' />
-        )}
-      </div>
-    ),
-    maskClosable: false,
-    wrapClassName: 'myflix-modal-confirm preview-image',
-    centered: true,
-    width: 1000,
-    zIndex: 5000
-  });
+  const previewImageConfig = (type?: 'Poster' | 'Logo' | 'Thumbnail') =>
+    modal.info({
+      title: <span className=' flex-center'>Preview {type ? type : 'Backdrop'}</span>,
+      content: (
+        <div className=' flex-center'>
+          {type === 'Poster' ? (
+            <Poster src={poster} size='lg' className=' w-[300px]' />
+          ) : type === 'Logo' ? (
+            <img src={logo} className=' aspect-video h-40' />
+          ) : type === 'Thumbnail' ? (
+            <Thumbnail src={thumbnail} size='lg' className='w-full' />
+          ) : (
+            <Thumbnail src={backdrop} size='lg' className='w-full' />
+          )}
+        </div>
+      ),
+      maskClosable: false,
+      wrapClassName: 'myflix-modal-confirm preview-image',
+      centered: true,
+      width: 1000,
+      zIndex: 5000
+    });
 
   return (
     <section>
@@ -164,7 +165,7 @@ export default function MovieInfo() {
           <Input allowClear />
         </FormItem>
 
-        <FormItem label='As known as' name='knownAs' isLoading={isLoading}>
+        <FormItem label='Known As' name='knownAs' isLoading={isLoading}>
           <Select
             className='myflix-select'
             mode='tags'
@@ -193,13 +194,13 @@ export default function MovieInfo() {
             allowClear
             onChange={(e) => imageChange(e, 'poster')}
             suffix={
-              poster ? (
+              poster && poster !== noImage ? (
                 <span
                   className=' cursor-pointer'
                   children={<FaEye />}
                   onClick={(e) => {
                     e.stopPropagation();
-                    modal.info(previewImageConfig('poster'));
+                    previewImageConfig('Poster');
                   }}
                 />
               ) : (
@@ -218,16 +219,6 @@ export default function MovieInfo() {
           />
         </FormItem>
 
-        {type === ContentType.Movie ? (
-          <FormItem label='Runtime' name='runtime' rules={[rules.runtime(type)]} isLoading={isLoading}>
-            <InputNumber className='w-full' min={0} controls={false} />
-          </FormItem>
-        ) : (
-          <FormItem label='Total Episodes' name='episodes' rules={[rules.toTalEpisodes(type)]} isLoading={isLoading}>
-            <InputNumber className='w-full' min={0} controls={false} key={type} />
-          </FormItem>
-        )}
-
         <FormItem
           label='Thumbnail'
           name='thumbnail'
@@ -244,28 +235,7 @@ export default function MovieInfo() {
                   children={<FaEye />}
                   onClick={(e) => {
                     e.stopPropagation();
-                    modal.info(previewImageConfig('thumbnail'));
-                  }}
-                />
-              ) : (
-                <span />
-              )
-            }
-          />
-        </FormItem>
-
-        <FormItem label='Logo' name='logo' rules={[rules.imageTMDB]} isLoading={isLoading}>
-          <Input
-            allowClear
-            onChange={(e) => imageChange(e, 'logo', true)}
-            suffix={
-              logo ? (
-                <span
-                  className=' cursor-pointer'
-                  children={<FaEye />}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    modal.info(previewImageConfig('logo'));
+                    previewImageConfig('Thumbnail');
                   }}
                 />
               ) : (
@@ -286,7 +256,7 @@ export default function MovieInfo() {
                   children={<FaEye />}
                   onClick={(e) => {
                     e.stopPropagation();
-                    modal.info(previewImageConfig());
+                    previewImageConfig();
                   }}
                 />
               ) : (
@@ -298,6 +268,37 @@ export default function MovieInfo() {
 
         <FormItem label='Release Date' name='releaseDate' rules={[rules.releaseDate(status)]} isLoading={isLoading}>
           <DatePicker className=' w-full' showToday={false} />
+        </FormItem>
+
+        {type === ContentType.Movie ? (
+          <FormItem label='Runtime' name='runtime' rules={[rules.runtime(type)]} isLoading={isLoading}>
+            <InputNumber className='w-full' min={0} controls={false} />
+          </FormItem>
+        ) : (
+          <FormItem label='Total Episodes' name='episodes' rules={[rules.toTalEpisodes(type)]} isLoading={isLoading}>
+            <InputNumber className='w-full' min={0} controls={false} key={type} />
+          </FormItem>
+        )}
+
+        <FormItem label='Logo' name='logo' rules={[rules.imageTMDB]} isLoading={isLoading}>
+          <Input
+            allowClear
+            onChange={(e) => imageChange(e, 'logo', true)}
+            suffix={
+              logo ? (
+                <span
+                  className=' cursor-pointer'
+                  children={<FaEye />}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    previewImageConfig('Logo');
+                  }}
+                />
+              ) : (
+                <span />
+              )
+            }
+          />
         </FormItem>
 
         <FormItem label='Trailer' name='trailer' isLoading={isLoading}>

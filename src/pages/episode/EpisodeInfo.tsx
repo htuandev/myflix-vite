@@ -4,7 +4,9 @@ import Button from '@/antd/Button';
 import { useAddEpisodeMutation, useGetEpisodeByIdQuery, useUpdateEpisodeMutation } from '@/api/episodeApi';
 import { ContentType } from '@/constants/enum';
 import rules from '@/constants/rules';
+import noImage from '@/images/no-image.svg';
 import FormItem from '@/shared/FormItem';
+import Thumbnail from '@/shared/Thumbnail';
 import { IEpisodeInfo } from '@/types/episode';
 import { detectFormChanged, handleSlug } from '@/utils';
 import { handleFetch } from '@/utils/api';
@@ -16,7 +18,6 @@ type Props = {
   episodeId: string;
   type: ContentType;
   episodes: number;
-
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
 };
@@ -89,8 +90,8 @@ export default function EpisodeInfo({ movieId, episodeId, type, episodes, open, 
       centered
     >
       {type === ContentType.TVSeries && (
-        <div className=' flex-center'>
-          <img src={thumbnail} className=' mb-4 aspect-video w-64 rounded-md' key={thumbnail} />
+        <div className=' flex-center mb-4'>
+          <Thumbnail src={thumbnail || noImage} size='md' className=' w-3/4' key={thumbnail} />
         </div>
       )}
       <Form

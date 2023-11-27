@@ -136,7 +136,7 @@ export default function Manage() {
       ),
       align: 'center',
       responsive: ['md'],
-      width: 150
+      width: 180
     }
   ];
 
