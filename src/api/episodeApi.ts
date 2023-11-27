@@ -9,8 +9,11 @@ export const episodeApi = createApi({
   baseQuery: baseQuery('episode'),
   tagTypes: ['Episodes', 'Episode'],
   endpoints: (build) => ({
-    getEpisodes: build.query<IEpisodes, string>({
-      query: (id) => `movie/${id}`,
+    getEpisodes: build.query<IEpisodes, { id: string; page: string  }>({
+      query: ({ id, page }) => ({
+        url: `movie/${id}`,
+        params: { page }
+      }),
       transformResponse: (res: Response<IEpisodes>) => res.data,
       providesTags: (result) => (result ? [{ type: 'Episodes' as const, id: 'LIST' }] : [])
     }),

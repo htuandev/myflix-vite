@@ -12,6 +12,7 @@ export type IEpisodes = {
   movie: {
     _id: string;
     name: string;
+    slug: string;
     poster: string;
     thumbnail: string;
     backdrop?: string;
@@ -21,4 +22,6 @@ export type IEpisodes = {
     episodes?: number;
   };
   episodes: IEpisodeInfo[];
+  totalEpisodes: number;
+  totalPages: number;
 };

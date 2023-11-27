@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { FaPenToSquare, FaTrash } from 'react-icons/fa6';
 import { HiSquaresPlus } from 'react-icons/hi2';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { ConfigProvider, Empty, Modal } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import Button from '@/antd/Button';
+import Pagination from '@/antd/Pagination';
 import { useDeleteEpisodeMutation, useGetEpisodesQuery } from '@/api/episodeApi';
 import { ContentType } from '@/constants/enum';
 import useDocumentTitle from '@/hooks/useDocumentTitle';
@@ -31,15 +32,18 @@ export default function ManageEpisode() {
     setEpisodeId(id);
     setOpen(true);
   };
+  const { pathname } = useLocation();
+  const [searchParams] = useSearchParams();
+  const page = searchParams.get('page') || '1';
 
-  const { data, error, isFetching } = useGetEpisodesQuery(id, { skip: open });
+  const { data, error, isFetching } = useGetEpisodesQuery({ id, page }, { skip: open });
 
   const navigate = useNavigate();
   useEffect(() => {
     if (error) {
-      navigate('/admin/movie');
+      navigate(pathname);
     }
-  }, [error, navigate]);
+  }, [error, navigate, pathname]);
 
   const title = data ? `${data.movie.name} | Manage Episode` : 'Manage Episode';
   useDocumentTitle(title);
@@ -165,6 +169,7 @@ export default function ManageEpisode() {
             key={data?.movie._id}
           />
         </ConfigProvider>
+        {data && data.totalPages > 1 && <Pagination page={page} totalResults={data.totalEpisodes} />}
       </div>
       {contextHolder}
       {open && data && (
