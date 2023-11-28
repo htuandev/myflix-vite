@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { FaPenToSquare, FaTrash } from 'react-icons/fa6';
+import { FaEye, FaPenToSquare, FaTrash } from 'react-icons/fa6';
 import { HiSquaresPlus } from 'react-icons/hi2';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { ConfigProvider, Empty, Modal } from 'antd';
@@ -14,6 +14,7 @@ import useValidId from '@/hooks/useValidId';
 import Backdrop from '@/shared/Backdrop';
 import Poster from '@/shared/Poster';
 import Thumbnail from '@/shared/Thumbnail';
+import VideoPlayer from '@/shared/VideoPlayer';
 import { IEpisodeInfo } from '@/types/episode';
 import { handleFetch } from '@/utils/api';
 import notify from '@/utils/notify';
@@ -65,6 +66,18 @@ export default function ManageEpisode() {
       maskClosable: false
     });
 
+  const previewVideo = (name: string, source: string, thumbnail: string) =>
+    modal.info({
+      title: <span className=' flex-center'>{name}</span>,
+      content: <VideoPlayer source={source} thumbnail={thumbnail} />,
+      maskClosable: false,
+      wrapClassName: 'myflix-modal-confirm preview',
+      centered: true,
+      okText: 'Back',
+      width: 800,
+      zIndex: 5000
+    });
+
   const columns: ColumnsType<IEpisodeInfo> = [
     {
       title: 'Thumbnail',
@@ -104,9 +117,15 @@ export default function ManageEpisode() {
     {
       title: 'Action',
       key: 'action',
-      render: (_, { _id, name }) => (
+      render: (_, { _id, name, link, thumbnail }) => (
         <div className=' flex-center gap-4'>
           <FaPenToSquare className=' cursor-pointer text-xl hover:text-dark-100' onClick={() => openModel(_id)} />
+          {data && (
+            <FaEye
+              className=' cursor-pointer text-xl hover:text-dark-100'
+              onClick={() => previewVideo(name, link, thumbnail || data.movie.thumbnail)}
+            />
+          )}
           <FaTrash
             className=' cursor-pointer text-xl hover:text-dark-100'
             onClick={() => confirmDeleteConfig({ _id, name })}

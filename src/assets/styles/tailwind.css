@@ -15,11 +15,11 @@
     @apply flex h-9 items-center border-transparent bg-primary/80 text-dark-100/[0.85] hover:border-transparent hover:bg-primary hover:text-dark-100 focus-visible:outline-none;
   }
 
-  .myflix-modal-confirm.preview-image .ant-modal-confirm-paragraph {
+  .myflix-modal-confirm.preview .ant-modal-confirm-paragraph {
     @apply max-w-full
   }
 
-  .myflix-modal-confirm.preview-image .anticon.anticon-info-circle {
+  .myflix-modal-confirm.preview .anticon.anticon-info-circle {
     @apply hidden
   }
 

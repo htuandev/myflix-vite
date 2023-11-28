@@ -137,7 +137,7 @@ export default function MovieInfo() {
         </div>
       ),
       maskClosable: false,
-      wrapClassName: 'myflix-modal-confirm preview-image',
+      wrapClassName: 'myflix-modal-confirm preview',
       centered: true,
       width: 1000,
       zIndex: 5000

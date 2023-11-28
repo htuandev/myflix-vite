@@ -41,6 +41,10 @@ body {
     background-color: var(--body);
 }
 
+.plyr--video {
+    aspect-ratio: 16/9;
+}
+
 /* Load Image */
 .load-img {
     position: relative;
