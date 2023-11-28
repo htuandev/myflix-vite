@@ -30,7 +30,8 @@ export default function Thumbnail({ src, alt, className, size = 'sm' }: Props) {
 
   const imgSrc = src?.replace('/original/', `/${imageSize}/`);
 
-  const imgProps = { src: imgSrc, alt, onError, onLoad };
+  const imgProps = { src: imgSrc || noImage, alt, onError, onLoad };
+
   return (
     <div
       ref={ref}
@@ -42,7 +43,7 @@ export default function Thumbnail({ src, alt, className, size = 'sm' }: Props) {
     >
       <img
         {...imgProps}
-        style={{ padding: imgSrc === noImage ? noImagePadding : undefined }}
+        style={{ padding: imgProps.src === noImage ? noImagePadding : undefined }}
         loading='lazy'
         className='aspect-video w-full opacity-0 transition-opacity duration-[1.2s]'
       />

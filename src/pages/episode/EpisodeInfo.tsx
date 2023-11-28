@@ -4,7 +4,6 @@ import Button from '@/antd/Button';
 import { useAddEpisodeMutation, useGetEpisodeByIdQuery, useUpdateEpisodeMutation } from '@/api/episodeApi';
 import { ContentType } from '@/constants/enum';
 import rules from '@/constants/rules';
-import noImage from '@/images/no-image.svg';
 import FormItem from '@/shared/FormItem';
 import Thumbnail from '@/shared/Thumbnail';
 import { IEpisodeInfo } from '@/types/episode';
@@ -57,6 +56,7 @@ export default function EpisodeInfo({ movieId, episodeId, type, episodes, open, 
 
     const res = await onUpdate(formData).unwrap();
     notify.success(res.message);
+    setOpen(false);
   });
 
   const onCancel = () => {
@@ -91,7 +91,7 @@ export default function EpisodeInfo({ movieId, episodeId, type, episodes, open, 
     >
       {type === ContentType.TVSeries && (
         <div className=' flex-center mb-4'>
-          <Thumbnail src={thumbnail || noImage} size='md' className=' w-3/4' key={thumbnail} />
+          <Thumbnail src={thumbnail} size='md' className=' w-3/5' key={thumbnail} />
         </div>
       )}
       <Form

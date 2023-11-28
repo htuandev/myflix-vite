@@ -11,7 +11,6 @@ import { useDeleteEpisodeMutation, useGetEpisodesQuery } from '@/api/episodeApi'
 import { ContentType } from '@/constants/enum';
 import useDocumentTitle from '@/hooks/useDocumentTitle';
 import useValidId from '@/hooks/useValidId';
-import noImage from '@/images/no-image.svg';
 import Backdrop from '@/shared/Backdrop';
 import Poster from '@/shared/Poster';
 import Thumbnail from '@/shared/Thumbnail';
@@ -74,7 +73,7 @@ export default function ManageEpisode() {
       render: (thumbnail) => (
         <div className=' flex-center p-2'>
           <Thumbnail
-            src={data?.movie.type === ContentType.Movie ? data?.movie.thumbnail : thumbnail || noImage}
+            src={data?.movie.type === ContentType.Movie ? data?.movie.thumbnail : thumbnail}
             className=' w-full'
           />
         </div>
@@ -138,7 +137,7 @@ export default function ManageEpisode() {
               {data &&
                 (data.movie.type === ContentType.Movie
                   ? data.episodes.length === 0
-                  : data.episodes.length < (data.movie.episodes as number)) && (
+                  : data.totalEpisodes < (data.movie.episodes as number)) && (
                   <Button
                     icon={<HiSquaresPlus />}
                     type='primary'
@@ -148,11 +147,13 @@ export default function ManageEpisode() {
                     Add Episode
                   </Button>
                 )}
-              {data && data.movie.type === ContentType.TVSeries && data.episodes.length === 0 && (
-                <Button icon={<HiSquaresPlus />} onClick={() => setOpenAdd(true)} className=' hidden md:flex'>
-                  Add Episodes
-                </Button>
-              )}
+              {data &&
+                data.movie.type === ContentType.TVSeries &&
+                data.totalEpisodes < (data.movie.episodes as number) && (
+                  <Button icon={<HiSquaresPlus />} onClick={() => setOpenAdd(true)} className=' hidden md:flex'>
+                    Add Episodes
+                  </Button>
+                )}
             </div>
           </div>
         </div>
@@ -176,7 +177,7 @@ export default function ManageEpisode() {
         <Episode
           movieId={id}
           episodeId={episodeId}
-          episodes={data.episodes.length + 1}
+          episodes={data.totalEpisodes + 1}
           type={data.movie.type}
           open={open}
           setOpen={setOpen}

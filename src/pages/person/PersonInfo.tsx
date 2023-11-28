@@ -105,24 +105,8 @@ export default function PersonInfo({ personId, open, setOpen }: Props) {
         <FormItem label='Name' name='name' isLoading={isLoading} rules={[rules.required('Name')]}>
           <Input allowClear />
         </FormItem>
-        <FormItem
-          label='Profile Image'
-          name='profileImage'
-          isLoading={isLoading}
-          rules={[rules.required('Profile image'), rules.imageTMDB]}
-          validateTrigger='onChange'
-          validateDebounce={100}
-        >
-          <Input
-            allowClear
-            onChange={(e) => {
-              form.setFieldValue('profileImage', handleImageUrl({ url: e.target.value }));
-              form.validateFields(['profileImage']);
-            }}
-          />
-        </FormItem>
 
-        <FormItem label='As known as' name='knownAs' isLoading={isLoading}>
+        <FormItem label='Known as' name='knownAs' isLoading={isLoading}>
           <Select
             className='myflix-select'
             mode='tags'
@@ -140,9 +124,28 @@ export default function PersonInfo({ personId, open, setOpen }: Props) {
             popupClassName='myflix-select-tags'
           />
         </FormItem>
+
+        <FormItem
+          label='Profile Image'
+          name='profileImage'
+          isLoading={isLoading}
+          rules={[rules.required('Profile image'), rules.imageTMDB]}
+          validateTrigger='onChange'
+          validateDebounce={100}
+        >
+          <Input
+            allowClear
+            onChange={(e) => {
+              form.setFieldValue('profileImage', handleImageUrl({ url: e.target.value }));
+              form.validateFields(['profileImage']);
+            }}
+          />
+        </FormItem>
+
         <FormItem label='Birthday' name='birthday' isLoading={isLoading} rules={[rules.birthday]}>
           <DatePicker className=' w-full' showToday={false} />
         </FormItem>
+
         <FormItem label='Gender' name='gender' isLoading={isLoading} rules={[rules.selectRequired('Gender')]}>
           <Select
             options={[

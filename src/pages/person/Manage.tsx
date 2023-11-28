@@ -155,7 +155,7 @@ export default function Manage() {
             disabled={isFetching}
           />
         )}
-        <Button icon={<HiSquaresPlus />} onClick={() => openModal('')} className='hidden md:block'>
+        <Button icon={<HiSquaresPlus />} onClick={() => openModal('')} className='hidden md:flex'>
           Add person
         </Button>
       </div>
