@@ -13,4 +13,4 @@ export const handleImageUrl = ({ url, isLogo = false }: { url: string; isLogo?: 
 };
 
 export const tmdbImageSrc = (src: string | undefined, imageSize: string) =>
-  src?.replace('/original/', `/${imageSize}/`);
+  src ? src.replace('/original/', `/${imageSize}/`) : '';

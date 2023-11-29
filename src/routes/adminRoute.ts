@@ -2,12 +2,12 @@ import { lazy } from 'react';
 import { CategoryType } from '@/types';
 
 const Dashboard = lazy(() => import('@/pages/Dashboard'));
-const ManageCategory = lazy(() => import('@/pages/category/Manage'));
+const ManageCategory = lazy(() => import('@/pages/category/ManageCategory'));
 const ManageUser = lazy(() => import('@/pages/user/ManageUser'));
 const ManagePerson = lazy(() => import('@/pages/person/ManagePerson'));
 const ManageMovie = lazy(() => import('@/pages/movie/ManageMovie'));
 const MovieInfo = lazy(() => import('@/pages/movie/Movie'));
-const ManageCast = lazy(() => import('@/pages/cast/Manage'));
+const ManageCast = lazy(() => import('@/pages/cast/ManageCast'));
 const ManageEpisode = lazy(() => import('@/pages/episode/ManageEpisode'));
 
 const adminRoute = [

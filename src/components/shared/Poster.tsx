@@ -29,8 +29,8 @@ export default function Poster({ src, alt, className, size = 'sm' }: Props) {
     }
   };
 
-  const imgProps = { src: tmdbImageSrc(src, imageSize) || noImage, alt, onError, onLoad };
-  
+  const imgProps = { src: tmdbImageSrc(src, imageSize), alt, onError, onLoad };
+
   return (
     <div
       ref={ref}
@@ -39,6 +39,7 @@ export default function Poster({ src, alt, className, size = 'sm' }: Props) {
         size === 'lg' ? 'rounded-lg' : 'rounded',
         className
       )}
+      key={imgProps.src}
     >
       <img
         {...imgProps}

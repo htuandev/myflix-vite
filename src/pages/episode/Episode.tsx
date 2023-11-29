@@ -5,7 +5,7 @@ import { useAddEpisodeMutation, useGetEpisodeByIdQuery, useUpdateEpisodeMutation
 import { ContentType, rules } from '@/constants';
 import { FormItem, Thumbnail } from '@/shared';
 import { IEpisodeInfo } from '@/types';
-import { handleFetch, notify, detectFormChanged, handleSlug, handleImageUrl, capitalizeName } from '@/utils';
+import { handleFetch, notify, detectFormChanged, handleImageUrl, capitalizeName } from '@/utils';
 
 type Props = {
   movieId: string;
@@ -32,32 +32,26 @@ export default function Episode({ movieId, episodeId, type, episodes, open, setO
     : undefined;
 
   const [onAdd, { isLoading: isAdding }] = useAddEpisodeMutation();
+  const handleAdd = async (formData: IEpisodeInfo) => {
+    const res = await onAdd({ id: movieId, formData }).unwrap();
+    notify.success(res.message);
+    return setOpen(false);
+  };
+
   const [onUpdate, { isLoading: isUpdating }] = useUpdateEpisodeMutation();
-
-  const onFinish = handleFetch(async (formData: IEpisodeInfo) => {
-    formData.slug = handleSlug(formData.name);
-
-    if (data) {
-      formData._id = data._id;
-    }
-
-    if (!isNew) detectFormChanged(formData, data as IEpisodeInfo);
-
-    if (isNew) {
-      const res = await onAdd({ id: movieId, formData }).unwrap();
-      notify.success(res.message);
-      return setOpen(false);
-    }
-
+  const handleUpdate = async (formData: IEpisodeInfo) => {
+    formData._id = data?._id as string;
+    detectFormChanged(formData, data as IEpisodeInfo);
     const res = await onUpdate(formData).unwrap();
     notify.success(res.message);
     setOpen(false);
-  });
-
-  const onCancel = () => {
-    setOpen(false);
-    form.resetFields();
   };
+
+  const onFinish = handleFetch(async (formData: IEpisodeInfo) =>
+    isNew ? handleAdd(formData) : handleUpdate(formData)
+  );
+
+  const onCancel = () => setOpen(false);
 
   const footer = [
     <Button key='back' className=' h-9' onClick={onCancel}>

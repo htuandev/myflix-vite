@@ -6,7 +6,7 @@ import { ObjectType } from '@/types';
 
 export const detectFormChanged = <T extends ObjectType>(formData: T, value: T, keys?: (keyof T)[]) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { createdAt, updatedAt, __v, year, slug, _id, ...rest } = value;
+  const { createdAt, updatedAt, __v, year, slug, ...rest } = value;
 
   const updated: ObjectType = {};
   if (_.isUndefined(keys)) keys = ['name'];

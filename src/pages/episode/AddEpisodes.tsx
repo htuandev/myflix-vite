@@ -2,9 +2,9 @@ import { Dispatch, SetStateAction } from 'react';
 import { Form, Input, Modal } from 'antd';
 import { Button } from '@/antd';
 import { useAddEpisodesMutation } from '@/api/episodeApi';
-import { m3u8Pattern, onlyNumbersPattern, rules } from '@/constants';
+import { m3u8Pattern, rules } from '@/constants';
 import { FormItem } from '@/shared';
-import { handleFetch, notify } from '@/utils';
+import { capitalizeName, handleFetch, handleImageUrl, notify } from '@/utils';
 
 type Props = {
   movieId: string;
@@ -31,12 +31,12 @@ export default function AddEpisodes({ movieId, open, setOpen }: Props) {
     const episodes = formData.episodes
       .split('\n')
       .map((str) => str.split('|'))
-      .filter((x) => onlyNumbersPattern.test(x[0]) && m3u8Pattern.test(x[1]))
+      .filter((x) => m3u8Pattern.test(x[1]))
       .sort((a, b) => (parseInt(a[0]) < parseInt(b[0]) ? -1 : 1))
       .map((x) => ({
-        name: `Tập ${x[0]}`,
+        name: capitalizeName(x[0]),
         link: x[1],
-        thumbnail: x[2]
+        thumbnail: x[2] && handleImageUrl({ url: x[2] })
       }));
 
     const res = await onAdd({ id: movieId, episodes }).unwrap();

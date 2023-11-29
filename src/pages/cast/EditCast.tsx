@@ -13,17 +13,19 @@ type Props = {
 };
 
 export default function EditCast({ castId, open, setOpen }: Props) {
-  const [form] = Form.useForm();
-  const { data, isLoading } = useGetCastByIdQuery(castId);
+  const { data: cast, isLoading } = useGetCastByIdQuery(castId);
+
   const [onUpdate, { isLoading: isUpdating }] = useUpdateCharacterMutation();
 
   const onFinish = handleFetch(async ({ character }: Pick<ICharacter, 'character'>) => {
-    detectFormChanged({ character }, { character: data?.character });
+    detectFormChanged({ character }, { character: cast?.character });
     const res = await onUpdate({ _id: castId, character }).unwrap();
     notify.success(res.message);
   });
 
   const onCancel = () => setOpen(false);
+
+  const [form] = Form.useForm();
 
   const footer = [
     <Button key='back' className=' h-9' onClick={onCancel}>
@@ -33,6 +35,7 @@ export default function EditCast({ castId, open, setOpen }: Props) {
       Update
     </Button>
   ];
+
   return (
     <Modal
       open={open}
@@ -50,14 +53,14 @@ export default function EditCast({ castId, open, setOpen }: Props) {
         requiredMark={false}
         autoComplete='off'
         initialValues={
-          data
+          cast
             ? {
-                person: data.person.name,
-                character: data.character
+                person: cast.person.name,
+                character: cast.character
               }
             : undefined
         }
-        key={data?._id}
+        key={cast?._id}
       >
         <FormItem label='Search person' name='person' isLoading={isLoading}>
           <Input allowClear disabled />

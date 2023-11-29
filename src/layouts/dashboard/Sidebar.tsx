@@ -21,7 +21,7 @@ export default function Sidebar(props: Props) {
             <Tooltip key={href} title={collapsed && label} zIndex={3333} placement='right'>
               <NavLink
                 to={href}
-                end={href !== '/'}
+                end={index === 0 || index === 1}
                 onClick={onClose}
                 className={({ isActive }) =>
                   twMerge(

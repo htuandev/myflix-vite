@@ -10,7 +10,6 @@ import { Button } from '@/antd';
 import { useDeleteCastMutation, useGetCastsQuery } from '@/api/castApi';
 import { Gender } from '@/constants';
 import { useDocumentTitle, useValidId } from '@/hooks';
-import Hamster from '@/layouts/Hamster';
 import { Backdrop, Poster, ProfileImage } from '@/shared';
 import { ICast } from '@/types';
 import { handleFetch, notify } from '@/utils';
@@ -134,18 +133,20 @@ export default function ManageCast() {
     }
   ];
 
-  return data ? (
+  return (
     <section className=' min-h-[calc(100vh-64px)]'>
       <Backdrop
         backdropUrl={data && (data.movie.backdrop || data.movie.thumbnail)}
         backdropColor={data && data.movie.backdropColor}
       >
         <div className='flex items-center gap-4'>
-          <Poster src={data.movie.poster} className=' w-20 rounded-md md:w-32 lg:w-44' size='lg' />
+          <Poster src={data?.movie.poster} className=' w-20 rounded-md md:w-32 lg:w-44' size='lg' />
           <div>
-            <h1 className=' text-heading'>
-              {data.movie.name} {data.movie.year}
-            </h1>
+            {data && (
+              <h1 className=' text-heading'>
+                {data.movie.name} <span className=' font-medium'>({data.movie.year})</span>
+              </h1>
+            )}
             <Button icon={<HiSquaresPlus />} type='primary' onClick={() => setOpen(true)} className=' hidden md:flex'>
               Add Cast
             </Button>
@@ -155,7 +156,7 @@ export default function ManageCast() {
       <div className=' p-4 lg:p-8'>
         <ConfigProvider renderEmpty={() => <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}>
           <Table
-            dataSource={data.casts}
+            dataSource={data?.casts}
             columns={columns}
             rowKey='_id'
             scroll={{ scrollToFirstRowOnChange: true, x: true }}
@@ -168,7 +169,5 @@ export default function ManageCast() {
       {open && <AddCast movieId={id} open={open} setOpen={setOpen} />}
       {openEdit && <EditCast castId={castId} open={openEdit} setOpen={setOpenEdit} />}
     </section>
-  ) : (
-    <Hamster />
   );
 }

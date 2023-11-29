@@ -16,18 +16,16 @@ type Props = {
 type DataForm = { personId: string; character?: string };
 
 export default function AddCast({ movieId, open, setOpen }: Props) {
-  const [form] = Form.useForm<DataForm>();
-
   const [search, setSearch] = useState('');
-
   const debouncedSetState = _.debounce((value: string) => {
     setSearch(value);
   }, 300);
 
   const { data } = useGetPeopleQuery({ search, pageSize: 10 });
 
-  const [onAdd, { isLoading }] = useAddCastMutation();
+  const [form] = Form.useForm<DataForm>();
 
+  const [onAdd, { isLoading }] = useAddCastMutation();
   const onFinish = handleFetch(async (formData: DataForm) => {
     const res = await onAdd({ id: movieId, formData }).unwrap();
     notify.success(res.message);

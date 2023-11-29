@@ -29,7 +29,7 @@ export default function Thumbnail({ src, alt, className, size = 'sm' }: Props) {
     }
   };
 
-  const imgProps = { src: tmdbImageSrc(src, imageSize) || noImage, alt, onError, onLoad };
+  const imgProps = { src: tmdbImageSrc(src, imageSize), alt, onError, onLoad };
 
   return (
     <div

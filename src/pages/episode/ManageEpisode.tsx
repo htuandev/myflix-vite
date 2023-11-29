@@ -144,7 +144,7 @@ export default function ManageEpisode() {
           <div>
             {data && (
               <h1 className=' text-heading'>
-                {data.movie.name} {data.movie.year}
+                {data.movie.name} <span className=' font-medium'>({data.movie.year})</span>
               </h1>
             )}
             <div className=' flex gap-4'>

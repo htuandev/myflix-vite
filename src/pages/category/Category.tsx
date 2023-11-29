@@ -4,7 +4,7 @@ import { Button } from '@/antd';
 import { useAddCategoryMutation, useGetCategoryByIdQuery, useUpdateCategoryMutation } from '@/api/categoryApi';
 import { FormItem } from '@/shared';
 import { ICategory, CategoryType } from '@/types';
-import { handleFetch, notify, detectFormChanged, handleSlug } from '@/utils';
+import { handleFetch, notify, detectFormChanged, capitalizeName } from '@/utils';
 
 type Props = {
   type: CategoryType;
@@ -16,35 +16,36 @@ type Props = {
 
 export default function CategoryInfo({ type, open, setOpen, categoryId, categoryType }: Props) {
   const isNew = categoryId === -1;
+
   const [form] = Form.useForm<ICategory>();
 
   const { data: category, isLoading } = useGetCategoryByIdQuery({ type, id: categoryId }, { skip: isNew });
 
   const [onAdd, { isLoading: isAdding }] = useAddCategoryMutation();
-  const [onUpdate, { isLoading: isUpdating }] = useUpdateCategoryMutation();
-
-  const onFinish = handleFetch(async ({ name }: Pick<ICategory, 'name'>) => {
-    if (!isNew) detectFormChanged({ name }, { name: category?.name });
-
-    const slug = handleSlug(name);
-
-    const formData = { ...category, name, slug } as ICategory;
-
-    if (isNew) {
-      const res = await onAdd({ type, formData }).unwrap();
-      notify.success(res.message);
-      return form.resetFields();
-    }
-
-    const res = await onUpdate({ type, formData }).unwrap();
+  const handleAdd = async (formData: Pick<ICategory, 'name'>) => {
+    const res = await onAdd({ type, formData }).unwrap();
     notify.success(res.message);
-    form.setFieldsValue(res.data);
-  });
 
-  const onCancel = () => {
-    setOpen(false);
     form.resetFields();
   };
+
+  const [onUpdate, { isLoading: isUpdating }] = useUpdateCategoryMutation();
+  const handleUpdate = async ({ name }: Pick<ICategory, 'name'>) => {
+    detectFormChanged({ name }, { name: category?.name });
+
+    const formData = { name, _id: category?._id as number };
+    const res = await onUpdate({ type, formData }).unwrap();
+
+    notify.success(res.message);
+    form.setFieldsValue(res.data);
+  };
+
+  const onFinish = handleFetch(async ({ name }: Pick<ICategory, 'name'>) => {
+    const formData = { name: capitalizeName(name) };
+    return isNew ? handleAdd(formData) : handleUpdate(formData);
+  });
+
+  const onCancel = () => setOpen(false);
 
   const footer = [
     <Button key='back' className=' h-9' onClick={onCancel}>
@@ -88,7 +89,7 @@ export default function CategoryInfo({ type, open, setOpen, categoryId, category
             { max: 30, message: 'Too long. Maximum length is 30 characters' }
           ]}
         >
-          <Input />
+          <Input allowClear showCount onBlur={(e) => form.setFieldValue('name', capitalizeName(e.target.value))} />
         </FormItem>
       </Form>
     </Modal>

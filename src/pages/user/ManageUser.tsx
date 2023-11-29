@@ -15,7 +15,7 @@ import { handleFetch, notify } from '@/utils';
 import User from './User';
 
 export default function ManageUser() {
-  const title = 'Manage Users';
+  const title = 'Manage User';
   useDocumentTitle(title);
 
   const [open, setOpen] = useState(false);
@@ -59,7 +59,7 @@ export default function ManageUser() {
       key: 'profileImage',
       render: (profileImage) => (
         <div className=' flex-center'>
-          <Avatar src={profileImage} className=' w-12' key={profileImage}/>
+          <Avatar src={profileImage} className=' w-12' key={profileImage} />
         </div>
       ),
       align: 'center',

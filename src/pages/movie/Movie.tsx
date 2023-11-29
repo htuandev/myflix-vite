@@ -94,29 +94,33 @@ export default function Movie() {
   }, [error, navigate]);
 
   const [onAdd, { isLoading: isAdding }] = useAddMovieMutation();
+  const handleAdd = async (formData: IMovie) => {
+    const res = await onAdd(formData).unwrap();
+    notify.success(res.message);
+    form.resetFields();
+  };
+
   const [onUpdate, { isLoading: isUpdating }] = useUpdateMovieMutation();
+  const handleUpdate = async (formData: IMovie) => {
+    if (movie) formData._id = movie._id;
+    detectFormChanged(formData, movie as IMovie, ['name', 'overview']);
+    const res = await onUpdate(formData).unwrap();
+    notify.success(res.message);
+  };
 
   const onFinish = handleFetch(async (formData: IMovie) => {
     if (formData.releaseDate) {
       formData.releaseDate = transformDate(formData.releaseDate).toString();
     }
 
-    if (movie) {
-      detectFormChanged(formData, movie as IMovie, ['name', 'overview']);
-      const res = await onUpdate({ ...formData, _id: movie._id }).unwrap();
-      notify.success(res.message);
-    } else {
-      const res = await onAdd(formData).unwrap();
-      notify.success(res.message);
-      form.resetFields();
-    }
+    isNew ? await handleAdd(formData) : await handleUpdate(formData);
 
     window.scroll({ top: 0, behavior: 'smooth' });
   });
 
   const [modal, contextHolder] = Modal.useModal();
 
-  const previewImageConfig = (type?: 'Poster' | 'Logo' | 'Thumbnail') =>
+  const previewImage = (type?: 'Poster' | 'Logo' | 'Thumbnail') =>
     modal.info({
       title: <span className=' flex-center'>Preview {type ? type : 'Backdrop'}</span>,
       content: (
@@ -196,7 +200,7 @@ export default function Movie() {
                   children={<FaEye />}
                   onClick={(e) => {
                     e.stopPropagation();
-                    previewImageConfig('Poster');
+                    previewImage('Poster');
                   }}
                 />
               ) : (
@@ -231,7 +235,7 @@ export default function Movie() {
                   children={<FaEye />}
                   onClick={(e) => {
                     e.stopPropagation();
-                    previewImageConfig('Thumbnail');
+                    previewImage('Thumbnail');
                   }}
                 />
               ) : (
@@ -252,7 +256,7 @@ export default function Movie() {
                   children={<FaEye />}
                   onClick={(e) => {
                     e.stopPropagation();
-                    previewImageConfig();
+                    previewImage();
                   }}
                 />
               ) : (
@@ -287,7 +291,7 @@ export default function Movie() {
                   children={<FaEye />}
                   onClick={(e) => {
                     e.stopPropagation();
-                    previewImageConfig('Logo');
+                    previewImage('Logo');
                   }}
                 />
               ) : (

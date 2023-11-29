@@ -28,7 +28,7 @@ export default function ProfileImage({ src, alt, gender, className, size = 'lg',
     }
   };
 
-  const imgProps = { src: tmdbImageSrc(src, imageSize) || defaultProfileImage, alt, onError, onLoad };
+  const imgProps = { src: tmdbImageSrc(src, imageSize), alt, onError, onLoad };
 
   return (
     <div

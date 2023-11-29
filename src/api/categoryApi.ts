@@ -30,7 +30,7 @@ export const categoryApi = createApi({
       transformResponse: (res: IResponse<ICategory>) => res.data,
       providesTags: (result, _, { type, id }) => (result ? [{ type, id }] : [])
     }),
-    addCategory: build.mutation<SuccessResponse, { type: CategoryType; formData: Prettify<Omit<ICategory, '_id'>> }>({
+    addCategory: build.mutation<SuccessResponse, { type: CategoryType; formData: Prettify<Pick<ICategory, 'name'>> }>({
       query({ type, formData }) {
         return {
           url: pathname(type),
@@ -46,7 +46,10 @@ export const categoryApi = createApi({
               { type: 'Categories', id: 'LIST' }
             ]
     }),
-    updateCategory: build.mutation<IResponse<ICategory>, { type: CategoryType; formData: ICategory }>({
+    updateCategory: build.mutation<
+      IResponse<ICategory>,
+      { type: CategoryType; formData: Prettify<Pick<ICategory, 'name' | '_id'>> }
+    >({
       query({ type, formData }) {
         return {
           url: pathname(type),

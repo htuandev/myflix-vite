@@ -6,15 +6,7 @@ import { useAddPersonMutation, useGetPersonByIdQuery, useUpdatePersonMutation } 
 import { Gender, rules } from '@/constants';
 import { FormItem, ProfileImage } from '@/shared';
 import { Prettify, IPerson } from '@/types';
-import {
-  handleFetch,
-  notify,
-  detectFormChanged,
-  handleSlug,
-  transformDate,
-  handleImageUrl,
-  capitalizeName
-} from '@/utils';
+import { handleFetch, notify, detectFormChanged, transformDate, handleImageUrl, capitalizeName } from '@/utils';
 
 type Props = {
   personId: string;
@@ -34,28 +26,30 @@ export default function Person({ personId, open, setOpen }: Props) {
   const gender = Form.useWatch('gender', form);
 
   const [onAdd, { isLoading: isAdding }] = useAddPersonMutation();
+  const handleAdd = async (formData: IPerson) => {
+    const res = await onAdd(formData).unwrap();
+    notify.success(res.message);
+    return form.resetFields();
+  };
+
   const [onUpdate, { isLoading: isUpdating }] = useUpdatePersonMutation();
-
-  const onFinish = handleFetch(async (formData: IPerson) => {
-    formData.birthday = transformDate(formData.birthday).toString();
-    formData.slug = handleSlug(formData.name);
-
+  const handleUpdate = async (formData: IPerson) => {
     if (person) {
       formData._id = person._id;
       formData.credits = person.credits;
     }
 
-    if (!isNew) detectFormChanged(formData, person as IPerson);
-
-    if (isNew) {
-      const res = await onAdd(formData).unwrap();
-      notify.success(res.message);
-      return form.resetFields();
-    }
+    detectFormChanged(formData, person as IPerson);
 
     const res = await onUpdate(formData).unwrap();
     notify.success(res.message);
     form.setFieldsValue(transformPerson(res.data));
+  };
+
+  const onFinish = handleFetch(async (formData: IPerson) => {
+    formData.birthday = transformDate(formData.birthday).toString();
+
+    return isNew ? handleAdd(formData) : handleUpdate(formData);
   });
 
   const transformPerson = (person: IPerson) => ({ ...person, birthday: transformDate(person.birthday).toDayjs() });
