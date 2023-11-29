@@ -43,7 +43,6 @@ export default function Person({ personId, open, setOpen }: Props) {
 
     const res = await onUpdate(formData).unwrap();
     notify.success(res.message);
-    form.setFieldsValue(transformPerson(res.data));
   };
 
   const onFinish = handleFetch(async (formData: IPerson) => {

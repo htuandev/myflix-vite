@@ -37,7 +37,6 @@ export default function CategoryInfo({ type, open, setOpen, categoryId, category
     const res = await onUpdate({ type, formData }).unwrap();
 
     notify.success(res.message);
-    form.setFieldsValue(res.data);
   };
 
   const onFinish = handleFetch(async ({ name }: Pick<ICategory, 'name'>) => {

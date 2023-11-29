@@ -39,19 +39,19 @@ export const personApi = createApi({
       }),
       invalidatesTags: (result) => (result ? [{ type: 'People', id: 'LIST' }] : [])
     }),
-    updatePerson: build.mutation<Response<IPerson>, IPerson>({
+    updatePerson: build.mutation<SuccessResponse, IPerson>({
       query: (body) => ({
         url: '',
         method: 'PUT',
         body
       }),
-      invalidatesTags: (result) =>
-        result
-          ? [
+      invalidatesTags: (_res, error, arg) =>
+        error
+          ? []
+          : [
               { type: 'People', id: 'LIST' },
-              { type: 'Person', id: result.data._id }
+              { type: 'Person', id: arg._id }
             ]
-          : []
     }),
     deletePerson: build.mutation<SuccessResponse, string>({
       query: (id) => ({

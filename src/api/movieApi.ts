@@ -29,7 +29,7 @@ export const movieApi = createApi({
       transformResponse: (res: IResponse<IMovie>) => res.data,
       providesTags: (result) => (result ? [{ type: 'Movie', id: result._id }] : [])
     }),
-    addMovie: build.mutation<SuccessResponse, IMovie>({
+    addMovie: build.mutation<IResponse<IMovie>, IMovie>({
       query: (body) => ({
         url: '',
         method: 'POST',
@@ -37,19 +37,19 @@ export const movieApi = createApi({
       }),
       invalidatesTags: (result) => (result ? [{ type: 'Movies', id: 'LIST' }] : [])
     }),
-    updateMovie: build.mutation<IResponse<IMovie>, IMovie>({
+    updateMovie: build.mutation<SuccessResponse, IMovie>({
       query: (body) => ({
         url: '',
         method: 'PUT',
         body
       }),
-      invalidatesTags: (result) =>
-        result
-          ? [
+      invalidatesTags: (_res, error, arg) =>
+        error
+          ? []
+          : [
               { type: 'Movies', id: 'LIST' },
-              { type: 'Movie', id: result.data._id }
+              { type: 'Movie', id: arg._id }
             ]
-          : []
     }),
     deleteMovie: build.mutation<SuccessResponse, string>({
       query: (id) => ({

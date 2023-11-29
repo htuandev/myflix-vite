@@ -36,19 +36,19 @@ export const userApi = createApi({
       }),
       invalidatesTags: [{ type: 'Users', id: 'LIST' }]
     }),
-    updateUser: build.mutation<Response<IUser>, IUser>({
+    updateUser: build.mutation<SuccessResponse, IUser>({
       query: (body) => ({
         url: '',
         method: 'PUT',
         body
       }),
-      invalidatesTags: (result) =>
-        result
-          ? [
-              { type: 'User', id: result.data._id },
-              { type: 'Users', id: 'LIST' }
+      invalidatesTags: (_res, error, arg) =>
+        error
+          ? []
+          : [
+              { type: 'Users', id: 'LIST' },
+              { type: 'User', id: arg._id }
             ]
-          : []
     }),
     deleteUser: build.mutation<SuccessResponse, string>({
       query: (id) => ({

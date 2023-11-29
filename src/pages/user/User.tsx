@@ -45,7 +45,6 @@ export default function UserInfo({ userId, open, setOpen }: Props) {
 
     const res = await onUpdate(formData).unwrap();
     notify.success(res.message);
-    form.setFieldsValue(res.data);
   };
 
   const onFinish = handleFetch(async (formData: IUser) => (isNew ? handleAdd(formData) : handleUpdate(formData)));
