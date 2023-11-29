@@ -2,6 +2,7 @@ import { SyntheticEvent, useRef } from 'react';
 import { twMerge } from 'tailwind-merge';
 import { tmdbImageSizes } from '@/constants';
 import noImage from '@/images/no-image.svg';
+import { tmdbImageSrc } from '@/utils';
 
 type Props = {
   src: string | undefined;
@@ -28,9 +29,8 @@ export default function Poster({ src, alt, className, size = 'sm' }: Props) {
     }
   };
 
-  const imgSrc = src?.replace('/original/', `/${imageSize}/`);
-
-  const imgProps = { src: imgSrc, alt, onError, onLoad };
+  const imgProps = { src: tmdbImageSrc(src, imageSize) || noImage, alt, onError, onLoad };
+  
   return (
     <div
       ref={ref}

@@ -59,7 +59,7 @@ export default function ManageUser() {
       key: 'profileImage',
       render: (profileImage) => (
         <div className=' flex-center'>
-          <Avatar src={profileImage} className=' w-12' />
+          <Avatar src={profileImage} className=' w-12' key={profileImage}/>
         </div>
       ),
       align: 'center',

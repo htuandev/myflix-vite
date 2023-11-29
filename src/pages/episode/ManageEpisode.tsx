@@ -82,6 +82,7 @@ export default function ManageEpisode() {
           <Thumbnail
             src={data?.movie.type === ContentType.Movie ? data?.movie.thumbnail : thumbnail}
             className=' w-full'
+            key={thumbnail}
           />
         </div>
       ),

@@ -68,7 +68,14 @@ export default function ManagePerson() {
       key: 'profileImage',
       render: (profileImage, { gender }) => (
         <div className=' flex-center p-2'>
-          <ProfileImage src={profileImage} gender={gender} size='sm' type='circle' className=' w-12 ' />
+          <ProfileImage
+            src={profileImage}
+            gender={gender}
+            size='sm'
+            type='circle'
+            className=' w-12 '
+            key={profileImage ? profileImage : gender}
+          />
         </div>
       ),
       align: 'center',

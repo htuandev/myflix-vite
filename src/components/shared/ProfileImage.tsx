@@ -3,6 +3,7 @@ import { twMerge } from 'tailwind-merge';
 import { tmdbImageSizes, Gender } from '@/constants';
 import profileImageFemale from '@/images/drink_coffee_female.svg';
 import profileImageMale from '@/images/drink_coffee_male.svg';
+import { tmdbImageSrc } from '@/utils';
 
 type Props = {
   src: string | undefined;
@@ -27,9 +28,7 @@ export default function ProfileImage({ src, alt, gender, className, size = 'lg',
     }
   };
 
-  const imgSrc = src?.replace('/original/', `/${imageSize}/`) || defaultProfileImage;
-
-  const imgProps = { src: imgSrc, alt, onError, onLoad };
+  const imgProps = { src: tmdbImageSrc(src, imageSize) || defaultProfileImage, alt, onError, onLoad };
 
   return (
     <div

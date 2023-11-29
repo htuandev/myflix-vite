@@ -2,6 +2,8 @@ import { useEffect, useRef } from 'react';
 import Hls from 'hls.js';
 import Plyr from 'plyr';
 import 'plyr/dist/plyr.css';
+import { tmdbImageSizes } from '@/constants';
+import { tmdbImageSrc } from '@/utils';
 
 type Props = {
   source: string;
@@ -42,7 +44,7 @@ export default function VideoPlayer({ source, thumbnail }: Props) {
     return () => {
       player.destroy();
     };
-  }, [source, thumbnail]);
+  }, [source]);
 
-  return <video ref={videoRef} poster={thumbnail} />;
+  return <video ref={videoRef} poster={tmdbImageSrc(thumbnail, tmdbImageSizes.thumbnail.md)} />;
 }
