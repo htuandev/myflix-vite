@@ -307,7 +307,7 @@ export default function Movie() {
           label='Overview'
           className='md:col-span-2'
           name='overview'
-          rules={[{ required: true, min: 200, message: 'Overview must be at least 200 characters.' }]}
+          rules={[{ required: true, min: 100, message: 'Overview must be at least 100 characters.' }]}
           isLoading={isLoading}
           isTextarea
         >
