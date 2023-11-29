@@ -1,19 +1,15 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { Prettify } from '@/types';
-import { SuccessResponse } from '@/types/api';
-import { CastInfo, Casts } from '@/types/cast';
-import { baseQuery } from '@/utils/api';
-
-type Response<T> = Prettify<SuccessResponse & { data: Prettify<T> }>;
+import { SuccessResponse, ICharacter, ICasts, IResponse } from '@/types';
+import { baseQuery } from '@/utils';
 
 export const castApi = createApi({
   reducerPath: 'castApi',
   baseQuery: baseQuery('cast'),
   tagTypes: ['Casts', 'Cast'],
   endpoints: (build) => ({
-    getCasts: build.query<Casts, string>({
+    getCasts: build.query<ICasts, string>({
       query: (id) => `movie/${id}`,
-      transformResponse: (res: Response<Casts>) => res.data,
+      transformResponse: (res: IResponse<ICasts>) => res.data,
       providesTags: (result) => (result ? [{ type: 'Casts' as const, id: 'LIST' }] : [])
     }),
     addCast: build.mutation<SuccessResponse, { id: string; formData: { personId: string; character?: string } }>({
@@ -31,12 +27,12 @@ export const castApi = createApi({
       }),
       invalidatesTags: (result) => (result ? [{ type: 'Casts', id: 'LIST' }] : [])
     }),
-    getCastById: build.query<CastInfo, string>({
+    getCastById: build.query<ICharacter, string>({
       query: (id) => id,
-      transformResponse: (res: Response<CastInfo>) => res.data,
+      transformResponse: (res: IResponse<ICharacter>) => res.data,
       providesTags: (result) => (result ? [{ type: 'Cast' as const, id: result._id }] : [])
     }),
-    updateCharacter: build.mutation<SuccessResponse, Pick<CastInfo, '_id' | 'character'>>({
+    updateCharacter: build.mutation<SuccessResponse, Pick<ICharacter, '_id' | 'character'>>({
       query: ({ _id, character }) => ({
         url: _id,
         method: 'PUT',

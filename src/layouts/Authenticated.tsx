@@ -1,10 +1,9 @@
 import { useEffect, useLayoutEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Outlet, useLocation } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuthMutation } from '@/api/authApi';
-import { HeaderKey } from '@/constants/enum';
-import useIsFirstRender from '@/hooks/useIsFirstRender';
+import { HeaderKey } from '@/constants';
+import { useIsFirstRender } from '@/hooks';
 import { setUser } from '@/reducers/auth';
 import { RootState } from '@/reducers/store';
 import Hamster from './Hamster';

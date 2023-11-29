@@ -6,18 +6,14 @@ import { Tag, Table, Modal, ConfigProvider, Empty } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import { twMerge } from 'tailwind-merge';
-import Button from '@/antd/Button';
+import { Button } from '@/antd';
 import { useDeleteCastMutation, useGetCastsQuery } from '@/api/castApi';
-import { Gender } from '@/constants/enum';
-import useDocumentTitle from '@/hooks/useDocumentTitle';
-import useValidId from '@/hooks/useValidId';
+import { Gender } from '@/constants';
+import { useDocumentTitle, useValidId } from '@/hooks';
 import Hamster from '@/layouts/Hamster';
-import Backdrop from '@/shared/Backdrop';
-import Poster from '@/shared/Poster';
-import ProfileImage from '@/shared/ProfileImage';
-import { Cast } from '@/types/cast';
-import { handleFetch } from '@/utils/api';
-import notify from '@/utils/notify';
+import { Backdrop, Poster, ProfileImage } from '@/shared';
+import { ICast } from '@/types';
+import { handleFetch, notify } from '@/utils';
 import AddCast from './AddCast';
 import EditCast from './EditCast';
 
@@ -49,16 +45,17 @@ export default function ManageCast() {
 
   const [modal, contextHolder] = Modal.useModal();
 
-  const confirmDeleteConfig = ({ _id, name }: Pick<Cast, '_id' | 'name'>) => ({
-    title: 'Delete Cast',
-    content: `Do you want to delete ${name}?`,
-    onOk: () => handleDelete(_id),
-    okText: 'Delete',
-    wrapClassName: 'myflix-modal-confirm',
-    maskClosable: false
-  });
+  const confirmDelete = ({ _id, name }: Pick<ICast, '_id' | 'name'>) =>
+    modal.confirm({
+      title: 'Delete Cast',
+      content: `Do you want to delete ${name}?`,
+      onOk: () => handleDelete(_id),
+      okText: 'Delete',
+      wrapClassName: 'myflix-modal-confirm',
+      maskClosable: false
+    });
 
-  const columns: ColumnsType<Cast> = [
+  const columns: ColumnsType<ICast> = [
     {
       title: 'Avatar',
       dataIndex: 'profileImage',
@@ -127,7 +124,7 @@ export default function ManageCast() {
           />
           <FaTrash
             className=' cursor-pointer text-xl hover:text-dark-100'
-            onClick={() => modal.confirm(confirmDeleteConfig({ _id, name }))}
+            onClick={() => confirmDelete({ _id, name })}
           />
         </div>
       ),

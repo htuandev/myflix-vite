@@ -5,16 +5,14 @@ import { Form, Input, Modal, Select, Table, Tag } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import { twMerge } from 'tailwind-merge';
-import Button from '@/antd/Button';
+import { Button } from '@/antd';
 import { useDeleteUserMutation, useGetUsersQuery } from '@/api/userApi';
-import colors from '@/constants/colors';
-import { Role } from '@/constants/enum';
-import useDocumentTitle from '@/hooks/useDocumentTitle';
-import Avatar from '@/shared/Avatar';
-import { User } from '@/types/user';
-import { handleFetch } from '@/utils/api';
-import notify from '@/utils/notify';
-import UserInfo from './UserInfo';
+import { Role, colors } from '@/constants';
+import { useDocumentTitle } from '@/hooks';
+import { Avatar } from '@/shared';
+import { IUser } from '@/types';
+import { handleFetch, notify } from '@/utils';
+import User from './User';
 
 export default function ManageUser() {
   const title = 'Manage Users';
@@ -44,16 +42,17 @@ export default function ManageUser() {
 
   const [modal, contextHolder] = Modal.useModal();
 
-  const confirmDeleteConfig = ({ _id, name, email }: Pick<User, '_id' | 'name' | 'email'>) => ({
-    title: 'Delete user',
-    content: `Do you want to delete ${name ? name : email}?`,
-    onOk: () => handleDelete(_id),
-    okText: 'Delete',
-    wrapClassName: 'myflix-modal-confirm',
-    maskClosable: false
-  });
+  const confirmDelete = ({ _id, name, email }: Pick<IUser, '_id' | 'name' | 'email'>) =>
+    modal.confirm({
+      title: 'Delete user',
+      content: `Do you want to delete ${name ? name : email}?`,
+      onOk: () => handleDelete(_id),
+      okText: 'Delete',
+      wrapClassName: 'myflix-modal-confirm',
+      maskClosable: false
+    });
 
-  const columns: ColumnsType<User> = [
+  const columns: ColumnsType<IUser> = [
     {
       title: 'Avatar',
       dataIndex: 'profileImage',
@@ -109,7 +108,7 @@ export default function ManageUser() {
           <FaPenToSquare className=' cursor-pointer text-xl hover:text-dark-100' onClick={() => openModal(_id)} />
           <FaTrash
             className=' cursor-pointer text-xl hover:text-dark-100'
-            onClick={() => modal.confirm(confirmDeleteConfig({ _id, name, email }))}
+            onClick={() => confirmDelete({ _id, name, email })}
           />
         </div>
       ),
@@ -127,7 +126,7 @@ export default function ManageUser() {
       >
         {data && data.length > 0 && (
           <div className=' hidden md:flex md:gap-4'>
-            <Form>
+            <Form autoComplete='off'>
               <Input
                 placeholder={`Search ${data.length} ${data.length === 1 ? 'user' : 'users'} by email`}
                 className=' w-full md:w-80'
@@ -167,7 +166,7 @@ export default function ManageUser() {
         scroll={{ scrollToFirstRowOnChange: true, x: true }}
         pagination={{ hideOnSinglePage: true, pageSize: 25, showSizeChanger: false }}
       />
-      {open && <UserInfo userId={userId} open={open} setOpen={setOpen} />}
+      {open && <User userId={userId} open={open} setOpen={setOpen} />}
       {contextHolder}
     </section>
   );

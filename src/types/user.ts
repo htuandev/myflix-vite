@@ -1,6 +1,6 @@
-import { Role } from '@/constants/enum';
+import { Role } from '@/constants';
 
-export type User = {
+export type IUser = {
   _id: string;
   email: string;
   name?: string;

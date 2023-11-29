@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-const useDocumentTitle = (title?: string) => {
+export const useDocumentTitle = (title?: string) => {
   useEffect(() => {
     const defaultTitle = 'Myflix – Drama, Film, Show, Anime';
     document.title = title ? `${title} | Myflix Dashboard` : defaultTitle;
@@ -10,5 +10,3 @@ const useDocumentTitle = (title?: string) => {
     };
   }, [title]);
 };
-
-export default useDocumentTitle;

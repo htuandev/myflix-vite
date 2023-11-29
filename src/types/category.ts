@@ -1,4 +1,4 @@
-export type Category = {
+export type ICategory = {
   _id: number;
   name: string;
   slug: string;
@@ -6,8 +6,8 @@ export type Category = {
 
 export type CategoryType = 'Genres' | 'Networks' | 'Countries';
 
-export type Categories = {
-  genres: Category[];
-  networks: Category[];
-  countries: Category[];
+export type ICategories = {
+  genres: ICategory[];
+  networks: ICategory[];
+  countries: ICategory[];
 };

@@ -1,17 +1,14 @@
 import { Dispatch, SetStateAction } from 'react';
 import { useSelector } from 'react-redux';
 import { Form, Input, Modal, Select } from 'antd';
-import Button from '@/antd/Button';
+import { Button } from '@/antd';
 import { useAddUserMutation, useGetUserByIdQuery, useUpdateUserMutation } from '@/api/userApi';
-import { Role } from '@/constants/enum';
+import { Role } from '@/constants';
 import drinkCoffeeAvatar from '@/images/drink_coffee_male.svg';
 import { RootState } from '@/reducers/store';
-import Avatar from '@/shared/Avatar';
-import FormItem from '@/shared/FormItem';
-import { User } from '@/types/user';
-import { detectFormChanged } from '@/utils';
-import { handleFetch } from '@/utils/api';
-import notify from '@/utils/notify';
+import { Avatar, FormItem } from '@/shared';
+import { IUser } from '@/types';
+import { handleFetch, notify, detectFormChanged } from '@/utils';
 
 type Props = {
   userId: string;
@@ -21,10 +18,10 @@ type Props = {
 
 export default function UserInfo({ userId, open, setOpen }: Props) {
   const isNew = userId === '';
-  const [form] = Form.useForm<User>();
+  const [form] = Form.useForm<IUser>();
 
   const { data: user, isLoading } = useGetUserByIdQuery(userId, { skip: isNew });
-  const { user: currentUser } = useSelector((state: RootState) => state.auth) as { user: User };
+  const { user: currentUser } = useSelector((state: RootState) => state.auth) as { user: IUser };
 
   const initialValues = isNew ? { role: Role.User } : user ? user : undefined;
 
@@ -33,9 +30,9 @@ export default function UserInfo({ userId, open, setOpen }: Props) {
   const [onAdd, { isLoading: isAdding }] = useAddUserMutation();
   const [onUpdate, { isLoading: isUpdating }] = useUpdateUserMutation();
 
-  const onFinish = handleFetch(async (formData: User) => {
+  const onFinish = handleFetch(async (formData: IUser) => {
     if (user) formData._id = user._id;
-    if (!isNew) detectFormChanged(formData, user as User);
+    if (!isNew) detectFormChanged(formData, user as IUser);
 
     if (currentUser._id === formData._id && currentUser.role !== formData.role) {
       notify.error('You can not change your role');

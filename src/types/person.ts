@@ -1,6 +1,6 @@
-import { Gender } from '@/constants/enum';
+import { Gender } from '@/constants';
 
-export type Person = {
+export type IPerson = {
   _id: string;
   name: string;
   knownAs: string[];

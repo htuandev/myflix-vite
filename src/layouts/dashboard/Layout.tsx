@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Layout } from 'antd';
-import useWindowSize from '@/hooks/useWindowSize';
+import { useWindowSize } from '@/hooks';
 import Header from './Header';
 import Sidebar from './Sidebar';
 

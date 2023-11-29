@@ -1,12 +1,10 @@
 import { Dispatch, SetStateAction } from 'react';
 import { Form, Input, Modal } from 'antd';
-import Button from '@/antd/Button';
+import { Button } from '@/antd';
 import { useAddCategoryMutation, useGetCategoryByIdQuery, useUpdateCategoryMutation } from '@/api/categoryApi';
-import FormItem from '@/shared/FormItem';
-import { Category, CategoryType } from '@/types/category';
-import { detectFormChanged, handleSlug } from '@/utils';
-import { handleFetch } from '@/utils/api';
-import notify from '@/utils/notify';
+import { FormItem } from '@/shared';
+import { ICategory, CategoryType } from '@/types';
+import { handleFetch, notify, detectFormChanged, handleSlug } from '@/utils';
 
 type Props = {
   type: CategoryType;
@@ -18,19 +16,19 @@ type Props = {
 
 export default function CategoryInfo({ type, open, setOpen, categoryId, categoryType }: Props) {
   const isNew = categoryId === -1;
-  const [form] = Form.useForm<Category>();
+  const [form] = Form.useForm<ICategory>();
 
   const { data: category, isLoading } = useGetCategoryByIdQuery({ type, id: categoryId }, { skip: isNew });
 
   const [onAdd, { isLoading: isAdding }] = useAddCategoryMutation();
   const [onUpdate, { isLoading: isUpdating }] = useUpdateCategoryMutation();
 
-  const onFinish = handleFetch(async ({ name }: Pick<Category, 'name'>) => {
+  const onFinish = handleFetch(async ({ name }: Pick<ICategory, 'name'>) => {
     if (!isNew) detectFormChanged({ name }, { name: category?.name });
 
     const slug = handleSlug(name);
 
-    const formData = { ...category, name, slug } as Category;
+    const formData = { ...category, name, slug } as ICategory;
 
     if (isNew) {
       const res = await onAdd({ type, formData }).unwrap();

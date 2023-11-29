@@ -2,15 +2,14 @@ import { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { Form, Input, InputRef } from 'antd';
-import Button from '@/antd/Button';
+import { Button } from '@/antd';
 import { useLoginMutation } from '@/api/authApi';
-import { HeaderKey } from '@/constants/enum';
-import useDocumentTitle from '@/hooks/useDocumentTitle';
+import { HeaderKey } from '@/constants';
+import { useDocumentTitle } from '@/hooks';
 import homeCinema from '@/images/home_cinema.svg';
 import { setUser } from '@/reducers/auth';
 import { RootState } from '@/reducers/store';
-import { handleFetch } from '@/utils/api';
-import notify from '@/utils/notify';
+import { handleFetch, notify } from '@/utils';
 
 export default function Login() {
   useDocumentTitle('Login');

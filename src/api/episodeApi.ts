@@ -1,8 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { Prettify } from '@/types';
-import { Response, SuccessResponse } from '@/types/api';
-import { IEpisodeInfo, IEpisodes } from '@/types/episode';
-import { baseQuery } from '@/utils/api';
+import { Prettify, IResponse, SuccessResponse, IEpisodeInfo, IEpisodes } from '@/types';
+import { baseQuery } from '@/utils';
 
 export const episodeApi = createApi({
   reducerPath: 'episodeApi',
@@ -14,7 +12,7 @@ export const episodeApi = createApi({
         url: `movie/${id}`,
         params: { page }
       }),
-      transformResponse: (res: Response<IEpisodes>) => res.data,
+      transformResponse: (res: IResponse<IEpisodes>) => res.data,
       providesTags: (result) => (result ? [{ type: 'Episodes' as const, id: 'LIST' }] : [])
     }),
     addEpisode: build.mutation<SuccessResponse, { id: string; formData: IEpisodeInfo }>({
@@ -45,7 +43,7 @@ export const episodeApi = createApi({
     }),
     getEpisodeById: build.query<IEpisodeInfo, string>({
       query: (id) => id,
-      transformResponse: (res: Response<IEpisodeInfo>) => res.data,
+      transformResponse: (res: IResponse<IEpisodeInfo>) => res.data,
       providesTags: (result) => (result ? [{ type: 'Episode' as const, id: result._id }] : [])
     }),
     updateEpisode: build.mutation<SuccessResponse, IEpisodeInfo>({

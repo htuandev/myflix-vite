@@ -1,3 +1,8 @@
-export type Prettify<T> = { [K in keyof T]: T[K] } & NonNullable<unknown>;
-
-export type ObjectType = Record<string, unknown>;
+export * from './api';
+export * from './cast';
+export * from './category';
+export * from './episode';
+export * from './movie';
+export * from './person';
+export * from './types';
+export * from './user';

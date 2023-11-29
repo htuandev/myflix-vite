@@ -4,31 +4,19 @@ import { useNavigate } from 'react-router-dom';
 import { ColorPicker, DatePicker, Form, Input, InputNumber, Modal, Select } from 'antd';
 import dayjs from 'dayjs';
 import _ from 'lodash';
-import Button from '@/antd/Button';
+import { Button } from '@/antd';
 import { useGetCategoriesQuery } from '@/api/categoryApi';
 import { useAddMovieMutation, useGetMovieByIdQuery, useUpdateMovieMutation } from '@/api/movieApi';
-import { BACKDROP_COLOR } from '@/constants';
-import { ContentType, Status, SubtitleType } from '@/constants/enum';
-import rules from '@/constants/rules';
-import useDocumentTitle from '@/hooks/useDocumentTitle';
-import useGlightbox from '@/hooks/useGlightbox';
-import useValidId from '@/hooks/useValidId';
+import { ContentType, Status, SubtitleType, BACKDROP_COLOR, rules } from '@/constants';
+import { useDocumentTitle, useGlightbox, useValidId } from '@/hooks';
 import noImage from '@/images/no-image.svg';
-import Backdrop from '@/shared/Backdrop';
-import FormItem from '@/shared/FormItem';
-import Poster from '@/shared/Poster';
-import Thumbnail from '@/shared/Thumbnail';
-import { Prettify } from '@/types';
-import { Category } from '@/types/category';
-import { Movie } from '@/types/movie';
-import { detectFormChanged, handleYoutubeId, transformDate } from '@/utils';
-import { handleFetch } from '@/utils/api';
-import notify from '@/utils/notify';
-import { handleImageUrl } from '@/utils/tmdb';
+import { FormItem, Backdrop, Thumbnail, Poster } from '@/shared';
+import { Prettify, ICategory, IMovie } from '@/types';
+import { detectFormChanged, handleYoutubeId, transformDate, handleFetch, notify, handleImageUrl } from '@/utils';
 
-type MovieForm = Prettify<Omit<Movie, 'releaseDate'> & { releaseDate?: dayjs.Dayjs }>;
+type MovieForm = Prettify<Omit<IMovie, 'releaseDate'> & { releaseDate?: dayjs.Dayjs }>;
 
-export default function MovieInfo() {
+export default function Movie() {
   const { id } = useValidId('/admin/movie');
   const isNew = id === 'add' ? true : false;
 
@@ -38,10 +26,10 @@ export default function MovieInfo() {
   const title = isNew ? 'Add Movie' : movie?.name;
   useDocumentTitle(title);
 
-  const transformCategory = (category: Category[] | undefined) =>
+  const transformCategory = (category: ICategory[] | undefined) =>
     category?.map(({ _id, name }) => ({ value: _id, label: name }));
 
-  const transformMovie = (movie: Movie) => ({
+  const transformMovie = (movie: IMovie) => ({
     ...movie,
     releaseDate: _.isEmpty(movie.releaseDate) ? movie.releaseDate : transformDate(movie.releaseDate as string).toDayjs()
   });
@@ -74,8 +62,8 @@ export default function MovieInfo() {
           { label: 'Ended', value: Status.Ended }
         ];
 
-  const setFieldValue = (key: keyof Movie, value?: unknown) => form.setFieldValue(key, value);
-  const validateField = (key: keyof Movie) => form.validateFields([key]);
+  const setFieldValue = (key: keyof IMovie, value?: unknown) => form.setFieldValue(key, value);
+  const validateField = (key: keyof IMovie) => form.validateFields([key]);
 
   const typeOnChange = (value: ContentType) => {
     if (status !== Status.Upcoming) setFieldValue('status');
@@ -84,7 +72,7 @@ export default function MovieInfo() {
     validateField(key);
   };
 
-  const imageChange = (e: ChangeEvent<HTMLInputElement>, key: keyof Movie, isLogo?: boolean) => {
+  const imageChange = (e: ChangeEvent<HTMLInputElement>, key: keyof IMovie, isLogo?: boolean) => {
     setFieldValue(key, handleImageUrl({ url: e.target.value, isLogo }));
     validateField(key);
   };
@@ -100,13 +88,13 @@ export default function MovieInfo() {
   const [onAdd, { isLoading: isAdding }] = useAddMovieMutation();
   const [onUpdate, { isLoading: isUpdating }] = useUpdateMovieMutation();
 
-  const onFinish = handleFetch(async (formData: Movie) => {
+  const onFinish = handleFetch(async (formData: IMovie) => {
     if (formData.releaseDate) {
       formData.releaseDate = transformDate(formData.releaseDate).toString();
     }
 
     if (movie) {
-      detectFormChanged(formData, movie as Movie, ['name', 'overview']);
+      detectFormChanged(formData, movie as IMovie, ['name', 'overview']);
       const res = await onUpdate({ ...formData, _id: movie._id }).unwrap();
       notify.success(res.message);
     } else {

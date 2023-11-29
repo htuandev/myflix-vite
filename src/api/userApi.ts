@@ -1,8 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { Prettify } from '@/types';
-import { SuccessResponse } from '@/types/api';
-import { User } from '@/types/user';
-import { baseQuery } from '@/utils/api';
+import { Prettify, SuccessResponse, IUser } from '@/types';
+import { baseQuery } from '@/utils';
 
 type Response<T> = Prettify<SuccessResponse & { data: T }>;
 
@@ -11,9 +9,9 @@ export const userApi = createApi({
   baseQuery: baseQuery('user'),
   tagTypes: ['Users', 'User'],
   endpoints: (build) => ({
-    getUsers: build.query<User[], null>({
+    getUsers: build.query<IUser[], null>({
       query: () => '',
-      transformResponse: (res: Response<User[]>) => res.data,
+      transformResponse: (res: Response<IUser[]>) => res.data,
       providesTags: (result) => {
         if (result) {
           const final = [
@@ -25,12 +23,12 @@ export const userApi = createApi({
         return [{ type: 'Users' as const, id: 'LIST' }];
       }
     }),
-    getUserById: build.query<User, string>({
+    getUserById: build.query<IUser, string>({
       query: (id) => id,
-      transformResponse: (res: Response<User>) => res.data,
+      transformResponse: (res: Response<IUser>) => res.data,
       providesTags: (result) => (result ? [{ type: 'User', id: result._id }] : [])
     }),
-    addUser: build.mutation<SuccessResponse, User>({
+    addUser: build.mutation<SuccessResponse, IUser>({
       query: (body) => ({
         url: '',
         method: 'POST',
@@ -38,7 +36,7 @@ export const userApi = createApi({
       }),
       invalidatesTags: [{ type: 'Users', id: 'LIST' }]
     }),
-    updateUser: build.mutation<Response<User>, User>({
+    updateUser: build.mutation<Response<IUser>, IUser>({
       query: (body) => ({
         url: '',
         method: 'PUT',

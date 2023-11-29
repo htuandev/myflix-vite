@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import GLightbox from 'glightbox';
 import 'glightbox/dist/css/glightbox.css';
 
-export default function useGlightbox(youtubeId: string) {
+export const useGlightbox = (youtubeId: string) => {
   useEffect(() => {
     const player = GLightbox({
       source: 'youtube',
@@ -36,4 +36,4 @@ export default function useGlightbox(youtubeId: string) {
       player.destroy();
     };
   }, [youtubeId]);
-}
+};

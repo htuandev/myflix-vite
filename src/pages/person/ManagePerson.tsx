@@ -2,22 +2,20 @@ import { useEffect, useState } from 'react';
 import { FaPenToSquare, FaTrash } from 'react-icons/fa6';
 import { HiSquaresPlus } from 'react-icons/hi2';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Input, Modal, Tag } from 'antd';
+import { Modal, Tag } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import { twMerge } from 'tailwind-merge';
-import Button from '@/antd/Button';
-import Pagination from '@/antd/Pagination';
+import { Button, Pagination, Search } from '@/antd';
 import { useDeletePersonMutation, useGetPeopleQuery } from '@/api/personApi';
-import { Gender } from '@/constants/enum';
-import useDocumentTitle from '@/hooks/useDocumentTitle';
-import ProfileImage from '@/shared/ProfileImage';
-import { Person } from '@/types/person';
-import { handleFetch } from '@/utils/api';
-import notify from '@/utils/notify';
-import PersonInfo from './PersonInfo';
+import { Gender } from '@/constants';
+import { useDocumentTitle } from '@/hooks';
+import { ProfileImage } from '@/shared';
+import { IPerson } from '@/types';
+import { handleFetch, notify } from '@/utils';
+import Person from './Person';
 
-export default function Manage() {
+export default function ManagePerson() {
   const title = 'Manage Person';
   useDocumentTitle(title);
 
@@ -53,16 +51,17 @@ export default function Manage() {
 
   const [modal, contextHolder] = Modal.useModal();
 
-  const confirmDeleteConfig = ({ _id, name }: Pick<Person, '_id' | 'name'>) => ({
-    title: 'Delete Person',
-    content: `Do you want to delete ${name}?`,
-    onOk: () => handleDelete(_id),
-    okText: 'Delete',
-    wrapClassName: 'myflix-modal-confirm',
-    maskClosable: false
-  });
+  const confirmDelete = ({ _id, name }: Pick<IPerson, '_id' | 'name'>) =>
+    modal.confirm({
+      title: 'Delete Person',
+      content: `Do you want to delete ${name}?`,
+      onOk: () => handleDelete(_id),
+      okText: 'Delete',
+      wrapClassName: 'myflix-modal-confirm',
+      maskClosable: false
+    });
 
-  const columns: ColumnsType<Person> = [
+  const columns: ColumnsType<IPerson> = [
     {
       title: 'Avatar',
       dataIndex: 'profileImage',
@@ -133,7 +132,7 @@ export default function Manage() {
           <FaPenToSquare className=' cursor-pointer text-xl hover:text-dark-100' onClick={() => openModal(_id)} />
           <FaTrash
             className=' cursor-pointer text-xl hover:text-dark-100'
-            onClick={() => modal.confirm(confirmDeleteConfig({ _id, name }))}
+            onClick={() => confirmDelete({ _id, name })}
           />
         </div>
       ),
@@ -147,12 +146,10 @@ export default function Manage() {
       <h1 className=' text-heading'>{title}</h1>
       <div className='flex-center mb-4 gap-8 md:justify-between'>
         {data && (
-          <Input.Search
-            className='myflix-search w-full md:w-80'
-            allowClear
-            enterButton='Search'
+          <Search
             onSearch={(value) => setSearch(value.trim())}
             disabled={isFetching}
+            placeholder={`Search ${data.totalRecords} people`}
           />
         )}
         <Button icon={<HiSquaresPlus />} onClick={() => openModal('')} className='hidden md:flex'>
@@ -168,7 +165,7 @@ export default function Manage() {
         pagination={false}
       />
       {data && data.totalPages > 1 && <Pagination page={page} totalResults={data.totalResults} />}
-      {open && <PersonInfo personId={personId} open={open} setOpen={setOpen} key={personId} />}
+      {open && <Person personId={personId} open={open} setOpen={setOpen} key={personId} />}
       {contextHolder}
     </section>
   );

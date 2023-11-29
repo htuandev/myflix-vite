@@ -1,9 +1,8 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { Prettify } from '@/types';
-import { User } from '@/types/user';
+import { Prettify, IUser } from '@/types';
 
 type State = {
-  user: Prettify<User> | null;
+  user: Prettify<IUser> | null;
 };
 
 const initialState: State = {

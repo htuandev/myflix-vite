@@ -4,16 +4,15 @@ import { FaBars, FaXmark } from 'react-icons/fa6';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Avatar, Button } from 'antd';
-import { HeaderKey } from '@/constants/enum';
+import { HeaderKey } from '@/constants';
 import { setUser } from '@/reducers/auth';
 import { RootState } from '@/reducers/store';
-import { Prettify } from '@/types';
-import { User } from '@/types/user';
+import { Prettify, IUser } from '@/types';
 
 type Props = { width: number; collapsed: boolean; onToggle: () => void };
 
 export default function Header({ width, collapsed, onToggle }: Props) {
-  const { user } = useSelector((state: RootState) => state.auth) as { user: Prettify<User> };
+  const { user } = useSelector((state: RootState) => state.auth) as { user: Prettify<IUser> };
 
   const dispatch = useDispatch();
   const navigate = useNavigate();

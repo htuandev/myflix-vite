@@ -1,18 +1,14 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { Prettify } from '@/types';
-import { SuccessResponse } from '@/types/api';
-import { User } from '@/types/user';
-import { baseQuery } from '@/utils/api';
+import { Prettify, IUser, IResponse } from '@/types';
+import { baseQuery } from '@/utils';
 
-type Response = Prettify<SuccessResponse & { data: User }>;
-
-const transformResponse = (response: Response) => response.data;
+const transformResponse = (response: IResponse<IUser>) => response.data;
 
 export const authApi = createApi({
   reducerPath: 'authApi',
   baseQuery: baseQuery('auth'),
   endpoints: (build) => ({
-    login: build.mutation<Prettify<User>, { email: string }>({
+    login: build.mutation<Prettify<IUser>, { email: string }>({
       query(body) {
         return {
           url: 'login-cms',
@@ -22,7 +18,7 @@ export const authApi = createApi({
       },
       transformResponse
     }),
-    auth: build.mutation<Prettify<User>, void>({
+    auth: build.mutation<Prettify<IUser>, void>({
       query() {
         return {
           url: 'refresh-cms',

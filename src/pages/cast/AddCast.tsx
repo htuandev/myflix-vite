@@ -1,12 +1,11 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 import { Form, Input, Modal, Select } from 'antd';
 import _ from 'lodash';
-import Button from '@/antd/Button';
+import { Button } from '@/antd';
 import { useAddCastMutation } from '@/api/castApi';
 import { useGetPeopleQuery } from '@/api/personApi';
-import FormItem from '@/shared/FormItem';
-import { handleFetch } from '@/utils/api';
-import notify from '@/utils/notify';
+import { FormItem } from '@/shared';
+import { handleFetch, notify } from '@/utils';
 
 type Props = {
   movieId: string;

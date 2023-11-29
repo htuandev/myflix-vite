@@ -1,9 +1,8 @@
 import { fetchBaseQuery } from '@reduxjs/toolkit/query';
 import _, { every } from 'lodash';
-import { HeaderKey } from '@/constants/enum';
+import { HeaderKey } from '@/constants';
 import { RootState } from '@/reducers/store';
-import { ObjectType } from '@/types';
-import { ErrorResponse, SearchParams } from '@/types/api';
+import { ObjectType, ErrorResponse, SearchParams } from '@/types';
 import notify from './notify';
 
 const baseUrl: string = import.meta.env.VITE_API_URL || 'http://localhost:8816';

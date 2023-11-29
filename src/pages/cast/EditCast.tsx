@@ -1,11 +1,10 @@
 import { Dispatch, SetStateAction } from 'react';
 import { Form, Input, Modal } from 'antd';
-import Button from '@/antd/Button';
+import { Button } from '@/antd';
 import { useGetCastByIdQuery, useUpdateCharacterMutation } from '@/api/castApi';
-import FormItem from '@/shared/FormItem';
-import { CastInfo } from '@/types/cast';
-import { handleFetch } from '@/utils/api';
-import notify from '@/utils/notify';
+import { FormItem } from '@/shared';
+import { ICharacter } from '@/types';
+import { handleFetch, notify } from '@/utils';
 
 type Props = {
   castId: string;
@@ -18,7 +17,7 @@ export default function EditCast({ castId, open, setOpen }: Props) {
   const { data, isLoading } = useGetCastByIdQuery(castId);
   const [onUpdate, { isLoading: isUpdating }] = useUpdateCharacterMutation();
 
-  const onFinish = handleFetch(async ({ character }: Pick<CastInfo, 'character'>) => {
+  const onFinish = handleFetch(async ({ character }: Pick<ICharacter, 'character'>) => {
     const res = await onUpdate({ _id: castId, character }).unwrap();
     notify.success(res.message);
   });

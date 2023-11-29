@@ -1,22 +1,18 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { Prettify } from '@/types';
-import { DataList, SearchParams, SuccessResponse } from '@/types/api';
-import { Movie } from '@/types/movie';
-import { baseQuery, updateSearchParams } from '@/utils/api';
-
-type Response<T> = Prettify<SuccessResponse & { data: T }>;
+import { DataList, SearchParams, SuccessResponse, IMovie, IResponse } from '@/types';
+import { baseQuery, updateSearchParams } from '@/utils';
 
 export const movieApi = createApi({
   reducerPath: 'movieApi',
   baseQuery: baseQuery('movie'),
   tagTypes: ['Movies', 'Movie'],
   endpoints: (build) => ({
-    getMovies: build.query<DataList<Movie>, SearchParams>({
+    getMovies: build.query<DataList<IMovie>, SearchParams>({
       query: (params) => ({
         url: '',
         params: updateSearchParams(params)
       }),
-      transformResponse: (res: Response<DataList<Movie>>) => res.data,
+      transformResponse: (res: IResponse<DataList<IMovie>>) => res.data,
       providesTags: (result) => {
         if (result) {
           const final = [
@@ -28,12 +24,12 @@ export const movieApi = createApi({
         return [{ type: 'Movies' as const, id: 'LIST' }];
       }
     }),
-    getMovieById: build.query<Movie, string>({
+    getMovieById: build.query<IMovie, string>({
       query: (id) => id,
-      transformResponse: (res: Response<Movie>) => res.data,
+      transformResponse: (res: IResponse<IMovie>) => res.data,
       providesTags: (result) => (result ? [{ type: 'Movie', id: result._id }] : [])
     }),
-    addMovie: build.mutation<SuccessResponse, Movie>({
+    addMovie: build.mutation<SuccessResponse, IMovie>({
       query: (body) => ({
         url: '',
         method: 'POST',
@@ -41,7 +37,7 @@ export const movieApi = createApi({
       }),
       invalidatesTags: (result) => (result ? [{ type: 'Movies', id: 'LIST' }] : [])
     }),
-    updateMovie: build.mutation<Response<Movie>, Movie>({
+    updateMovie: build.mutation<IResponse<IMovie>, IMovie>({
       query: (body) => ({
         url: '',
         method: 'PUT',

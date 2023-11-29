@@ -1,12 +1,10 @@
 import { Dispatch, SetStateAction } from 'react';
 import { Form, Input, Modal } from 'antd';
-import Button from '@/antd/Button';
+import { Button } from '@/antd';
 import { useAddEpisodesMutation } from '@/api/episodeApi';
-import { m3u8Pattern, onlyNumbersPattern } from '@/constants';
-import rules from '@/constants/rules';
-import FormItem from '@/shared/FormItem';
-import { handleFetch } from '@/utils/api';
-import notify from '@/utils/notify';
+import { m3u8Pattern, onlyNumbersPattern, rules } from '@/constants';
+import { FormItem } from '@/shared';
+import { handleFetch, notify } from '@/utils';
 
 type Props = {
   movieId: string;

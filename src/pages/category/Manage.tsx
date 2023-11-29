@@ -4,13 +4,12 @@ import { HiSquaresPlus } from 'react-icons/hi2';
 import { Input, Modal, Table } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { twMerge } from 'tailwind-merge';
-import Button from '@/antd/Button';
+import { Button } from '@/antd';
 import { useDeleteCategoryMutation, useGetCategoryQuery } from '@/api/categoryApi';
-import useDocumentTitle from '@/hooks/useDocumentTitle';
-import { Category, CategoryType } from '@/types/category';
-import { handleFetch } from '@/utils/api';
-import notify from '@/utils/notify';
-import CategoryInfo from './CategoryInfo';
+import { useDocumentTitle } from '@/hooks';
+import { ICategory, CategoryType } from '@/types';
+import { handleFetch, notify } from '@/utils';
+import Category from './Category';
 
 export default function ManageCategory({ type }: { type: CategoryType }) {
   const title = `Manage ${type}`;
@@ -43,16 +42,17 @@ export default function ManageCategory({ type }: { type: CategoryType }) {
 
   const [modal, contextHolder] = Modal.useModal();
 
-  const confirmDeleteConfig = ({ _id, name }: Omit<Category, 'slug'>) => ({
-    title: `Delete ${categoryType}`,
-    content: `Do you want to delete ${name}?`,
-    onOk: () => handleDelete(_id),
-    okText: 'Delete',
-    wrapClassName: 'myflix-modal-confirm',
-    maskClosable: false
-  });
+  const confirmDelete = ({ _id, name }: Omit<ICategory, 'slug'>) =>
+    modal.confirm({
+      title: `Delete ${categoryType}`,
+      content: `Do you want to delete ${name}?`,
+      onOk: () => handleDelete(_id),
+      okText: 'Delete',
+      wrapClassName: 'myflix-modal-confirm',
+      maskClosable: false
+    });
 
-  const columns: ColumnsType<Category> = [
+  const columns: ColumnsType<ICategory> = [
     {
       title: 'ID',
       dataIndex: '_id',
@@ -78,7 +78,7 @@ export default function ManageCategory({ type }: { type: CategoryType }) {
           <FaPenToSquare className=' cursor-pointer text-xl hover:text-dark-100' onClick={() => openModel(_id)} />
           <FaTrash
             className=' cursor-pointer text-xl hover:text-dark-100'
-            onClick={() => modal.confirm(confirmDeleteConfig({ _id, name }))}
+            onClick={() => confirmDelete({ _id, name })}
           />
         </div>
       ),
@@ -120,7 +120,7 @@ export default function ManageCategory({ type }: { type: CategoryType }) {
         pagination={{ hideOnSinglePage: true, pageSize: 25, showSizeChanger: false }}
       />
       {open && (
-        <CategoryInfo type={type} categoryId={categoryId} open={open} setOpen={setOpen} categoryType={categoryType} />
+        <Category type={type} categoryId={categoryId} open={open} setOpen={setOpen} categoryType={categoryType} />
       )}
       {contextHolder}
     </section>

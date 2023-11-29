@@ -1,7 +1,6 @@
 import { SyntheticEvent, useRef } from 'react';
 import { twMerge } from 'tailwind-merge';
-import { tmdbImageSizes } from '@/constants';
-import { Gender } from '@/constants/enum';
+import { tmdbImageSizes, Gender } from '@/constants';
 import profileImageFemale from '@/images/drink_coffee_female.svg';
 import profileImageMale from '@/images/drink_coffee_male.svg';
 

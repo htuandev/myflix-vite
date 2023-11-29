@@ -5,21 +5,15 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { ConfigProvider, Empty, Modal } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
-import Button from '@/antd/Button';
-import Pagination from '@/antd/Pagination';
+import { Button, Pagination } from '@/antd';
 import { useDeleteEpisodeMutation, useGetEpisodesQuery } from '@/api/episodeApi';
-import { ContentType } from '@/constants/enum';
-import useDocumentTitle from '@/hooks/useDocumentTitle';
-import useValidId from '@/hooks/useValidId';
-import Backdrop from '@/shared/Backdrop';
-import Poster from '@/shared/Poster';
-import Thumbnail from '@/shared/Thumbnail';
-import VideoPlayer from '@/shared/VideoPlayer';
-import { IEpisodeInfo } from '@/types/episode';
-import { handleFetch } from '@/utils/api';
-import notify from '@/utils/notify';
+import { ContentType } from '@/constants';
+import { useDocumentTitle, useValidId } from '@/hooks';
+import { Backdrop, Poster, Thumbnail, VideoPlayer } from '@/shared';
+import { IEpisodeInfo } from '@/types';
+import { handleFetch, notify } from '@/utils';
 import AddEpisodes from './AddEpisodes';
-import Episode from './EpisodeInfo';
+import Episode from './Episode';
 
 export default function ManageEpisode() {
   const { id } = useValidId('/admin/movie');

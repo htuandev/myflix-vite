@@ -1,4 +1,4 @@
-import { Prettify } from '.';
+import { Prettify } from './types';
 
 export type SuccessResponse = {
   status: 'success';
@@ -13,7 +13,7 @@ export type ErrorResponse = {
   };
 };
 
-export type Response<T> = Prettify<SuccessResponse & { data: Prettify<T> }>;
+export type IResponse<T> = Prettify<SuccessResponse & { data: Prettify<T> }>;
 
 export type Timestamps = {
   createdAt: string;

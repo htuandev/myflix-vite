@@ -1,16 +1,11 @@
 import { Dispatch, SetStateAction } from 'react';
 import { Form, Input, Modal } from 'antd';
-import Button from '@/antd/Button';
+import { Button } from '@/antd';
 import { useAddEpisodeMutation, useGetEpisodeByIdQuery, useUpdateEpisodeMutation } from '@/api/episodeApi';
-import { ContentType } from '@/constants/enum';
-import rules from '@/constants/rules';
-import FormItem from '@/shared/FormItem';
-import Thumbnail from '@/shared/Thumbnail';
-import { IEpisodeInfo } from '@/types/episode';
-import { detectFormChanged, handleSlug } from '@/utils';
-import { handleFetch } from '@/utils/api';
-import notify from '@/utils/notify';
-import { handleImageUrl } from '@/utils/tmdb';
+import { ContentType, rules } from '@/constants';
+import { FormItem, Thumbnail } from '@/shared';
+import { IEpisodeInfo } from '@/types';
+import { handleFetch, notify, detectFormChanged, handleSlug, handleImageUrl } from '@/utils';
 
 type Props = {
   movieId: string;
@@ -21,7 +16,7 @@ type Props = {
   setOpen: Dispatch<SetStateAction<boolean>>;
 };
 
-export default function EpisodeInfo({ movieId, episodeId, type, episodes, open, setOpen }: Props) {
+export default function Episode({ movieId, episodeId, type, episodes, open, setOpen }: Props) {
   const isNew = episodeId === '';
   const [form] = Form.useForm<IEpisodeInfo>();
   const thumbnail = Form.useWatch('thumbnail', form);

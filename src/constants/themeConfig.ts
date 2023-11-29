@@ -1,5 +1,5 @@
 import { ThemeConfig, theme } from 'antd';
-import { hexToRgba } from '@/utils';
+import { hexToRgba } from '@/utils/utils';
 import colors from './colors';
 
 const themeConfig: ThemeConfig = {

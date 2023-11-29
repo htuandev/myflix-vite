@@ -1,10 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { Prettify } from '@/types';
-import { SuccessResponse } from '@/types/api';
-import { Categories, Category, CategoryType } from '@/types/category';
-import { baseQuery } from '@/utils/api';
-
-type Response<T> = Prettify<SuccessResponse & { data: Prettify<T> }>;
+import { Prettify, SuccessResponse, ICategories, ICategory, CategoryType, IResponse } from '@/types';
+import { baseQuery } from '@/utils';
 
 const pathname = (type: CategoryType) => (type === 'Countries' ? 'country' : type === 'Genres' ? 'genre' : 'network');
 
@@ -13,14 +9,14 @@ export const categoryApi = createApi({
   baseQuery: baseQuery('category'),
   tagTypes: ['Categories', 'Genres', 'Networks', 'Countries'],
   endpoints: (build) => ({
-    getCategories: build.query<Categories, void>({
+    getCategories: build.query<ICategories, void>({
       query: () => '',
-      transformResponse: (res: Response<Categories>) => res.data,
+      transformResponse: (res: IResponse<ICategories>) => res.data,
       providesTags: [{ type: 'Categories', id: 'LIST' }]
     }),
-    getCategory: build.query<Category[], CategoryType>({
+    getCategory: build.query<ICategory[], CategoryType>({
       query: (type) => pathname(type),
-      transformResponse: (res: Response<Category[]>) => res.data,
+      transformResponse: (res: IResponse<ICategory[]>) => res.data,
       providesTags: (result, _, type) => {
         if (result) {
           const final = [...result.map(({ _id }) => ({ type, id: _id })), { type, id: 'LIST' }];
@@ -29,12 +25,12 @@ export const categoryApi = createApi({
         return [{ type, id: 'LIST' }];
       }
     }),
-    getCategoryById: build.query<Category, { type: CategoryType; id: number }>({
+    getCategoryById: build.query<ICategory, { type: CategoryType; id: number }>({
       query: ({ type, id }) => `${pathname(type)}/${id}`,
-      transformResponse: (res: Response<Category>) => res.data,
+      transformResponse: (res: IResponse<ICategory>) => res.data,
       providesTags: (result, _, { type, id }) => (result ? [{ type, id }] : [])
     }),
-    addCategory: build.mutation<SuccessResponse, { type: CategoryType; formData: Prettify<Omit<Category, '_id'>> }>({
+    addCategory: build.mutation<SuccessResponse, { type: CategoryType; formData: Prettify<Omit<ICategory, '_id'>> }>({
       query({ type, formData }) {
         return {
           url: pathname(type),
@@ -50,7 +46,7 @@ export const categoryApi = createApi({
               { type: 'Categories', id: 'LIST' }
             ]
     }),
-    updateCategory: build.mutation<Response<Category>, { type: CategoryType; formData: Category }>({
+    updateCategory: build.mutation<IResponse<ICategory>, { type: CategoryType; formData: ICategory }>({
       query({ type, formData }) {
         return {
           url: pathname(type),

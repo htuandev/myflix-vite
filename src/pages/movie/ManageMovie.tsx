@@ -3,21 +3,19 @@ import { FaFileCirclePlus, FaPenToSquare, FaTrash } from 'react-icons/fa6';
 import { HiSquaresPlus } from 'react-icons/hi2';
 import { IoPersonAdd } from 'react-icons/io5';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Input, Modal, Tag } from 'antd';
+import { Modal, Tag } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import { twMerge } from 'tailwind-merge';
-import Button from '@/antd/Button';
-import Pagination from '@/antd/Pagination';
+import { Button, Pagination, Search } from '@/antd';
 import { useDeleteMovieMutation, useGetMoviesQuery } from '@/api/movieApi';
-import { ContentType } from '@/constants/enum';
-import useDocumentTitle from '@/hooks/useDocumentTitle';
-import Poster from '@/shared/Poster';
-import { Movie } from '@/types/movie';
-import { handleFetch } from '@/utils/api';
-import notify from '@/utils/notify';
+import { ContentType, Status } from '@/constants';
+import { useDocumentTitle } from '@/hooks';
+import { Poster } from '@/shared';
+import { IMovie } from '@/types';
+import { handleFetch, notify } from '@/utils';
 
-export default function Manage() {
+export default function ManageMovie() {
   const title = 'Manage Movie';
   useDocumentTitle(title);
 
@@ -36,16 +34,17 @@ export default function Manage() {
 
   const [modal, contextHolder] = Modal.useModal();
 
-  const confirmDeleteConfig = ({ _id, name }: Pick<Movie, '_id' | 'name'>) => ({
-    title: 'Delete Movie',
-    content: `Do you want to delete ${name}?`,
-    onOk: () => handleDelete(_id),
-    okText: 'Delete',
-    wrapClassName: 'myflix-modal-confirm',
-    maskClosable: false
-  });
+  const confirmDelete = ({ _id, name }: Pick<IMovie, '_id' | 'name'>) =>
+    modal.confirm({
+      title: 'Delete Movie',
+      content: `Do you want to delete ${name}?`,
+      onOk: () => handleDelete(_id),
+      okText: 'Delete',
+      wrapClassName: 'myflix-modal-confirm',
+      maskClosable: false
+    });
 
-  const columns: ColumnsType<Movie> = [
+  const columns: ColumnsType<IMovie> = [
     {
       title: 'Poster',
       dataIndex: 'poster',
@@ -69,12 +68,7 @@ export default function Manage() {
         </>
       )
     },
-    {
-      title: 'Slug',
-      dataIndex: 'slug',
-      key: 'slug',
-      responsive: ['lg']
-    },
+
     {
       title: 'Type',
       dataIndex: 'type',
@@ -86,7 +80,7 @@ export default function Manage() {
             <Tag
               {...config}
               className={twMerge(
-                'flex-center h-8 w-20 select-none border-info bg-transparent text-base',
+                'flex-center h-8 w-24 select-none border-info bg-transparent text-base',
                 type === ContentType.TVSeries && 'border-primary'
               )}
             />
@@ -101,6 +95,38 @@ export default function Manage() {
       title: 'Year',
       dataIndex: 'year',
       key: 'year',
+      align: 'center',
+      width: 150,
+      responsive: ['md']
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      render: (status) => {
+        const config =
+          status === Status.Ended
+            ? { children: 'End' }
+            : status === Status.OnGoing
+            ? { children: 'On Going' }
+            : status === Status.Released
+            ? { children: 'Released' }
+            : status === Status.Trailer
+            ? { children: 'Trailer' }
+            : { children: 'Upcoming' };
+        return (
+          <div className=' flex-center'>
+            <Tag
+              {...config}
+              className={twMerge(
+                'flex-center h-8 w-24 select-none border-info bg-transparent text-base',
+                (status === Status.Released || status === Status.Ended) && 'border-primary',
+                status === Status.OnGoing && 'border-dark-800'
+              )}
+            />
+          </div>
+        );
+      },
       align: 'center',
       width: 150,
       responsive: ['md']
@@ -130,7 +156,7 @@ export default function Manage() {
           </Link>
           <FaTrash
             className=' cursor-pointer text-xl hover:text-dark-100'
-            onClick={() => modal.confirm(confirmDeleteConfig({ _id, name }))}
+            onClick={() => confirmDelete({ _id, name })}
           />
         </div>
       ),
@@ -145,12 +171,10 @@ export default function Manage() {
       <h1 className=' text-heading'>{title}</h1>
       <div className='flex-center mb-4 gap-8 md:justify-between'>
         {data && (
-          <Input.Search
-            className='myflix-search w-full md:w-80'
-            allowClear
-            enterButton='Search'
+          <Search
             onSearch={(value) => setSearch(value.trim())}
             disabled={isFetching}
+            placeholder={`Search ${data.totalRecords} movies/series`}
           />
         )}
         <Link to='/admin/movie/add' className='hidden md:block'>

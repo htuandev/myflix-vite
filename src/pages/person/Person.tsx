@@ -1,18 +1,12 @@
 import { Dispatch, SetStateAction } from 'react';
 import { DatePicker, Form, Input, Modal, Select } from 'antd';
 import dayjs from 'dayjs';
-import Button from '@/antd/Button';
+import { Button } from '@/antd';
 import { useAddPersonMutation, useGetPersonByIdQuery, useUpdatePersonMutation } from '@/api/personApi';
-import { Gender } from '@/constants/enum';
-import rules from '@/constants/rules';
-import FormItem from '@/shared/FormItem';
-import ProfileImage from '@/shared/ProfileImage';
-import { Prettify } from '@/types';
-import { Person } from '@/types/person';
-import { detectFormChanged, handleSlug, transformDate } from '@/utils';
-import { handleFetch } from '@/utils/api';
-import notify from '@/utils/notify';
-import { handleImageUrl } from '@/utils/tmdb';
+import { Gender, rules } from '@/constants';
+import { FormItem, ProfileImage } from '@/shared';
+import { Prettify, IPerson } from '@/types';
+import { handleFetch, notify, detectFormChanged, handleSlug, transformDate, handleImageUrl } from '@/utils';
 
 type Props = {
   personId: string;
@@ -20,9 +14,9 @@ type Props = {
   setOpen: Dispatch<SetStateAction<boolean>>;
 };
 
-type PersonForm = Prettify<Omit<Person, 'birthday'> & { birthday: dayjs.Dayjs }>;
+type PersonForm = Prettify<Omit<IPerson, 'birthday'> & { birthday: dayjs.Dayjs }>;
 
-export default function PersonInfo({ personId, open, setOpen }: Props) {
+export default function Person({ personId, open, setOpen }: Props) {
   const isNew = personId === '';
   const [form] = Form.useForm<PersonForm>();
 
@@ -34,7 +28,7 @@ export default function PersonInfo({ personId, open, setOpen }: Props) {
   const [onAdd, { isLoading: isAdding }] = useAddPersonMutation();
   const [onUpdate, { isLoading: isUpdating }] = useUpdatePersonMutation();
 
-  const onFinish = handleFetch(async (formData: Person) => {
+  const onFinish = handleFetch(async (formData: IPerson) => {
     formData.birthday = transformDate(formData.birthday).toString();
     formData.slug = handleSlug(formData.name);
 
@@ -43,7 +37,7 @@ export default function PersonInfo({ personId, open, setOpen }: Props) {
       formData.credits = person.credits;
     }
 
-    if (!isNew) detectFormChanged(formData, person as Person);
+    if (!isNew) detectFormChanged(formData, person as IPerson);
 
     if (isNew) {
       const res = await onAdd(formData).unwrap();
@@ -56,7 +50,7 @@ export default function PersonInfo({ personId, open, setOpen }: Props) {
     form.setFieldsValue(transformPerson(res.data));
   });
 
-  const transformPerson = (person: Person) => ({ ...person, birthday: transformDate(person.birthday).toDayjs() });
+  const transformPerson = (person: IPerson) => ({ ...person, birthday: transformDate(person.birthday).toDayjs() });
   const initialValues = person && transformPerson(person);
 
   const onCancel = () => {

@@ -4,12 +4,8 @@ import colors from './src/constants/colors';
 
 const config: Config = {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
-  corePlugins: {
-    container: false
-  },
-  theme: {
-    colors: colors
-  },
+  corePlugins: { container: false },
+  theme: { colors },
   plugins: [
     plugin(function ({ addBase, addComponents, addUtilities, theme }) {
       addBase({});

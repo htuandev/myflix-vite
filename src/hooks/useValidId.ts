@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 
-const useValidId = (to: string, onlyNumber = false) => {
+export const useValidId = (to: string, onlyNumber = false) => {
   const navigate = useNavigate();
   const { slug } = useParams() as { slug: string };
 
@@ -19,5 +19,3 @@ const useValidId = (to: string, onlyNumber = false) => {
 
   return { id };
 };
-
-export default useValidId;

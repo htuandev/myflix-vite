@@ -1,6 +1,6 @@
-import { Gender } from '@/constants/enum';
+import { Gender } from '@/constants';
 
-export type Cast = {
+export type ICast = {
   _id: string;
   personId: string;
   name: string;
@@ -10,7 +10,7 @@ export type Cast = {
   slug: string;
 };
 
-export type Casts = {
+export type ICasts = {
   movie: {
     name: string;
     poster: string;
@@ -19,10 +19,10 @@ export type Casts = {
     backdropColor: string;
     year?: number;
   };
-  casts: Cast[];
+  casts: ICast[];
 };
 
-export type CastInfo = {
+export type ICharacter = {
   _id: string;
   person: {
     _id: string;

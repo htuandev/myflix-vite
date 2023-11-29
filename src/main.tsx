@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import App from './App.tsx';
 import './assets/styles/index.css';
-import themeConfig from './constants/themConfig.ts';
+import { themeConfig } from './constants/index.ts';
 import { store } from './reducers/store.ts';
 
 dayjs.extend(localizedFormat);

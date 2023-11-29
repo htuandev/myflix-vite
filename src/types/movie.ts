@@ -1,6 +1,6 @@
-import { ContentType, Status, SubtitleType } from '@/constants/enum';
+import { ContentType, Status, SubtitleType } from '@/constants';
 
-export type Movie = {
+export type IMovie = {
   _id: string;
   name: string;
   slug: string;
