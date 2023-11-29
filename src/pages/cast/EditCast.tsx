@@ -4,7 +4,7 @@ import { Button } from '@/antd';
 import { useGetCastByIdQuery, useUpdateCharacterMutation } from '@/api/castApi';
 import { FormItem } from '@/shared';
 import { ICharacter } from '@/types';
-import { handleFetch, notify } from '@/utils';
+import { capitalizeName, detectFormChanged, handleFetch, notify } from '@/utils';
 
 type Props = {
   castId: string;
@@ -18,6 +18,7 @@ export default function EditCast({ castId, open, setOpen }: Props) {
   const [onUpdate, { isLoading: isUpdating }] = useUpdateCharacterMutation();
 
   const onFinish = handleFetch(async ({ character }: Pick<ICharacter, 'character'>) => {
+    detectFormChanged({ character }, { character: data?.character });
     const res = await onUpdate({ _id: castId, character }).unwrap();
     notify.success(res.message);
   });
@@ -62,7 +63,10 @@ export default function EditCast({ castId, open, setOpen }: Props) {
           <Input allowClear disabled />
         </FormItem>
         <FormItem label='Character' name='character' isLoading={isLoading}>
-          <Input allowClear />
+          <Input
+            allowClear
+            onBlur={(e) => e.target.value && form.setFieldValue('character', capitalizeName(e.target.value))}
+          />
         </FormItem>
       </Form>
     </Modal>

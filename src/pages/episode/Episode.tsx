@@ -5,7 +5,7 @@ import { useAddEpisodeMutation, useGetEpisodeByIdQuery, useUpdateEpisodeMutation
 import { ContentType, rules } from '@/constants';
 import { FormItem, Thumbnail } from '@/shared';
 import { IEpisodeInfo } from '@/types';
-import { handleFetch, notify, detectFormChanged, handleSlug, handleImageUrl } from '@/utils';
+import { handleFetch, notify, detectFormChanged, handleSlug, handleImageUrl, capitalizeName } from '@/utils';
 
 type Props = {
   movieId: string;
@@ -26,7 +26,7 @@ export default function Episode({ movieId, episodeId, type, episodes, open, setO
   const initialValues = isNew
     ? type === ContentType.Movie
       ? { name: 'Full' }
-      : { name: `Tập ${episodes}` }
+      : { name: `Tập ${episodes}. ` }
     : data
     ? data
     : undefined;
@@ -100,7 +100,11 @@ export default function Episode({ movieId, episodeId, type, episodes, open, setO
         key={data?._id}
       >
         <FormItem label='Name' name='name' isLoading={isLoading} rules={[rules.required('Name')]}>
-          <Input allowClear disabled={type === ContentType.Movie} />
+          <Input
+            allowClear
+            disabled={type === ContentType.Movie}
+            onBlur={(e) => form.setFieldValue('name', capitalizeName(e.target.value))}
+          />
         </FormItem>
 
         <FormItem label='Link' name='link' isLoading={isLoading} rules={[rules.m3u8]}>

@@ -8,7 +8,7 @@ import drinkCoffeeAvatar from '@/images/drink_coffee_male.svg';
 import { RootState } from '@/reducers/store';
 import { Avatar, FormItem } from '@/shared';
 import { IUser } from '@/types';
-import { handleFetch, notify, detectFormChanged } from '@/utils';
+import { handleFetch, notify, detectFormChanged, capitalizeName } from '@/utils';
 
 type Props = {
   userId: string;
@@ -94,7 +94,7 @@ export default function UserInfo({ userId, open, setOpen }: Props) {
         key={user?._id}
       >
         <FormItem label='Name' name='name' isLoading={isLoading}>
-          <Input />
+          <Input allowClear onBlur={(e) => form.setFieldValue('name', capitalizeName(e.target.value))} />
         </FormItem>
         <FormItem
           label='Email'

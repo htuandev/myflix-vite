@@ -5,7 +5,7 @@ import { Button } from '@/antd';
 import { useAddCastMutation } from '@/api/castApi';
 import { useGetPeopleQuery } from '@/api/personApi';
 import { FormItem } from '@/shared';
-import { handleFetch, notify } from '@/utils';
+import { capitalizeName, handleFetch, notify } from '@/utils';
 
 type Props = {
   movieId: string;
@@ -69,7 +69,7 @@ export default function AddCast({ movieId, open, setOpen }: Props) {
           />
         </FormItem>
         <FormItem label='Character' name='character'>
-          <Input allowClear />
+          <Input allowClear onBlur={(e) => form.setFieldValue('character', capitalizeName(e.target.value))} />
         </FormItem>
       </Form>
     </Modal>

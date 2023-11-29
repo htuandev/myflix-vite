@@ -56,3 +56,10 @@ export const handleYoutubeId = (url: string) => {
   const match = url.match(regex);
   return match && match[1] ? match[1] : '';
 };
+
+export const capitalizeName = (str: string) =>
+  str
+    .trim()
+    .split(' ')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');

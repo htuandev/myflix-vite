@@ -6,7 +6,15 @@ import { useAddPersonMutation, useGetPersonByIdQuery, useUpdatePersonMutation } 
 import { Gender, rules } from '@/constants';
 import { FormItem, ProfileImage } from '@/shared';
 import { Prettify, IPerson } from '@/types';
-import { handleFetch, notify, detectFormChanged, handleSlug, transformDate, handleImageUrl } from '@/utils';
+import {
+  handleFetch,
+  notify,
+  detectFormChanged,
+  handleSlug,
+  transformDate,
+  handleImageUrl,
+  capitalizeName
+} from '@/utils';
 
 type Props = {
   personId: string;
@@ -97,7 +105,7 @@ export default function Person({ personId, open, setOpen }: Props) {
         key={person?._id}
       >
         <FormItem label='Name' name='name' isLoading={isLoading} rules={[rules.required('Name')]}>
-          <Input allowClear />
+          <Input allowClear onBlur={(e) => form.setFieldValue('name', capitalizeName(e.target.value))} />
         </FormItem>
 
         <FormItem label='Known as' name='knownAs' isLoading={isLoading}>
@@ -107,7 +115,7 @@ export default function Person({ personId, open, setOpen }: Props) {
             onChange={(values: string[]) =>
               form.setFieldValue(
                 'knownAs',
-                values.map((value) => value.trim()).filter((value) => value !== '')
+                values.map((value) => capitalizeName(value)).filter((value) => value !== '')
               )
             }
             notFoundContent={null}

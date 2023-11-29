@@ -12,7 +12,15 @@ import { useDocumentTitle, useGlightbox, useValidId } from '@/hooks';
 import noImage from '@/images/no-image.svg';
 import { FormItem, Backdrop, Thumbnail, Poster } from '@/shared';
 import { Prettify, ICategory, IMovie } from '@/types';
-import { detectFormChanged, handleYoutubeId, transformDate, handleFetch, notify, handleImageUrl } from '@/utils';
+import {
+  detectFormChanged,
+  handleYoutubeId,
+  transformDate,
+  handleFetch,
+  notify,
+  handleImageUrl,
+  capitalizeName
+} from '@/utils';
 
 type MovieForm = Prettify<Omit<IMovie, 'releaseDate'> & { releaseDate?: dayjs.Dayjs }>;
 
@@ -150,7 +158,7 @@ export default function Movie() {
         className='myflix-form mx-auto grid max-w-7xl grid-cols-1 gap-x-4 p-4 md:grid-cols-2 lg:p-8'
       >
         <FormItem label='Name' name='name' rules={[rules.required('Name')]} isLoading={isLoading}>
-          <Input allowClear />
+          <Input allowClear onBlur={(e) => form.setFieldValue('name', capitalizeName(e.target.value))} />
         </FormItem>
 
         <FormItem label='Known As' name='knownAs' isLoading={isLoading}>
@@ -160,7 +168,7 @@ export default function Movie() {
             onChange={(values: string[]) =>
               setFieldValue(
                 'knownAs',
-                values.map((value) => value.trim()).filter((value) => value !== '')
+                values.map((value) => capitalizeName(value)).filter((value) => value !== '')
               )
             }
             notFoundContent={null}
@@ -264,7 +272,7 @@ export default function Movie() {
           </FormItem>
         ) : (
           <FormItem label='Total Episodes' name='episodes' rules={[rules.toTalEpisodes(type)]} isLoading={isLoading}>
-            <InputNumber className='w-full' min={0} controls={false} key={type} />
+            <InputNumber className='w-full' min={0} controls={false} />
           </FormItem>
         )}
 
