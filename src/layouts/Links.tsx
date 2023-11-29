@@ -1,8 +1,9 @@
-import { FaChartPie, FaCubes } from 'react-icons/fa6';
+import { FaCubes } from 'react-icons/fa6';
 import { HiFilm, HiIdentification } from 'react-icons/hi2';
 import { MdLabel, MdSupervisedUserCircle } from 'react-icons/md';
 import { RiGlobalFill } from 'react-icons/ri';
 import { twMerge } from 'tailwind-merge';
+import { routePaths } from '@/constants';
 
 const links = [
   {
@@ -11,37 +12,32 @@ const links = [
     icon: ({ className }: { className: string }) => <img src='/myflix.svg' className={twMerge(' h-6 w-6', className)} />
   },
   {
-    href: '/admin',
-    label: 'Dashboard',
-    icon: FaChartPie
-  },
-  {
-    href: '/admin/user',
+    href: routePaths.user,
     label: 'User',
     icon: MdSupervisedUserCircle
   },
   {
-    href: '/admin/movie',
+    href: routePaths.movie,
     label: 'Movie',
     icon: HiFilm
   },
   {
-    href: '/admin/person',
+    href: routePaths.person,
     label: 'Person',
     icon: HiIdentification
   },
   {
-    href: '/admin/genre',
+    href: routePaths.genre,
     label: 'Genre',
     icon: MdLabel
   },
   {
-    href: '/admin/network',
+    href: routePaths.network,
     label: 'Network',
     icon: FaCubes
   },
   {
-    href: '/admin/country',
+    href: routePaths.country,
     label: 'Country',
     icon: RiGlobalFill
   }

@@ -20,7 +20,7 @@ export default function Header({ width, collapsed, onToggle }: Props) {
   const defaultProfileImage = 'https://image.tmdb.org/t/p/w470_and_h470_face/Ar9aVa8LImtGfDLb0NO0glPDGTY.jpg';
 
   return (
-    <header className=' sticky top-0 z-10 h-16 bg-dark-950 pt-2'>
+    <header className=' sticky top-0 z-10 h-16 bg-dark-925 pt-2'>
       <div className=' flex h-full items-center justify-between px-8'>
         <div className=' cursor-pointer text-3xl' onClick={onToggle}>
           {width < 1024 ? (

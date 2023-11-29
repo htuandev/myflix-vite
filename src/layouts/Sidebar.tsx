@@ -21,14 +21,15 @@ export default function Sidebar(props: Props) {
             <Tooltip key={href} title={collapsed && label} zIndex={3333} placement='right'>
               <NavLink
                 to={href}
-                end={index === 0 || index === 1}
+                end={index === 0}
                 onClick={onClose}
                 className={({ isActive }) =>
                   twMerge(
                     'my-2 flex h-10 min-h-[52px] w-full cursor-pointer items-center gap-2 rounded-md text-dark-100 transition-colors duration-300 hover:bg-primary/25 hover:text-white',
                     index === 0 ? 'm-0' : '',
                     collapsed && 'justify-center',
-                    isActive && 'bg-primary hover:bg-primary'
+                    isActive && 'bg-primary hover:bg-primary',
+                    isActive && index === 0 && 'bg-primary/25 hover:bg-primary/25'
                   )
                 }
               >

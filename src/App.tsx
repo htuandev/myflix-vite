@@ -2,30 +2,28 @@ import { Suspense } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { routePaths } from './constants';
 import Authenticated from './layouts/Authenticated';
 import Hamster from './layouts/Hamster';
-import DashboardLayout from './layouts/dashboard/Layout';
+import DashboardLayout from './layouts/Layout';
 import Login from './pages/Login';
-import Preview from './pages/Preview';
-import adminRoute from './routes/adminRoute';
+import routes from './constants/routes';
 
 function App() {
   return (
     <BrowserRouter>
       <ToastContainer position='top-right' autoClose={3000} newestOnTop theme='colored' />
       <Routes>
-        <Route path='/' element={<Preview />} />
-        <Route path='/auth/login' element={<Login />} />
+        <Route path={routePaths.auth} element={<Login />} />
         <Route element={<Authenticated />}>
           <Route element={<DashboardLayout />}>
-            {adminRoute.map(({ path, element: Component, type }) => (
+            {routes.map(({ path, element: Component, type }) => (
               <Route
-                path={`/admin${path}`}
+                path={path}
                 element={<Suspense fallback={<Hamster />}>{type ? <Component type={type} /> : <Component />}</Suspense>}
                 key={path}
               />
             ))}
-            <Route path='/admin/*' element={<Navigate to='/admin' />} />
           </Route>
         </Route>
         <Route path='*' element={<Navigate to='/' />} />

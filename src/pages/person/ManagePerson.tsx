@@ -8,7 +8,7 @@ import dayjs from 'dayjs';
 import { twMerge } from 'tailwind-merge';
 import { Button, Pagination, Search } from '@/antd';
 import { useDeletePersonMutation, useGetPeopleQuery } from '@/api/personApi';
-import { Gender } from '@/constants';
+import { Gender, routePaths } from '@/constants';
 import { useDocumentTitle } from '@/hooks';
 import { ProfileImage } from '@/shared';
 import { IPerson } from '@/types';
@@ -39,7 +39,7 @@ export default function ManagePerson() {
 
   useEffect(() => {
     if (error) {
-      navigate('/admin/person');
+      navigate(routePaths.person);
     }
   }, [error, navigate]);
 

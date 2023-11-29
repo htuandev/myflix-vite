@@ -15,7 +15,7 @@ export default function ManageCategory({ type }: { type: CategoryType }) {
   const title = `Manage ${type}`;
   useDocumentTitle(title);
 
-  const categoryType = location.pathname.replace('/admin/', '');
+  const categoryType = location.pathname.replace('/', '');
 
   const [open, setOpen] = useState(false);
   const { data, isFetching } = useGetCategoryQuery(type, { skip: open });

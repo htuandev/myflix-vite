@@ -7,7 +7,7 @@ import Table, { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import { Button, Pagination } from '@/antd';
 import { useDeleteEpisodeMutation, useGetEpisodesQuery } from '@/api/episodeApi';
-import { ContentType } from '@/constants';
+import { ContentType, routePaths } from '@/constants';
 import { useDocumentTitle, useValidId } from '@/hooks';
 import { Backdrop, Poster, Thumbnail, VideoPlayer } from '@/shared';
 import { IEpisodeInfo } from '@/types';
@@ -16,7 +16,7 @@ import AddEpisodes from './AddEpisodes';
 import Episode from './Episode';
 
 export default function ManageEpisode() {
-  const { id } = useValidId('/admin/movie');
+  const { id } = useValidId(routePaths.movie);
 
   const [open, setOpen] = useState(false);
   const [openAdd, setOpenAdd] = useState(false);

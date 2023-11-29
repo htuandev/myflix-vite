@@ -8,7 +8,7 @@ import dayjs from 'dayjs';
 import { twMerge } from 'tailwind-merge';
 import { Button } from '@/antd';
 import { useDeleteCastMutation, useGetCastsQuery } from '@/api/castApi';
-import { Gender } from '@/constants';
+import { Gender, routePaths } from '@/constants';
 import { useDocumentTitle, useValidId } from '@/hooks';
 import { Backdrop, Poster, ProfileImage } from '@/shared';
 import { ICast } from '@/types';
@@ -17,7 +17,7 @@ import AddCast from './AddCast';
 import EditCast from './EditCast';
 
 export default function ManageCast() {
-  const { id } = useValidId('/admin/movie');
+  const { id } = useValidId(routePaths.movie);
 
   const [open, setOpen] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
@@ -27,7 +27,7 @@ export default function ManageCast() {
   const navigate = useNavigate();
   useEffect(() => {
     if (error) {
-      navigate('/admin/movie');
+      navigate(routePaths.movie);
     }
   }, [error, navigate]);
 

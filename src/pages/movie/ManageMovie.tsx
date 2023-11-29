@@ -9,7 +9,7 @@ import dayjs from 'dayjs';
 import { twMerge } from 'tailwind-merge';
 import { Button, Pagination, Search } from '@/antd';
 import { useDeleteMovieMutation, useGetMoviesQuery } from '@/api/movieApi';
-import { ContentType, Status } from '@/constants';
+import { ContentType, Status, routePaths } from '@/constants';
 import { useDocumentTitle } from '@/hooks';
 import { Poster } from '@/shared';
 import { IMovie } from '@/types';
@@ -145,13 +145,13 @@ export default function ManageMovie() {
       key: 'action',
       render: (_, { _id, name, slug }) => (
         <div className=' flex-center gap-4'>
-          <Link to={`/admin/movie/${slug}-${_id}`}>
+          <Link to={`${routePaths.movie}/${slug}-${_id}`}>
             <FaPenToSquare className=' cursor-pointer text-xl hover:text-dark-100' />
           </Link>
-          <Link to={`/admin/cast/${slug}-${_id}`}>
+          <Link to={`${routePaths.cast}/${slug}-${_id}`}>
             <IoPersonAdd className=' cursor-pointer text-xl hover:text-dark-100' />
           </Link>
-          <Link to={`/admin/episode/${slug}-${_id}`}>
+          <Link to={`${routePaths.episode}/${slug}-${_id}`}>
             <FaFileCirclePlus className=' cursor-pointer text-xl hover:text-dark-100' />
           </Link>
           <FaTrash
@@ -177,7 +177,7 @@ export default function ManageMovie() {
             placeholder={`Search ${data.totalRecords} movies/series`}
           />
         )}
-        <Link to='/admin/movie/add' className='hidden md:block'>
+        <Link to={`${routePaths.movie}/add`} className='hidden md:block'>
           <Button icon={<HiSquaresPlus />}>Add movie</Button>
         </Link>
       </div>

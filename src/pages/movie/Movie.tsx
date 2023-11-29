@@ -7,7 +7,7 @@ import _ from 'lodash';
 import { Button } from '@/antd';
 import { useGetCategoriesQuery } from '@/api/categoryApi';
 import { useAddMovieMutation, useGetMovieByIdQuery, useUpdateMovieMutation } from '@/api/movieApi';
-import { ContentType, Status, SubtitleType, BACKDROP_COLOR, rules } from '@/constants';
+import { ContentType, Status, SubtitleType, BACKDROP_COLOR, rules, routePaths } from '@/constants';
 import { useDocumentTitle, useGlightbox, useValidId } from '@/hooks';
 import noImage from '@/images/no-image.svg';
 import { FormItem, Backdrop, Thumbnail, Poster } from '@/shared';
@@ -25,7 +25,7 @@ import {
 type MovieForm = Prettify<Omit<IMovie, 'releaseDate'> & { releaseDate?: dayjs.Dayjs }>;
 
 export default function Movie() {
-  const { id } = useValidId('/admin/movie');
+  const { id } = useValidId(routePaths.movie);
   const isNew = id === 'add' ? true : false;
 
   const { data: movie, isLoading, error } = useGetMovieByIdQuery(id, { skip: isNew });
@@ -89,7 +89,7 @@ export default function Movie() {
 
   useEffect(() => {
     if (error) {
-      navigate('/admin/movie');
+      navigate(routePaths.movie);
     }
   }, [error, navigate]);
 
