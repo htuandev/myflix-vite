@@ -12,7 +12,9 @@ export type ICast = {
 
 export type ICasts = {
   movie: {
+    _id: string;
     name: string;
+    slug: string;
     poster: string;
     thumbnail: string;
     backdrop?: string;

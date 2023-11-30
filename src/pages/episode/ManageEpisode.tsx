@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
+import { FaEdit } from 'react-icons/fa';
 import { FaEye, FaPenToSquare, FaTrash } from 'react-icons/fa6';
 import { HiSquaresPlus } from 'react-icons/hi2';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { IoPersonAdd } from 'react-icons/io5';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { ConfigProvider, Empty, Modal } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
@@ -9,7 +11,7 @@ import { Button, Pagination } from '@/antd';
 import { useDeleteEpisodeMutation, useGetEpisodesQuery } from '@/api/episodeApi';
 import { ContentType, routePaths } from '@/constants';
 import { useDocumentTitle, useValidId } from '@/hooks';
-import { Backdrop, Poster, Thumbnail, VideoPlayer } from '@/shared';
+import { Backdrop, Thumbnail, VideoPlayer } from '@/shared';
 import { IEpisodeInfo } from '@/types';
 import { handleFetch, notify } from '@/utils';
 import AddEpisodes from './AddEpisodes';
@@ -138,41 +140,37 @@ export default function ManageEpisode() {
       <Backdrop
         backdropUrl={data && (data.movie.backdrop || data.movie.thumbnail)}
         backdropColor={data && data.movie.backdropColor}
+        poster={data && data.movie.poster}
+        name={data && data.movie.name}
+        year={data && data.movie.year}
       >
-        <div className='flex items-center gap-4'>
-          <Poster src={data?.movie.poster} className=' w-20 rounded-md md:w-32 lg:w-44' size='lg' />
-          <div>
-            {data && (
-              <h1 className=' text-heading'>
-                {data.movie.name} <span className=' font-medium'>({data.movie.year})</span>
-              </h1>
+        <div className=' flex gap-4'>
+          {data &&
+            (data.movie.type === ContentType.Movie
+              ? data.episodes.length === 0
+              : data.totalEpisodes < (data.movie.episodes as number)) && (
+              <Button icon={<HiSquaresPlus />} type='primary' onClick={() => openModel()} className=' hidden md:flex'>
+                Add Episode
+              </Button>
             )}
-            <div className=' flex gap-4'>
-              {data &&
-                (data.movie.type === ContentType.Movie
-                  ? data.episodes.length === 0
-                  : data.totalEpisodes < (data.movie.episodes as number)) && (
-                  <Button
-                    icon={<HiSquaresPlus />}
-                    type='primary'
-                    onClick={() => openModel()}
-                    className=' hidden md:flex'
-                  >
-                    Add Episode
-                  </Button>
-                )}
-              {data &&
-                data.movie.type === ContentType.TVSeries &&
-                data.totalEpisodes < (data.movie.episodes as number) && (
-                  <Button icon={<HiSquaresPlus />} onClick={() => setOpenAdd(true)} className=' hidden md:flex'>
-                    Add Episodes
-                  </Button>
-                )}
-            </div>
-          </div>
+          {data && data.movie.type === ContentType.TVSeries && data.totalEpisodes < (data.movie.episodes as number) && (
+            <Button icon={<HiSquaresPlus />} onClick={() => setOpenAdd(true)} className=' hidden md:flex'>
+              Add Episodes
+            </Button>
+          )}
         </div>
       </Backdrop>
-      <div className=' p-4 lg:p-8'>
+      <div className=' max-screen p-4 pt-0 lg:p-8 lg:pt-0'>
+        {data && (
+          <div className=' flex-center mb-4 justify-between gap-4'>
+            <Link to={`${routePaths.movie}/${data.movie.slug}-${data.movie._id}`}>
+              <Button icon={<FaEdit />}>Edit Movie</Button>
+            </Link>
+            <Link to={`${routePaths.cast}/${data.movie.slug}-${data.movie._id}`}>
+              <Button icon={<IoPersonAdd />}>Manage Cast</Button>
+            </Link>
+          </div>
+        )}
         <ConfigProvider renderEmpty={() => <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}>
           <Table
             dataSource={data?.episodes}

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { FaPenToSquare, FaTrash } from 'react-icons/fa6';
+import { FaEdit } from 'react-icons/fa';
+import { FaFileCirclePlus, FaPenToSquare, FaTrash } from 'react-icons/fa6';
 import { HiSquaresPlus } from 'react-icons/hi2';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Tag, Table, Modal, ConfigProvider, Empty } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
@@ -10,9 +11,10 @@ import { Button } from '@/antd';
 import { useDeleteCastMutation, useGetCastsQuery } from '@/api/castApi';
 import { Gender, routePaths } from '@/constants';
 import { useDocumentTitle, useValidId } from '@/hooks';
-import { Backdrop, Poster, ProfileImage } from '@/shared';
+import { Backdrop, ProfileImage } from '@/shared';
 import { ICast } from '@/types';
 import { handleFetch, notify } from '@/utils';
+import Person from '../person/Person';
 import AddCast from './AddCast';
 import EditCast from './EditCast';
 
@@ -20,6 +22,8 @@ export default function ManageCast() {
   const { id } = useValidId(routePaths.movie);
 
   const [open, setOpen] = useState(false);
+  const [openPerson, setOpenPeron] = useState(false);
+
   const [openEdit, setOpenEdit] = useState(false);
   const [castId, setCastId] = useState('');
   const { data, error, isFetching } = useGetCastsQuery(id, { skip: open || openEdit });
@@ -138,22 +142,30 @@ export default function ManageCast() {
       <Backdrop
         backdropUrl={data && (data.movie.backdrop || data.movie.thumbnail)}
         backdropColor={data && data.movie.backdropColor}
+        poster={data && data.movie.poster}
+        name={data && data.movie.name}
+        year={data && data.movie.year}
       >
-        <div className='flex items-center gap-4'>
-          <Poster src={data?.movie.poster} className=' w-20 rounded-md md:w-32 lg:w-44' size='lg' />
-          <div>
-            {data && (
-              <h1 className=' text-heading'>
-                {data.movie.name} <span className=' font-medium'>({data.movie.year})</span>
-              </h1>
-            )}
-            <Button icon={<HiSquaresPlus />} type='primary' onClick={() => setOpen(true)} className=' hidden md:flex'>
-              Add Cast
-            </Button>
-          </div>
+        <div className=' flex-center gap-4'>
+          <Button icon={<HiSquaresPlus />} type='primary' onClick={() => setOpen(true)} className=' hidden md:flex'>
+            Add Cast
+          </Button>
+          <Button icon={<HiSquaresPlus />} onClick={() => setOpenPeron(true)} className=' hidden md:flex'>
+            Add Person
+          </Button>
         </div>
       </Backdrop>
-      <div className=' p-4 lg:p-8'>
+      <div className=' max-screen p-4 pt-0 lg:p-8 lg:pt-0'>
+        {data && (
+          <div className=' flex-center mb-4 justify-between gap-4'>
+            <Link to={`${routePaths.movie}/${data.movie.slug}-${data.movie._id}`}>
+              <Button icon={<FaEdit />}>Edit Movie</Button>
+            </Link>
+            <Link to={`${routePaths.episode}/${data.movie.slug}-${data.movie._id}`}>
+              <Button icon={<FaFileCirclePlus />}>Manage Episode</Button>
+            </Link>
+          </div>
+        )}
         <ConfigProvider renderEmpty={() => <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}>
           <Table
             dataSource={data?.casts}
@@ -168,6 +180,7 @@ export default function ManageCast() {
       {contextHolder}
       {open && <AddCast movieId={id} open={open} setOpen={setOpen} />}
       {openEdit && <EditCast castId={castId} open={openEdit} setOpen={setOpenEdit} />}
+      {openPerson && <Person open={openPerson} setOpen={setOpenPeron} />}
     </section>
   );
 }

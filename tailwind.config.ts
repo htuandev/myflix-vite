@@ -40,6 +40,11 @@ const config: Config = {
             fontSize: theme('fontSize.3xl'),
             lineHeight: theme('spacing.9')
           }
+        },
+        '.max-screen': {
+          maxWidth: '1536px',
+          marginLeft: 'auto',
+          marginRight: 'auto'
         }
       });
       addUtilities({

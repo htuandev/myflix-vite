@@ -1,6 +1,8 @@
 import { ChangeEvent, useEffect } from 'react';
-import { FaEye } from 'react-icons/fa6';
-import { useNavigate } from 'react-router-dom';
+import { FaEye, FaFileCirclePlus } from 'react-icons/fa6';
+import { HiSquaresPlus } from 'react-icons/hi2';
+import { IoPersonAdd } from 'react-icons/io5';
+import { Link, useNavigate } from 'react-router-dom';
 import { ColorPicker, DatePicker, Form, Input, InputNumber, Modal, Select } from 'antd';
 import dayjs from 'dayjs';
 import _ from 'lodash';
@@ -97,6 +99,7 @@ export default function Movie() {
   const handleAdd = async (formData: IMovie) => {
     const res = await onAdd(formData).unwrap();
     notify.success(res.message);
+    movieInfo(res.data);
     form.resetFields();
   };
 
@@ -143,13 +146,50 @@ export default function Movie() {
       zIndex: 5000
     });
 
+  const movieInfo = ({ name, slug, _id, poster }: IMovie) =>
+    modal.info({
+      title: <span className=' flex-center'>{name}</span>,
+      maskClosable: false,
+      wrapClassName: 'myflix-modal-confirm preview',
+      okText: 'Cancel',
+      zIndex: 5000,
+      content: (
+        <>
+          <div className=' flex-center mb-4'>
+            <Poster src={poster} className=' w-20 md:w-32 lg:w-44' size='md' />
+          </div>
+          <div className=' flex-center gap-4'>
+            <Link to={`${routePaths.cast}/${slug}-${_id}`}>
+              <Button icon={<IoPersonAdd />} type='ghost' className='min-w-[180px]'>
+                Manage Cast
+              </Button>
+            </Link>
+            <Link to={`${routePaths.episode}/${slug}-${_id}`}>
+              <Button icon={<FaFileCirclePlus />} type='ghost' className='min-w-[180px]'>
+                Manage Episode
+              </Button>
+            </Link>
+          </div>
+        </>
+      )
+    });
+
   return (
     <section>
-      <Backdrop backdropUrl={backdrop || thumbnail} backdropColor={backdropColor}>
-        <div className='mx-auto flex max-w-7xl  items-center gap-4'>
-          <Poster src={poster} className=' w-20 md:w-28 lg:w-32' size='md' key={poster} />
-          <h1 className=' text-heading'>{name}</h1>
-        </div>
+      <Backdrop backdropUrl={backdrop || thumbnail} backdropColor={backdropColor} poster={poster} name={name}>
+        {movie && (
+          <div className=' hidden gap-4 md:flex'>
+            <Link to={`${routePaths.cast}/${movie.slug}-${movie._id}`}>
+              <Button icon={<IoPersonAdd />}>Manage Cast</Button>
+            </Link>
+            <Link to={`${routePaths.episode}/${movie.slug}-${movie._id}`}>
+              <Button icon={<FaFileCirclePlus />}>Manage Episode</Button>
+            </Link>
+            <Button icon={<HiSquaresPlus />} href={`${routePaths.movie}/add`}>
+              Add New
+            </Button>
+          </div>
+        )}
       </Backdrop>
       <Form
         layout='vertical'
@@ -159,7 +199,7 @@ export default function Movie() {
         key={movie?._id}
         initialValues={initialValues}
         autoComplete='off'
-        className='myflix-form mx-auto grid max-w-7xl grid-cols-1 gap-x-4 p-4 md:grid-cols-2 lg:p-8'
+        className='myflix-form max-screen grid  grid-cols-1 gap-x-4 p-4 md:grid-cols-2 lg:p-8'
       >
         <FormItem label='Name' name='name' rules={[rules.required('Name')]} isLoading={isLoading}>
           <Input allowClear onBlur={(e) => form.setFieldValue('name', capitalizeName(e.target.value))} />

@@ -9,14 +9,14 @@ import { Prettify, IPerson } from '@/types';
 import { handleFetch, notify, detectFormChanged, transformDate, handleImageUrl, capitalizeName } from '@/utils';
 
 type Props = {
-  personId: string;
+  personId?: string;
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 type PersonForm = Prettify<Omit<IPerson, 'birthday'> & { birthday: dayjs.Dayjs }>;
 
-export default function Person({ personId, open, setOpen }: Props) {
+export default function Person({ personId = '', open, setOpen }: Props) {
   const isNew = personId === '';
   const [form] = Form.useForm<PersonForm>();
 
