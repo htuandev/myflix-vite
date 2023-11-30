@@ -21,7 +21,7 @@ export default function ManageMovie() {
 
   const [searchParams] = useSearchParams();
   const page = searchParams.get('page') || '1';
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState<string | undefined>('');
 
   const { data, isFetching } = useGetMoviesQuery({ page, search });
   const [onDelete] = useDeleteMovieMutation();
@@ -182,14 +182,14 @@ export default function ManageMovie() {
         </Link>
       </div>
       <Table
-        dataSource={data?.results}
+        dataSource={data?.movies}
         columns={columns}
         rowKey='_id'
         loading={{ size: 'large', spinning: isFetching }}
         scroll={{ scrollToFirstRowOnChange: true, x: true }}
         pagination={false}
       />
-      {data && data.totalPages > 1 && <Pagination page={page} totalResults={data.totalResults} />}
+      {data && data.totalPages > 1 && <Pagination page={page} totalResults={data.totalMovies} />}
       {contextHolder}
     </section>
   );

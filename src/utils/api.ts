@@ -1,8 +1,8 @@
 import { fetchBaseQuery } from '@reduxjs/toolkit/query';
-import _, { every } from 'lodash';
+import _ from 'lodash';
 import { HeaderKey } from '@/constants';
 import { RootState } from '@/reducers/store';
-import { ObjectType, ErrorResponse, SearchParams } from '@/types';
+import { ErrorResponse } from '@/types';
 import notify from './notify';
 
 const baseUrl: string = import.meta.env.VITE_API_URL || 'http://localhost:8816';
@@ -43,25 +43,12 @@ export const handleFetch = (fn: (formData: any) => Promise<void>) => (formData: 
     return notify.error(message);
   });
 
-export const updateSearchParams = ({ page, pageSize, search }: SearchParams) => {
-  const params: ObjectType = {};
+export const updateParams = (params: Record<string, string | number | undefined | null>) => {
+  const updated: Record<string, string | number | undefined> = {};
 
-  const numberCheck = (data: string | number | undefined) => {
-    // - page
-    if (_.isString(data)) {
-      const num = parseInt(data);
-      return num > 0 && num !== 1 ? data : undefined;
-    }
+  _.forEach(params, (value, key) => {
+    updated[key] = _.isEmpty(value) ? undefined : (value as number | string);
+  });
 
-    // - pageSize
-    if (_.isNumber(data)) return data > 0 && data !== 24 ? data : undefined;
-
-    return data;
-  };
-
-  params.page = numberCheck(page);
-  params.pageSize = numberCheck(pageSize);
-  params.search = search.trim() === '' ? undefined : search;
-
-  return every(params, (value) => _.isUndefined(value)) ? undefined : params;
+  return _.every(updated, (value) => _.isUndefined(value)) ? undefined : updated;
 };

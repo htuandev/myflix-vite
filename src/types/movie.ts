@@ -1,4 +1,5 @@
 import { ContentType, Status, SubtitleType } from '@/constants';
+import { Prettify, Timestamps } from '@/types';
 
 export type IMovie = {
   _id: string;
@@ -22,4 +23,18 @@ export type IMovie = {
   genres: number[];
   countries: number[];
   networks: number[];
+};
+
+type Option = { value: number; label: string };
+export type IMovies = {
+  totalPages: number;
+  totalRecords: number;
+  totalMovies: number;
+  movies: Prettify<IMovie & Timestamps>[];
+  options: {
+    years: number[];
+    genres: Option[];
+    networks: Option[];
+    countries: Option[];
+  };
 };

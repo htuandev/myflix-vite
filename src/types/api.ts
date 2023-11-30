@@ -24,7 +24,7 @@ export type Timestamps = {
 export type SearchParams = {
   page?: string;
   pageSize?: number;
-  search: string;
+  search?: string;
 };
 
 export type DataList<T> = {
@@ -32,4 +32,13 @@ export type DataList<T> = {
   totalRecords: number;
   totalResults: number;
   results: T[];
+};
+
+export type MovieParams = {
+  year?: number;
+  genre?: string;
+  network?: string;
+  country?: string;
+  type?: string;
+  status?: string;
 };

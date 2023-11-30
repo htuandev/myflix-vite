@@ -1,22 +1,24 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { DataList, SearchParams, SuccessResponse, IMovie, IResponse } from '@/types';
-import { baseQuery, updateSearchParams } from '@/utils';
+import { SearchParams, SuccessResponse, IMovie, IResponse, IMovies, MovieParams, Prettify } from '@/types';
+import { baseQuery, updateParams } from '@/utils';
 
 export const movieApi = createApi({
   reducerPath: 'movieApi',
   baseQuery: baseQuery('movie'),
   tagTypes: ['Movies', 'Movie'],
   endpoints: (build) => ({
-    getMovies: build.query<DataList<IMovie>, SearchParams>({
-      query: (params) => ({
-        url: '',
-        params: updateSearchParams(params)
-      }),
-      transformResponse: (res: IResponse<DataList<IMovie>>) => res.data,
+    getMovies: build.query<IMovies, Prettify<SearchParams & MovieParams>>({
+      query: (params) => {
+        return {
+          url: '',
+          params: updateParams(params)
+        };
+      },
+      transformResponse: (res: IResponse<IMovies>) => res.data,
       providesTags: (result) => {
         if (result) {
           const final = [
-            ...result.results.map(({ _id }) => ({ type: 'Movies' as const, id: _id })),
+            ...result.movies.map(({ _id }) => ({ type: 'Movies' as const, id: _id })),
             { type: 'Movies' as const, id: 'LIST' }
           ];
           return final;
