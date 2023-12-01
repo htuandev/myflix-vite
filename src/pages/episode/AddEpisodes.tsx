@@ -32,7 +32,6 @@ export default function AddEpisodes({ movieId, open, setOpen }: Props) {
       .split('\n')
       .map((str) => str.split('|'))
       .filter((x) => m3u8Pattern.test(x[1]))
-      .sort((a, b) => (parseInt(a[0]) < parseInt(b[0]) ? -1 : 1))
       .map((x) => ({
         name: capitalizeName(x[0]),
         link: x[1],

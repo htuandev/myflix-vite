@@ -3,16 +3,17 @@ import { FaFileCirclePlus, FaPenToSquare, FaTrash } from 'react-icons/fa6';
 import { HiSquaresPlus } from 'react-icons/hi2';
 import { IoPersonAdd } from 'react-icons/io5';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Modal, Tag } from 'antd';
+import { Form, Modal, Select, Tag } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
+import _ from 'lodash';
 import { twMerge } from 'tailwind-merge';
 import { Button, Pagination, Search } from '@/antd';
 import { useDeleteMovieMutation, useGetMoviesQuery } from '@/api/movieApi';
-import { ContentType, Status, routePaths } from '@/constants';
+import { ContentType, Status, SubtitleType, routePaths } from '@/constants';
 import { useDocumentTitle } from '@/hooks';
-import { Poster } from '@/shared';
-import { IMovie } from '@/types';
+import { FormItem, Poster } from '@/shared';
+import { IMovie, MovieParams } from '@/types';
 import { handleFetch, notify } from '@/utils';
 
 export default function ManageMovie() {
@@ -21,9 +22,9 @@ export default function ManageMovie() {
 
   const [searchParams] = useSearchParams();
   const page = searchParams.get('page') || '1';
-  const [search, setSearch] = useState<string | undefined>('');
+  const [params, setParams] = useState<MovieParams>({});
 
-  const { data, isFetching } = useGetMoviesQuery({ page, search });
+  const { data, isFetching } = useGetMoviesQuery({ ...params, page, search: '' });
   const [onDelete] = useDeleteMovieMutation();
 
   const handleDelete = handleFetch(async (id: string) => {
@@ -89,7 +90,7 @@ export default function ManageMovie() {
       },
       align: 'center',
       width: 120,
-      responsive: ['md']
+      responsive: ['lg']
     },
     {
       title: 'Year',
@@ -166,21 +167,114 @@ export default function ManageMovie() {
     }
   ];
 
+  const { useForm, useWatch } = Form;
+  const [form] = useForm<MovieParams>();
+  const type = useWatch('type', form);
+
+  const statusOptions = !_.isNumber(type)
+    ? [
+        { label: 'OnGoing', value: Status.OnGoing },
+        { label: 'Released', value: Status.Released },
+        { label: 'Ended', value: Status.Ended }
+      ]
+    : type === ContentType.Movie
+    ? [{ label: 'Released', value: Status.Released }]
+    : [
+        { label: 'OnGoing', value: Status.OnGoing },
+        { label: 'Ended', value: Status.Ended }
+      ];
+
   return (
     <section className=' container'>
       <h1 className=' text-heading'>{title}</h1>
       <div className='flex-center mb-4 gap-8 md:justify-between'>
         {data && (
-          <Search
-            onSearch={(value) => setSearch(value.trim())}
-            disabled={isFetching}
-            placeholder={`Search ${data.totalRecords} movies/series`}
-          />
+          <div className=' flex-center w-full gap-4 md:w-auto'>
+            <Search
+              onSearch={(value) => {
+                const formData = form.getFieldsValue();
+
+                setParams((prev) => ({ ...prev, search: value, ...formData }));
+              }}
+              disabled={isFetching}
+              placeholder={`Search ${data.totalRecords} movies/series`}
+            />
+            <Button onClick={() => form.resetFields()} className=' hidden lg:flex'>
+              Reset Filter
+            </Button>
+          </div>
         )}
         <Link to={`${routePaths.movie}/add`} className='hidden md:block'>
           <Button icon={<HiSquaresPlus />}>Add movie</Button>
         </Link>
       </div>
+      <Form
+        className=' myflix-form mb-4 hidden min-h-[40px] w-full justify-start gap-y-4 lg:flex'
+        form={form}
+        layout='inline'
+        initialValues={{
+          type: '',
+          status: '',
+          subtitleType: '',
+          year: '',
+          genre: '',
+          network: '',
+          country: ''
+        }}
+      >
+        {data && (
+          <>
+            <FormItem name='type' className=' w-36'>
+              <Select
+                notFoundContent={null}
+                options={[
+                  { value: '', label: 'Content Type' },
+                  { value: ContentType.Movie, label: 'Movie' },
+                  { value: ContentType.TVSeries, label: 'TV Series' }
+                ]}
+                onChange={() => {
+                  const status = form.getFieldValue('status');
+                  if ([Status.Ended, Status.OnGoing, Status.Released].includes(status))
+                    form.setFieldValue('status', '');
+                }}
+              />
+            </FormItem>
+            <FormItem name='status' className=' w-28'>
+              <Select
+                options={[
+                  { value: '', label: 'Status' },
+                  { value: Status.Trailer, label: 'Trailer' },
+                  ...statusOptions
+                ]}
+                key={type}
+              />
+            </FormItem>
+            <FormItem className=' w-36' name='subtitleType'>
+              <Select
+                options={[
+                  { value: '', label: 'Subtitle Type' },
+                  { value: SubtitleType.VietSub, label: 'Subtitled' },
+                  { value: SubtitleType.VietDub, label: 'Dubbed' }
+                ]}
+              />
+            </FormItem>
+            <FormItem className=' w-24' name='year'>
+              <Select
+                options={[{ value: '', label: 'Year' }, ...data.options.years.map((year) => ({ value: year }))]}
+              />
+            </FormItem>
+            <FormItem className=' w-40' name='genre'>
+              <Select options={[{ value: '', label: 'Genre' }, ...data.options.genres]} />
+            </FormItem>
+            <FormItem className=' w-36' name='country'>
+              <Select options={[{ value: '', label: 'Country' }, ...data.options.countries]} />
+            </FormItem>
+            <FormItem className=' w-32' name='network'>
+              <Select options={[{ value: '', label: 'Network' }, ...data.options.networks]} />
+            </FormItem>
+          </>
+        )}
+      </Form>
       <Table
         dataSource={data?.movies}
         columns={columns}

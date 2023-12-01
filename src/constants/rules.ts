@@ -55,13 +55,6 @@ const releaseDate = (status: Status): Rule => ({
   validator(_rule, value) {
     if (status) {
       if (status === Status.Trailer) return Promise.resolve();
-
-      if (status === Status.Upcoming) {
-        if (dayjs().isAfter(value, 'D')) return Promise.reject(new Error('Release date must be a date in the future'));
-
-        return Promise.resolve();
-      }
-
       if (_.isNil(value)) return Promise.reject(new Error('Release date is required'));
       if (dayjs().isBefore(value, 'D')) return Promise.reject(new Error('Release date must be a date in the past'));
       return Promise.resolve();

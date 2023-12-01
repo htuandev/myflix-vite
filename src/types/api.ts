@@ -34,11 +34,14 @@ export type DataList<T> = {
   results: T[];
 };
 
-export type MovieParams = {
-  year?: number;
-  genre?: string;
-  network?: string;
-  country?: string;
-  type?: string;
-  status?: string;
-};
+export type MovieParams = Prettify<
+  SearchParams & {
+    year?: number;
+    genre?: string;
+    network?: string;
+    country?: string;
+    type?: string;
+    status?: string;
+    subtitleType?: string;
+  }
+>;

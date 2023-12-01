@@ -76,7 +76,7 @@ export default function Movie() {
   const validateField = (key: keyof IMovie) => form.validateFields([key]);
 
   const typeOnChange = (value: ContentType) => {
-    if (status !== Status.Upcoming) setFieldValue('status');
+    if (status !== Status.Trailer) setFieldValue('status');
     const key = value === ContentType.Movie ? 'episodes' : 'runtime';
     setFieldValue(key);
     validateField(key);
@@ -394,9 +394,8 @@ export default function Movie() {
             className='myflix-select'
             notFoundContent={null}
             options={[
-              { value: SubtitleType.VietSub, label: 'Vietnamese Subtitled' },
-              { value: SubtitleType.EngSub, label: 'English Subtitled' },
-              { value: SubtitleType.VietDub, label: 'Vietnamese Dubbed' }
+              { value: SubtitleType.VietSub, label: 'Subtitled' },
+              { value: SubtitleType.VietDub, label: 'Dubbed' }
             ]}
           />
         </FormItem>
@@ -405,11 +404,7 @@ export default function Movie() {
           <Select
             className='myflix-select'
             notFoundContent={null}
-            options={[
-              { label: 'Trailer', value: Status.Trailer },
-              { label: 'Upcoming', value: Status.Upcoming },
-              ...statusOptions
-            ]}
+            options={[{ label: 'Trailer', value: Status.Trailer }, ...statusOptions]}
             onChange={() => validateField('releaseDate')}
           />
         </FormItem>

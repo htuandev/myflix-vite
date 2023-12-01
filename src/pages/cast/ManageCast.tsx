@@ -146,7 +146,7 @@ export default function ManageCast() {
         name={data && data.movie.name}
         year={data && data.movie.year}
       >
-        <div className=' flex-center gap-4'>
+        <div className=' flex gap-4'>
           <Button icon={<HiSquaresPlus />} type='primary' onClick={() => setOpen(true)} className=' hidden md:flex'>
             Add Cast
           </Button>

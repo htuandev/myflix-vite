@@ -26,7 +26,7 @@ export default function Episode({ movieId, episodeId, type, episodes, open, setO
   const initialValues = isNew
     ? type === ContentType.Movie
       ? { name: 'Full' }
-      : { name: `Tập ${episodes}. ` }
+      : { name: `Tập ${episodes}` }
     : data
     ? data
     : undefined;

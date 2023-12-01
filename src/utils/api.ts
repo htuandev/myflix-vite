@@ -43,11 +43,11 @@ export const handleFetch = (fn: (formData: any) => Promise<void>) => (formData: 
     return notify.error(message);
   });
 
-export const updateParams = (params: Record<string, string | number | undefined | null>) => {
+export const updateParams = (params: Record<string, string | number | undefined>) => {
   const updated: Record<string, string | number | undefined> = {};
 
   _.forEach(params, (value, key) => {
-    updated[key] = _.isEmpty(value) ? undefined : (value as number | string);
+    updated[key] = _.isUndefined(value) ? undefined : _.isString(value) && value.trim() === '' ? undefined : value;
   });
 
   return _.every(updated, (value) => _.isUndefined(value)) ? undefined : updated;

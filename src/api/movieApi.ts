@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { SearchParams, SuccessResponse, IMovie, IResponse, IMovies, MovieParams, Prettify } from '@/types';
+import { SuccessResponse, IMovie, IResponse, IMovies, MovieParams } from '@/types';
 import { baseQuery, updateParams } from '@/utils';
 
 export const movieApi = createApi({
@@ -7,7 +7,7 @@ export const movieApi = createApi({
   baseQuery: baseQuery('movie'),
   tagTypes: ['Movies', 'Movie'],
   endpoints: (build) => ({
-    getMovies: build.query<IMovies, Prettify<SearchParams & MovieParams>>({
+    getMovies: build.query<IMovies, MovieParams>({
       query: (params) => {
         return {
           url: '',

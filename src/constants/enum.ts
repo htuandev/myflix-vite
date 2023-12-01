@@ -16,8 +16,7 @@ export enum Gender {
 
 export enum SubtitleType {
   VietSub = 1,
-  EngSub = 2,
-  VietDub = 3
+  VietDub = 2
 }
 
 export enum ContentType {
@@ -26,9 +25,8 @@ export enum ContentType {
 }
 
 export enum Status {
-  Upcoming = 1,
+  Trailer = 1,
   OnGoing = 2,
   Ended = 3,
-  Released = 4,
-  Trailer = 5
+  Released = 4
 }
