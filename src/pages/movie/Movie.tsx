@@ -173,7 +173,13 @@ export default function Movie() {
 
   return (
     <section>
-      <Backdrop backdropUrl={backdrop || thumbnail} backdropColor={backdropColor} poster={poster} name={name}>
+      <Backdrop
+        backdropUrl={backdrop || thumbnail}
+        backdropColor={backdropColor}
+        poster={poster}
+        name={name}
+        isLoading={isLoading}
+      >
         {movie && (
           <div className=' hidden gap-4 md:flex'>
             <Link to={`${routePaths.cast}/${movie.slug}-${movie._id}`}>

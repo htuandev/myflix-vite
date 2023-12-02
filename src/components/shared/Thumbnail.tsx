@@ -9,9 +9,10 @@ type Props = {
   alt?: string;
   className?: string;
   size?: 'sm' | 'md' | 'lg';
+  isLoading?: boolean;
 };
 
-export default function Thumbnail({ src, alt, className, size = 'sm' }: Props) {
+export default function Thumbnail({ src, alt, className, size = 'sm', isLoading }: Props) {
   const ref = useRef<HTMLDivElement>(null);
 
   const imageSize = tmdbImageSizes.thumbnail[size];
@@ -40,12 +41,14 @@ export default function Thumbnail({ src, alt, className, size = 'sm' }: Props) {
         className
       )}
     >
-      <img
-        {...imgProps}
-        style={{ padding: imgProps.src === noImage ? noImagePadding : undefined }}
-        loading='lazy'
-        className='aspect-video w-full opacity-0 transition-opacity duration-[1.2s]'
-      />
+      {!isLoading && (
+        <img
+          {...imgProps}
+          style={{ padding: imgProps.src === noImage ? noImagePadding : undefined }}
+          loading='lazy'
+          className='aspect-video w-full opacity-0 transition-opacity duration-[1.2s]'
+        />
+      )}
     </div>
   );
 }

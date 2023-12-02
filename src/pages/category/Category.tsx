@@ -88,7 +88,13 @@ export default function CategoryInfo({ type, open, setOpen, categoryId, category
             { max: 30, message: 'Too long. Maximum length is 30 characters' }
           ]}
         >
-          <Input allowClear showCount onBlur={(e) => form.setFieldValue('name', capitalizeName(e.target.value))} />
+          <Input
+            allowClear
+            showCount
+            onBlur={(e) =>
+              form.setFieldValue('name', type === 'Networks' ? e.target.value : capitalizeName(e.target.value))
+            }
+          />
         </FormItem>
       </Form>
     </Modal>

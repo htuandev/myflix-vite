@@ -26,7 +26,7 @@ export default function ManageCast() {
 
   const [openEdit, setOpenEdit] = useState(false);
   const [castId, setCastId] = useState('');
-  const { data, error, isFetching } = useGetCastsQuery(id, { skip: open || openEdit });
+  const { data, error, isFetching, isLoading } = useGetCastsQuery(id, { skip: open || openEdit });
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -136,6 +136,7 @@ export default function ManageCast() {
         poster={data && data.movie.poster}
         name={data && data.movie.name}
         year={data && data.movie.year}
+        isLoading={isLoading}
       >
         <div className=' flex gap-4'>
           <Button icon={<HiSquaresPlus />} type='primary' onClick={() => setOpen(true)} className=' hidden md:flex'>

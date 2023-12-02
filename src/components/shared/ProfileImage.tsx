@@ -12,9 +12,10 @@ type Props = {
   className?: string;
   size?: 'sm' | 'md' | 'lg';
   type?: 'default' | 'square' | 'circle';
+  isLoading?: boolean;
 };
 
-export default function ProfileImage({ src, alt, gender, className, size = 'lg', type = 'default' }: Props) {
+export default function ProfileImage({ src, alt, gender, className, size = 'lg', type = 'default', isLoading }: Props) {
   const defaultProfileImage = gender === Gender.Female ? profileImageFemale : profileImageMale;
   const ref = useRef<HTMLDivElement>(null);
 
@@ -40,7 +41,7 @@ export default function ProfileImage({ src, alt, gender, className, size = 'lg',
         className
       )}
     >
-      <img {...imgProps} loading='lazy' className='opacity-0 transition-opacity duration-[1.2s]' />
+      {!isLoading && <img {...imgProps} loading='lazy' className='opacity-0 transition-opacity duration-[1.2s]' />}
     </div>
   );
 }

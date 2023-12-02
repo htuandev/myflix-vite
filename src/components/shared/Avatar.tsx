@@ -6,9 +6,10 @@ type Props = {
   src: string | undefined;
   alt?: string;
   className?: string;
+  isLoading?: boolean;
 };
 
-export default function Avatar({ src, alt, className }: Props) {
+export default function Avatar({ src, alt, className, isLoading }: Props) {
   const ref = useRef<HTMLDivElement>(null);
 
   const onError = (e: SyntheticEvent<HTMLImageElement, Event>) => (e.currentTarget.src = defaultAvatar);
@@ -29,7 +30,7 @@ export default function Avatar({ src, alt, className }: Props) {
         className
       )}
     >
-      <img {...imgProps} loading='lazy' className='opacity-0 transition-opacity duration-[1.2s]' />
+      {!isLoading && <img {...imgProps} loading='lazy' className='opacity-0 transition-opacity duration-[1.2s]' />}
     </div>
   );
 }

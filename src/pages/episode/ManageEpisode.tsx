@@ -31,7 +31,7 @@ export default function ManageEpisode() {
   const [searchParams] = useSearchParams();
   const page = searchParams.get('page') || '1';
 
-  const { data, error, isFetching } = useGetEpisodesQuery({ id, page }, { skip: open });
+  const { data, error, isFetching, isLoading } = useGetEpisodesQuery({ id, page }, { skip: open });
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -126,6 +126,7 @@ export default function ManageEpisode() {
         poster={data && data.movie.poster}
         name={data && data.movie.name}
         year={data && data.movie.year}
+        isLoading={isLoading}
       >
         <div className=' flex gap-4'>
           {data &&

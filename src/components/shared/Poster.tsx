@@ -9,9 +9,10 @@ type Props = {
   alt?: string;
   className?: string;
   size?: 'sm' | 'md' | 'lg';
+  isLoading?: boolean;
 };
 
-export default function Poster({ src, alt, className, size = 'sm' }: Props) {
+export default function Poster({ src, alt, className, size = 'sm', isLoading }: Props) {
   const ref = useRef<HTMLDivElement>(null);
 
   const imageSize = tmdbImageSizes.poster[size];
@@ -39,14 +40,15 @@ export default function Poster({ src, alt, className, size = 'sm' }: Props) {
         size === 'lg' ? 'rounded-lg' : 'rounded',
         className
       )}
-      key={imgProps.src}
     >
-      <img
-        {...imgProps}
-        style={{ padding: imgProps.src === noImage ? noImagePadding : undefined }}
-        loading='lazy'
-        className='opacity-0 transition-opacity duration-[1.2s]'
-      />
+      {!isLoading && (
+        <img
+          {...imgProps}
+          style={{ padding: imgProps.src === noImage ? noImagePadding : undefined }}
+          loading='lazy'
+          className='opacity-0 transition-opacity duration-[1.2s]'
+        />
+      )}
     </div>
   );
 }
