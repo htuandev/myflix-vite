@@ -45,6 +45,10 @@ body {
     aspect-ratio: 16/9;
 }
 
+.plyr__control--overlaid {
+    background: var(--plyr-color-main) !important;
+}
+
 /* Load Image */
 .load-img {
     position: relative;

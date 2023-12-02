@@ -51,8 +51,8 @@ export default function ManageEpisode() {
 
   const [{ confirm, info }, contextHolder] = Modal.useModal();
 
-  const previewVideo = (title: string, _id: string, source: string, thumbnail: string) =>
-    infoPreview({ info, _id, title, content: <VideoPlayer source={source} thumbnail={thumbnail} />, width: 800 });
+  const previewVideo = (title: string, id: string, source: string, thumbnail: string) =>
+    infoPreview({ info, id, title, content: <VideoPlayer source={source} thumbnail={thumbnail} />, width: 800 });
 
   const columns: ColumnsType<IEpisodeInfo> = [
     {
