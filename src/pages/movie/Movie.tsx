@@ -12,7 +12,7 @@ import { useAddMovieMutation, useGetMovieByIdQuery, useUpdateMovieMutation } fro
 import { ContentType, Status, SubtitleType, BACKDROP_COLOR, rules, routePaths } from '@/constants';
 import { useDocumentTitle, useGlightbox, useValidId } from '@/hooks';
 import noImage from '@/images/no-image.svg';
-import { FormItem, Backdrop, Thumbnail, Poster } from '@/shared';
+import { FormItem, Backdrop, Thumbnail, Poster, Icon } from '@/shared';
 import { Prettify, ICategory, IMovie } from '@/types';
 import {
   detectFormChanged,
@@ -21,7 +21,8 @@ import {
   handleFetch,
   notify,
   handleImageUrl,
-  capitalizeName
+  capitalizeName,
+  infoPreview
 } from '@/utils';
 
 type MovieForm = Prettify<Omit<IMovie, 'releaseDate'> & { releaseDate?: dayjs.Dayjs }>;
@@ -121,11 +122,14 @@ export default function Movie() {
     window.scroll({ top: 0, behavior: 'smooth' });
   });
 
-  const [modal, contextHolder] = Modal.useModal();
+  const [{ info }, contextHolder] = Modal.useModal();
 
-  const previewImage = (type?: 'Poster' | 'Logo' | 'Thumbnail') =>
-    modal.info({
-      title: <span className=' flex-center'>Preview {type ? type : 'Backdrop'}</span>,
+  const previewImage = (id: string, type: 'Poster' | 'Logo' | 'Thumbnail' | 'Backdrop') =>
+    infoPreview({
+      info,
+      id,
+      title: type ? type : 'Backdrop',
+      width: 1000,
       content: (
         <div className=' flex-center'>
           {type === 'Poster' ? (
@@ -138,21 +142,14 @@ export default function Movie() {
             <Thumbnail src={backdrop} size='lg' className='w-full' />
           )}
         </div>
-      ),
-      maskClosable: false,
-      wrapClassName: 'myflix-modal-confirm preview',
-      centered: true,
-      width: 1000,
-      zIndex: 5000
+      )
     });
 
   const movieInfo = ({ name, slug, _id, poster }: IMovie) =>
-    modal.info({
-      title: <span className=' flex-center'>{name}</span>,
-      maskClosable: false,
-      wrapClassName: 'myflix-modal-confirm preview',
-      okText: 'Cancel',
-      zIndex: 5000,
+    infoPreview({
+      info,
+      id: _id,
+      title: name,
       content: (
         <>
           <div className=' flex-center mb-4'>
@@ -235,12 +232,13 @@ export default function Movie() {
             onChange={(e) => imageChange(e, 'poster')}
             suffix={
               poster && poster !== noImage ? (
-                <span
-                  className=' cursor-pointer'
-                  children={<FaEye />}
+                <Icon
+                  className=' text-base text-dark-100/[0.45] hover:text-dark-100'
+                  action='preview'
+                  id='preview_poster'
                   onClick={(e) => {
                     e.stopPropagation();
-                    previewImage('Poster');
+                    previewImage('preview_poster', 'Poster');
                   }}
                 />
               ) : (
@@ -270,12 +268,13 @@ export default function Movie() {
             onChange={(e) => imageChange(e, 'thumbnail')}
             suffix={
               thumbnail ? (
-                <span
-                  className=' cursor-pointer'
-                  children={<FaEye />}
+                <Icon
+                  className=' text-base text-dark-100/[0.45] hover:text-dark-100'
+                  action='preview'
+                  id='preview_thumbnail'
                   onClick={(e) => {
                     e.stopPropagation();
-                    previewImage('Thumbnail');
+                    previewImage('preview_thumbnail', 'Thumbnail');
                   }}
                 />
               ) : (
@@ -291,12 +290,13 @@ export default function Movie() {
             onChange={(e) => imageChange(e, 'backdrop')}
             suffix={
               backdrop ? (
-                <span
-                  className=' cursor-pointer'
-                  children={<FaEye />}
+                <Icon
+                  className=' text-base text-dark-100/[0.45] hover:text-dark-100'
+                  action='preview'
+                  id='preview_backdrop'
                   onClick={(e) => {
                     e.stopPropagation();
-                    previewImage();
+                    previewImage('preview_backdrop', 'Backdrop');
                   }}
                 />
               ) : (
@@ -326,12 +326,13 @@ export default function Movie() {
             onChange={(e) => imageChange(e, 'logo', true)}
             suffix={
               logo ? (
-                <span
-                  className=' cursor-pointer'
-                  children={<FaEye />}
+                <Icon
+                  className=' text-base text-dark-100/[0.45] hover:text-dark-100'
+                  action='preview'
+                  id='preview_logo'
                   onClick={(e) => {
                     e.stopPropagation();
-                    previewImage('Logo');
+                    previewImage('preview_logo', 'Logo');
                   }}
                 />
               ) : (
@@ -347,7 +348,11 @@ export default function Movie() {
             onChange={(e) => setFieldValue('trailer', handleYoutubeId(e.target.value))}
             suffix={
               trailer ? (
-                <span className='glightbox cursor-pointer' onClick={(e) => e.stopPropagation()} children={<FaEye />} />
+                <span
+                  className='glightbox cursor-pointer text-dark-100/[0.45] hover:text-dark-100'
+                  onClick={(e) => e.stopPropagation()}
+                  children={<FaEye />}
+                />
               ) : (
                 <span />
               )

@@ -12,7 +12,7 @@ import { ContentType, routePaths } from '@/constants';
 import { useDocumentTitle, useValidId } from '@/hooks';
 import { Backdrop, Icon, Thumbnail, VideoPlayer } from '@/shared';
 import { IEpisodeInfo } from '@/types';
-import { confirmDelete, handleFetch, notify } from '@/utils';
+import { confirmDelete, handleFetch, infoPreview, notify } from '@/utils';
 import AddEpisodes from './AddEpisodes';
 import Episode from './Episode';
 
@@ -51,17 +51,8 @@ export default function ManageEpisode() {
 
   const [{ confirm, info }, contextHolder] = Modal.useModal();
 
-  const previewVideo = (name: string, source: string, thumbnail: string) =>
-    info({
-      title: <span className=' flex-center'>{name}</span>,
-      content: <VideoPlayer source={source} thumbnail={thumbnail} />,
-      maskClosable: false,
-      wrapClassName: 'myflix-modal-confirm preview',
-      centered: true,
-      okText: 'Back',
-      width: 800,
-      zIndex: 5000
-    });
+  const previewVideo = (title: string, _id: string, source: string, thumbnail: string) =>
+    infoPreview({ info, _id, title, content: <VideoPlayer source={source} thumbnail={thumbnail} />, width: 800 });
 
   const columns: ColumnsType<IEpisodeInfo> = [
     {
@@ -103,17 +94,24 @@ export default function ManageEpisode() {
     {
       title: 'Action',
       key: 'action',
-      render: (_, { _id, name, link, thumbnail }) => (
-        <div className=' flex-center gap-4'>
-          <Icon action='edit' onClick={() => openModel(_id)} />
-          <Icon action='preview' onClick={() => previewVideo(name, link, thumbnail || data?.movie.thumbnail || '')} />
-          <Icon
-            action='delete'
-            id={_id}
-            onClick={() => confirmDelete({ confirm, _id, name, type: 'Episode', onDelete: () => handleDelete(_id) })}
-          />
-        </div>
-      ),
+      render: (_, { _id, name, link, thumbnail }) => {
+        const previewId = `preview_${_id}`;
+        return (
+          <div className=' flex-center gap-4'>
+            <Icon action='edit' onClick={() => openModel(_id)} />
+            <Icon
+              action='preview'
+              id={previewId}
+              onClick={() => previewVideo(name, previewId, link, thumbnail || data?.movie.thumbnail || '')}
+            />
+            <Icon
+              action='delete'
+              id={_id}
+              onClick={() => confirmDelete({ confirm, _id, name, type: 'Episode', onDelete: () => handleDelete(_id) })}
+            />
+          </div>
+        );
+      },
       align: 'center',
       responsive: ['md'],
       width: 120

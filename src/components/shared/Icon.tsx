@@ -1,13 +1,14 @@
 import { ButtonHTMLAttributes, SVGAttributes } from 'react';
 import { FaEye, FaFileCirclePlus, FaPenToSquare, FaTrash } from 'react-icons/fa6';
 import { IoPersonAdd } from 'react-icons/io5';
+import { twMerge } from 'tailwind-merge';
 import { Prettify } from '@/types';
 
 type Action = 'edit' | 'delete' | 'preview' | 'add cast' | 'add episode';
-type IconProps = Prettify<{ action: Action } & ButtonHTMLAttributes<HTMLButtonElement>>;
+type IconProps = Prettify<{ action: Action; btnClassName?: string } & ButtonHTMLAttributes<HTMLButtonElement>>;
 type SVGProps = SVGAttributes<SVGElement>;
 
-export default function Icon({ action, ...props }: IconProps) {
+export default function Icon({ action, btnClassName, className, ...props }: IconProps) {
   const SVGIcon = (props: SVGProps) =>
     action === 'delete' ? (
       <FaTrash {...props} />
@@ -22,8 +23,8 @@ export default function Icon({ action, ...props }: IconProps) {
     );
 
   return (
-    <button {...props}>
-      <SVGIcon className=' cursor-pointer text-xl hover:text-dark-100' />
+    <button {...props} className={btnClassName}>
+      <SVGIcon className={twMerge(' cursor-pointer text-xl hover:text-dark-100', className)} />
     </button>
   );
 }

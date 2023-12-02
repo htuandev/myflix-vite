@@ -89,3 +89,30 @@ export const confirmDelete = ({ confirm, _id, name, type, onDelete }: ConfirmDel
     afterClose: () => (btn.disabled = false)
   });
 };
+
+type InfoPreviewFn = {
+  info: HookAPI['info'];
+  id: string;
+  title: string;
+  content: ReactNode;
+  width?: number;
+};
+
+export const infoPreview = ({ info, id, title, content, width = 416 }: InfoPreviewFn) => {
+  const btn = document.getElementById(id) as HTMLButtonElement | null;
+  if (btn) btn.disabled = true;
+
+  info({
+    title,
+    content,
+    width,
+    maskClosable: false,
+    wrapClassName: 'myflix-modal-confirm preview',
+    centered: true,
+    okText: 'Back',
+    zIndex: 5000,
+    afterClose: () => {
+      if (btn) btn.disabled = false;
+    }
+  });
+};
