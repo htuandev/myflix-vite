@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { FaPenToSquare, FaTrash } from 'react-icons/fa6';
 import { HiSquaresPlus } from 'react-icons/hi2';
 import { Input, Modal, Table } from 'antd';
 import { ColumnsType } from 'antd/es/table';
@@ -7,15 +6,16 @@ import { twMerge } from 'tailwind-merge';
 import { Button } from '@/antd';
 import { useDeleteCategoryMutation, useGetCategoryQuery } from '@/api/categoryApi';
 import { useDocumentTitle } from '@/hooks';
+import { Icon } from '@/shared';
 import { ICategory, CategoryType } from '@/types';
-import { handleFetch, notify } from '@/utils';
+import { confirmDelete, handleFetch, notify } from '@/utils';
 import Category from './Category';
 
 export default function ManageCategory({ type }: { type: CategoryType }) {
+  const categoryType = type === 'Countries' ? 'Country' : type === 'Genres' ? 'Genre' : 'Network';
+
   const title = `Manage ${type}`;
   useDocumentTitle(title);
-
-  const categoryType = location.pathname.replace('/', '');
 
   const [open, setOpen] = useState(false);
   const { data, isFetching } = useGetCategoryQuery(type, { skip: open });
@@ -40,17 +40,7 @@ export default function ManageCategory({ type }: { type: CategoryType }) {
     notify.success(res.message);
   });
 
-  const [modal, contextHolder] = Modal.useModal();
-
-  const confirmDelete = ({ _id, name }: Omit<ICategory, 'slug'>) =>
-    modal.confirm({
-      title: `Delete ${categoryType}`,
-      content: `Do you want to delete ${name}?`,
-      onOk: () => handleDelete(_id),
-      okText: 'Delete',
-      wrapClassName: 'myflix-modal-confirm',
-      maskClosable: false
-    });
+  const [{ confirm }, contextHolder] = Modal.useModal();
 
   const columns: ColumnsType<ICategory> = [
     {
@@ -75,10 +65,11 @@ export default function ManageCategory({ type }: { type: CategoryType }) {
       key: 'action',
       render: (_, { _id, name }) => (
         <div className=' flex-center gap-4'>
-          <FaPenToSquare className=' cursor-pointer text-xl hover:text-dark-100' onClick={() => openModel(_id)} />
-          <FaTrash
-            className=' cursor-pointer text-xl hover:text-dark-100'
-            onClick={() => confirmDelete({ _id, name })}
+          <Icon action='edit' onClick={() => openModel(_id)} />
+          <Icon
+            action='delete'
+            id={_id.toString()}
+            onClick={() => confirmDelete({ confirm, _id, name, type: categoryType, onDelete: () => handleDelete(_id) })}
           />
         </div>
       ),
@@ -96,7 +87,7 @@ export default function ManageCategory({ type }: { type: CategoryType }) {
       >
         {data && data.length > 0 && (
           <Input
-            placeholder={`Search ${data.length} ${data.length === 1 ? categoryType : type.toLowerCase()}`}
+            placeholder={`Search ${data.length} ${type.toLowerCase()}`}
             className=' hidden w-full md:flex md:w-80'
             name='search'
             onChange={(e) => {

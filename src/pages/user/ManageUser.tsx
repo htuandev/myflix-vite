@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { FaPenToSquare, FaTrash } from 'react-icons/fa6';
 import { HiSquaresPlus } from 'react-icons/hi2';
 import { Form, Input, Modal, Select, Table, Tag } from 'antd';
 import { ColumnsType } from 'antd/es/table';
@@ -9,9 +8,9 @@ import { Button } from '@/antd';
 import { useDeleteUserMutation, useGetUsersQuery } from '@/api/userApi';
 import { Role, colors } from '@/constants';
 import { useDocumentTitle } from '@/hooks';
-import { Avatar } from '@/shared';
+import { Avatar, Icon } from '@/shared';
 import { IUser } from '@/types';
-import { handleFetch, notify } from '@/utils';
+import { confirmDelete, handleFetch, notify } from '@/utils';
 import User from './User';
 
 export default function ManageUser() {
@@ -40,17 +39,7 @@ export default function ManageUser() {
     notify.success(res.message);
   });
 
-  const [modal, contextHolder] = Modal.useModal();
-
-  const confirmDelete = ({ _id, name, email }: Pick<IUser, '_id' | 'name' | 'email'>) =>
-    modal.confirm({
-      title: 'Delete user',
-      content: `Do you want to delete ${name ? name : email}?`,
-      onOk: () => handleDelete(_id),
-      okText: 'Delete',
-      wrapClassName: 'myflix-modal-confirm',
-      maskClosable: false
-    });
+  const [{ confirm }, contextHolder] = Modal.useModal();
 
   const columns: ColumnsType<IUser> = [
     {
@@ -105,10 +94,13 @@ export default function ManageUser() {
       key: 'action',
       render: (_, { _id, name, email }) => (
         <div className=' flex-center gap-4'>
-          <FaPenToSquare className=' cursor-pointer text-xl hover:text-dark-100' onClick={() => openModal(_id)} />
-          <FaTrash
-            className=' cursor-pointer text-xl hover:text-dark-100'
-            onClick={() => confirmDelete({ _id, name, email })}
+          <Icon action='edit' onClick={() => openModal(_id)} />
+          <Icon
+            action='delete'
+            id={_id}
+            onClick={() =>
+              confirmDelete({ confirm, _id, name: name || email, type: 'User', onDelete: () => handleDelete(_id) })
+            }
           />
         </div>
       ),

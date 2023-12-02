@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { FaEdit } from 'react-icons/fa';
-import { FaFileCirclePlus, FaPenToSquare, FaTrash } from 'react-icons/fa6';
+import { FaFileCirclePlus } from 'react-icons/fa6';
 import { HiSquaresPlus } from 'react-icons/hi2';
 import { Link, useNavigate } from 'react-router-dom';
 import { Tag, Table, Modal, ConfigProvider, Empty } from 'antd';
@@ -11,9 +11,9 @@ import { Button } from '@/antd';
 import { useDeleteCastMutation, useGetCastsQuery } from '@/api/castApi';
 import { Gender, routePaths } from '@/constants';
 import { useDocumentTitle, useValidId } from '@/hooks';
-import { Backdrop, ProfileImage } from '@/shared';
+import { Backdrop, Icon, ProfileImage } from '@/shared';
 import { ICast } from '@/types';
-import { handleFetch, notify } from '@/utils';
+import { confirmDelete, handleFetch, notify } from '@/utils';
 import Person from '../person/Person';
 import AddCast from './AddCast';
 import EditCast from './EditCast';
@@ -46,17 +46,7 @@ export default function ManageCast() {
     notify.success(res.message);
   });
 
-  const [modal, contextHolder] = Modal.useModal();
-
-  const confirmDelete = ({ _id, name }: Pick<ICast, '_id' | 'name'>) =>
-    modal.confirm({
-      title: 'Delete Cast',
-      content: `Do you want to delete ${name}?`,
-      onOk: () => handleDelete(_id),
-      okText: 'Delete',
-      wrapClassName: 'myflix-modal-confirm',
-      maskClosable: false
-    });
+  const [{ confirm }, contextHolder] = Modal.useModal();
 
   const columns: ColumnsType<ICast> = [
     {
@@ -118,16 +108,17 @@ export default function ManageCast() {
       key: 'action',
       render: (_, { _id, name }) => (
         <div className=' flex-center gap-4'>
-          <FaPenToSquare
-            className=' cursor-pointer text-xl hover:text-dark-100'
+          <Icon
+            action='edit'
             onClick={() => {
               setCastId(_id);
               setOpenEdit(true);
             }}
           />
-          <FaTrash
-            className=' cursor-pointer text-xl hover:text-dark-100'
-            onClick={() => confirmDelete({ _id, name })}
+          <Icon
+            action='delete'
+            id={_id}
+            onClick={() => confirmDelete({ confirm, _id, name, type: 'Cast', onDelete: () => handleDelete(_id) })}
           />
         </div>
       ),

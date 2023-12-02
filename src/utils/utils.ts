@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+import { HookAPI } from 'antd/es/modal/useModal';
 import dayjs from 'dayjs';
 import _ from 'lodash';
 import slugify from 'slugify';
@@ -63,3 +65,27 @@ export const capitalizeName = (str: string) =>
     .split(' ')
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(' ');
+
+type ConfirmDeleteFn = {
+  confirm: HookAPI['confirm'];
+  _id: string | number;
+  name: string;
+  type: 'User' | 'Genre' | 'Network' | 'Country' | 'Person' | 'Movie' | 'Cast' | 'Episode';
+  onDelete: () => Promise<void>;
+};
+
+export const confirmDelete = ({ confirm, _id, name, type, onDelete }: ConfirmDeleteFn) => {
+  const btn = document.getElementById(_id.toString()) as HTMLButtonElement;
+  btn.disabled = true;
+
+  confirm({
+    title: `Delete ${type}`,
+    content: `Do you want to delete ${name}?`,
+    onOk: onDelete,
+    okText: 'Delete',
+    wrapClassName: 'myflix-modal-confirm',
+    maskClosable: false,
+    zIndex: 5000,
+    afterClose: () => (btn.disabled = false)
+  });
+};

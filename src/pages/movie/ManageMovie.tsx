@@ -1,7 +1,5 @@
 import { useState } from 'react';
-import { FaFileCirclePlus, FaPenToSquare, FaTrash } from 'react-icons/fa6';
 import { HiSquaresPlus } from 'react-icons/hi2';
-import { IoPersonAdd } from 'react-icons/io5';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Form, Modal, Select, Tag } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
@@ -12,9 +10,9 @@ import { Button, Pagination, Search } from '@/antd';
 import { useDeleteMovieMutation, useGetMoviesQuery } from '@/api/movieApi';
 import { ContentType, Status, SubtitleType, routePaths } from '@/constants';
 import { useDocumentTitle } from '@/hooks';
-import { FormItem, Poster } from '@/shared';
+import { FormItem, Icon, Poster } from '@/shared';
 import { IMovie, MovieParams } from '@/types';
-import { handleFetch, notify } from '@/utils';
+import { confirmDelete, handleFetch, notify } from '@/utils';
 
 export default function ManageMovie() {
   const title = 'Manage Movie';
@@ -33,17 +31,7 @@ export default function ManageMovie() {
     notify.success(res.message);
   });
 
-  const [modal, contextHolder] = Modal.useModal();
-
-  const confirmDelete = ({ _id, name }: Pick<IMovie, '_id' | 'name'>) =>
-    modal.confirm({
-      title: 'Delete Movie',
-      content: `Do you want to delete ${name}?`,
-      onOk: () => handleDelete(_id),
-      okText: 'Delete',
-      wrapClassName: 'myflix-modal-confirm',
-      maskClosable: false
-    });
+  const [{ confirm }, contextHolder] = Modal.useModal();
 
   const columns: ColumnsType<IMovie> = [
     {
@@ -146,18 +134,19 @@ export default function ManageMovie() {
       key: 'action',
       render: (_, { _id, name, slug }) => (
         <div className=' flex-center gap-4'>
-          <Link to={`${routePaths.movie}/${slug}-${_id}`}>
-            <FaPenToSquare className=' cursor-pointer text-xl hover:text-dark-100' />
+          <Link to={`${routePaths.movie}/${slug}-${_id}`} className=' flex-center'>
+            <Icon action='edit' />
           </Link>
-          <Link to={`${routePaths.cast}/${slug}-${_id}`}>
-            <IoPersonAdd className=' cursor-pointer text-xl hover:text-dark-100' />
+          <Link to={`${routePaths.cast}/${slug}-${_id}`} className=' flex-center'>
+            <Icon action='add cast' />
           </Link>
-          <Link to={`${routePaths.episode}/${slug}-${_id}`}>
-            <FaFileCirclePlus className=' cursor-pointer text-xl hover:text-dark-100' />
+          <Link to={`${routePaths.episode}/${slug}-${_id}`} className=' flex-center'>
+            <Icon action='add episode' />
           </Link>
-          <FaTrash
-            className=' cursor-pointer text-xl hover:text-dark-100'
-            onClick={() => confirmDelete({ _id, name })}
+          <Icon
+            action='delete'
+            id={_id}
+            onClick={() => confirmDelete({ confirm, _id, name, type: 'Movie', onDelete: () => handleDelete(_id) })}
           />
         </div>
       ),

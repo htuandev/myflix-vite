@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { FaPenToSquare, FaTrash } from 'react-icons/fa6';
 import { HiSquaresPlus } from 'react-icons/hi2';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Modal, Tag } from 'antd';
@@ -10,9 +9,9 @@ import { Button, Pagination, Search } from '@/antd';
 import { useDeletePersonMutation, useGetPeopleQuery } from '@/api/personApi';
 import { Gender, routePaths } from '@/constants';
 import { useDocumentTitle } from '@/hooks';
-import { ProfileImage } from '@/shared';
+import { Icon, ProfileImage } from '@/shared';
 import { IPerson } from '@/types';
-import { handleFetch, notify } from '@/utils';
+import { confirmDelete, handleFetch, notify } from '@/utils';
 import Person from './Person';
 
 export default function ManagePerson() {
@@ -45,21 +44,10 @@ export default function ManagePerson() {
 
   const handleDelete = handleFetch(async (id: string) => {
     const res = await onDelete(id).unwrap();
-
     notify.success(res.message);
   });
 
-  const [modal, contextHolder] = Modal.useModal();
-
-  const confirmDelete = ({ _id, name }: Pick<IPerson, '_id' | 'name'>) =>
-    modal.confirm({
-      title: 'Delete Person',
-      content: `Do you want to delete ${name}?`,
-      onOk: () => handleDelete(_id),
-      okText: 'Delete',
-      wrapClassName: 'myflix-modal-confirm',
-      maskClosable: false
-    });
+  const [{ confirm }, contextHolder] = Modal.useModal();
 
   const columns: ColumnsType<IPerson> = [
     {
@@ -136,10 +124,11 @@ export default function ManagePerson() {
       key: 'action',
       render: (_, { _id, name }) => (
         <div className=' flex-center gap-4'>
-          <FaPenToSquare className=' cursor-pointer text-xl hover:text-dark-100' onClick={() => openModal(_id)} />
-          <FaTrash
-            className=' cursor-pointer text-xl hover:text-dark-100'
-            onClick={() => confirmDelete({ _id, name })}
+          <Icon action='edit' onClick={() => openModal(_id)} />
+          <Icon
+            action='delete'
+            id={_id}
+            onClick={() => confirmDelete({ confirm, _id, name, type: 'Person', onDelete: () => handleDelete(_id) })}
           />
         </div>
       ),

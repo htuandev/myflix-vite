@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { FaEdit } from 'react-icons/fa';
-import { FaEye, FaPenToSquare, FaTrash } from 'react-icons/fa6';
 import { HiSquaresPlus } from 'react-icons/hi2';
 import { IoPersonAdd } from 'react-icons/io5';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
@@ -11,9 +10,9 @@ import { Button, Pagination } from '@/antd';
 import { useDeleteEpisodeMutation, useGetEpisodesQuery } from '@/api/episodeApi';
 import { ContentType, routePaths } from '@/constants';
 import { useDocumentTitle, useValidId } from '@/hooks';
-import { Backdrop, Thumbnail, VideoPlayer } from '@/shared';
+import { Backdrop, Icon, Thumbnail, VideoPlayer } from '@/shared';
 import { IEpisodeInfo } from '@/types';
-import { handleFetch, notify } from '@/utils';
+import { confirmDelete, handleFetch, notify } from '@/utils';
 import AddEpisodes from './AddEpisodes';
 import Episode from './Episode';
 
@@ -45,25 +44,15 @@ export default function ManageEpisode() {
   useDocumentTitle(title);
 
   const [onDelete] = useDeleteEpisodeMutation();
+  const handleDelete = handleFetch(async (_id: string) => {
+    const res = await onDelete(_id).unwrap();
+    notify.success(res.message);
+  });
 
-  const [modal, contextHolder] = Modal.useModal();
-
-  const confirmDeleteConfig = ({ _id, name }: Pick<IEpisodeInfo, '_id' | 'name'>) =>
-    modal.confirm({
-      title: 'Delete Episode',
-      content: `Do you want to delete ${name}?`,
-      onOk: handleFetch(async () => {
-        const res = await onDelete(_id).unwrap();
-
-        notify.success(res.message);
-      }),
-      okText: 'Delete',
-      wrapClassName: 'myflix-modal-confirm',
-      maskClosable: false
-    });
+  const [{ confirm, info }, contextHolder] = Modal.useModal();
 
   const previewVideo = (name: string, source: string, thumbnail: string) =>
-    modal.info({
+    info({
       title: <span className=' flex-center'>{name}</span>,
       content: <VideoPlayer source={source} thumbnail={thumbnail} />,
       maskClosable: false,
@@ -116,16 +105,12 @@ export default function ManageEpisode() {
       key: 'action',
       render: (_, { _id, name, link, thumbnail }) => (
         <div className=' flex-center gap-4'>
-          <FaPenToSquare className=' cursor-pointer text-xl hover:text-dark-100' onClick={() => openModel(_id)} />
-          {data && (
-            <FaEye
-              className=' cursor-pointer text-xl hover:text-dark-100'
-              onClick={() => previewVideo(name, link, thumbnail || data.movie.thumbnail)}
-            />
-          )}
-          <FaTrash
-            className=' cursor-pointer text-xl hover:text-dark-100'
-            onClick={() => confirmDeleteConfig({ _id, name })}
+          <Icon action='edit' onClick={() => openModel(_id)} />
+          <Icon action='preview' onClick={() => previewVideo(name, link, thumbnail || data?.movie.thumbnail || '')} />
+          <Icon
+            action='delete'
+            id={_id}
+            onClick={() => confirmDelete({ confirm, _id, name, type: 'Episode', onDelete: () => handleDelete(_id) })}
           />
         </div>
       ),
