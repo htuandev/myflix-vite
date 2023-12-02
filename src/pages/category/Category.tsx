@@ -40,7 +40,7 @@ export default function CategoryInfo({ type, open, setOpen, categoryId, category
   };
 
   const onFinish = handleFetch(async ({ name }: Pick<ICategory, 'name'>) => {
-    const formData = { name: capitalizeName(name) };
+    const formData = { name: type === 'Networks' ? name.trim() : capitalizeName(name) };
     return isNew ? handleAdd(formData) : handleUpdate(formData);
   });
 
@@ -92,7 +92,7 @@ export default function CategoryInfo({ type, open, setOpen, categoryId, category
             allowClear
             showCount
             onBlur={(e) =>
-              form.setFieldValue('name', type === 'Networks' ? e.target.value : capitalizeName(e.target.value))
+              form.setFieldValue('name', type === 'Networks' ? e.target.value.trim() : capitalizeName(e.target.value))
             }
           />
         </FormItem>
