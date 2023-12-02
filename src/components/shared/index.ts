@@ -5,3 +5,4 @@ export { default as Poster } from './Poster';
 export { default as ProfileImage } from './ProfileImage';
 export { default as Thumbnail } from './Thumbnail';
 export { default as VideoPlayer } from './VideoPlayer';
+export { default as Icon } from './Icon';
