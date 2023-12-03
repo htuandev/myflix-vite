@@ -41,7 +41,14 @@ export default function ProfileImage({ src, alt, gender, className, size = 'lg',
         className
       )}
     >
-      {!isLoading && <img {...imgProps} loading='lazy' className='opacity-0 transition-opacity duration-[1.2s]' />}
+      {!isLoading && (
+        <img
+          {...imgProps}
+          loading='lazy'
+          className='opacity-0 transition-opacity duration-[1.2s]'
+          key={src ? src : gender}
+        />
+      )}
     </div>
   );
 }

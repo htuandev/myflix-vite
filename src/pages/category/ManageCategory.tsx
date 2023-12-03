@@ -14,7 +14,7 @@ import Category from './Category';
 export default function ManageCategory({ type }: { type: CategoryType }) {
   const categoryType = type === 'Countries' ? 'Country' : type === 'Genres' ? 'Genre' : 'Network';
 
-  const title = `Manage ${type}`;
+  const title = `Manage ${categoryType}`;
   useDocumentTitle(title);
 
   const [open, setOpen] = useState(false);

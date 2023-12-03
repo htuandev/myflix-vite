@@ -22,7 +22,7 @@ export default function Backdrop({ backdropUrl, backdropColor, poster, name, yea
     >
       <div style={{ backgroundColor: hexToRgba(backdropColor, 0.84) }} className=' p-2 pl-8 lg:p-4 lg:pl-12'>
         <div className=' max-screen  flex items-center gap-4'>
-          <Poster src={poster} className=' w-20 md:w-32 lg:w-44' size='md' isLoading={isLoading} />
+          <Poster src={poster} className=' w-20 md:w-32 lg:w-44' size='md' isLoading={isLoading} key={poster} />
           <div>
             {name && (
               <h1 className=' text-heading'>

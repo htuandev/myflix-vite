@@ -22,7 +22,7 @@ export default function ManageMovie() {
   const page = searchParams.get('page') || '1';
   const [params, setParams] = useState<MovieParams>({});
 
-  const { data, isFetching } = useGetMoviesQuery({ ...params, page, search: '' });
+  const { data, isFetching } = useGetMoviesQuery({ ...params, page });
   const [onDelete] = useDeleteMovieMutation();
 
   const handleDelete = handleFetch(async (id: string) => {
